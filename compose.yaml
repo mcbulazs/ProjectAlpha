@@ -16,7 +16,7 @@ services:
       - "5432:5432"
     volumes: 
       - dbdata:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql 
+      - ./init-scripts:/docker-entrypoint-initdb.d
 
   go:
     container_name: go
