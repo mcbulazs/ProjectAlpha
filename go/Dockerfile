@@ -18,4 +18,5 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o app
 
 EXPOSE 3000
 
-CMD ["./app"]
+#starts the application, but waits for the database to be up and running
+CMD ["./wait-for-it.sh", "postgres:5432", "--", "./app"]

@@ -5,23 +5,21 @@ version: "3.8"
 services:
   postgres:
     container_name: postgres
-    image: postgres:latest
+    image: postgres:16.1
     env_file:
       - .env
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      # Optional: Give a name to the database, otherwise
-      # use the default value POSTGRES_USER as a database name (user in this case.)
     ports:
       - "5432:5432"
     volumes: 
       - dbdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql 
 
   go:
     container_name: go
-    # build the Dockerfile, alternatively use an image.
     build:
       context: ./go
     depends_on:
