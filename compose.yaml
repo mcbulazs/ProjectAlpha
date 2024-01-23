@@ -28,7 +28,17 @@ services:
       - 3000:3000
     env_file:
       - .env
-
+  angular:
+    container_name: angular
+    build:
+      context: ./angular
+    ports:
+      - 4200:4200
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./angular.json:/usr/src/app/angular.json
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
 volumes:
   dbdata: # create the volume for persisting data.
             
