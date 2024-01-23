@@ -19,9 +19,9 @@ services:
       - ./init-scripts:/docker-entrypoint-initdb.d
 
   go:
-    container_name: go
+    container_name: backend
     build:
-      context: ./go
+      context: /backend
     depends_on:
       - "postgres"
     ports:
@@ -29,16 +29,11 @@ services:
     env_file:
       - .env
   angular:
-    container_name: angular
+    container_name: frontend
     build:
-      context: ./angular
+      context: /frontend
     ports:
       - 4200:4200
-    volumes:
-      - ./src:/usr/src/app/src
-      - ./angular.json:/usr/src/app/angular.json
-      - ./package.json:/usr/src/app/package.json
-      - ./package-lock.json:/usr/src/app/package-lock.json
 volumes:
   dbdata: # create the volume for persisting data.
             
