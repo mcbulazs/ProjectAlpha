@@ -1,4 +1,4 @@
-module main
+module github.com/mcbulazs/ProjectAlpha
 
 go 1.19
 

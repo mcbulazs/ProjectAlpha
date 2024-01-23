@@ -1,21 +1,24 @@
-package main
+package controllers
 
 import (
 	"fmt"
 	"net/http"
 
+	db "github.com/mcbulazs/ProjectAlpha/DB"
+	"github.com/mcbulazs/ProjectAlpha/JSON"
+	"github.com/mcbulazs/ProjectAlpha/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func Controller_Users(w http.ResponseWriter, r *http.Request) {
-	//_, _ = ProcessSession(w, r)
 	switch r.Method {
 	case http.MethodGet:
 		result, err := GetAllUsers()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		SendJSON(w, result, nil, "users")
+		JSON.SendJSON(w, result, "users")
+
 	case http.MethodPost:
 		r.ParseMultipartForm(0)
 		err := AddUser(r.PostForm.Get("username"), r.PostForm.Get("email"), r.PostForm.Get("password"))
@@ -26,23 +29,16 @@ func Controller_Users(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type User struct {
-	Id       int    `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-func GetAllUsers() ([]User, error) {
-	rows, err := Context.Query("SELECT id, username FROM Users")
+func GetAllUsers() ([]models.UserModel, error) {
+	rows, err := db.Context.Query("SELECT id, username FROM Users")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	result := make([]User, 0)
+	result := make([]models.UserModel, 0)
 
-	var user User
+	var user models.UserModel
 	for rows.Next() {
 		err := rows.Scan(&user.Id, &user.Username)
 		if err != nil {
@@ -58,7 +54,7 @@ func AddUser(username string, email string, password string) error {
 	if err != nil {
 		return err
 	}
-	_, err = Context.Exec("INSERT INTO Users VALUES (default,default,$1, $2, $3)", username, email, string(encryptedPassword))
+	_, err = db.Context.Exec("INSERT INTO Users VALUES (default,default,$1, $2, $3)", username, email, string(encryptedPassword))
 	fmt.Println(err)
 	if err != nil {
 		return err
