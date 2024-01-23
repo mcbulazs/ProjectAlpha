@@ -27,14 +27,14 @@ func Controller_Users(w http.ResponseWriter, r *http.Request) {
 }
 
 type User struct {
-	Id       int    ``
-	Username string ``
-	Email    string ``
-	Password string ``
+	Id       int    `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func GetAllUsers() ([]User, error) {
-	rows, err := Context.Query("SELECT * FROM Users")
+	rows, err := Context.Query("SELECT id, username FROM Users")
 	if err != nil {
 		return nil, err
 	}
@@ -44,9 +44,13 @@ func GetAllUsers() ([]User, error) {
 
 	var user User
 	for rows.Next() {
-		rows.Scan(&user.Id, &user.Username)
+		err := rows.Scan(&user.Id, &user.Username)
+		if err != nil {
+			return nil, err
+		}
 		result = append(result, user)
 	}
+	fmt.Println(result)
 	return result, nil
 }
 func AddUser(username string, email string, password string) error {

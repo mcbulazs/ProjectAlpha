@@ -24,6 +24,7 @@ func NewError(errors *[]string, error string) {
 }
 
 func SendJSON(w http.ResponseWriter, obj any, errors *[]string, wrapper ...string) {
+
 	data, err := json.Marshal(obj)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -42,6 +43,7 @@ func SendJSON(w http.ResponseWriter, obj any, errors *[]string, wrapper ...strin
 		data = append(data, []byte(", \"errors\":"+string(errors_data))...)
 	}
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Write(data)
 }
 
