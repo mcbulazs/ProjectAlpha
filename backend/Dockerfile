@@ -14,6 +14,8 @@ RUN go mod download
 # Copy the rest of the application code
 COPY . .
 
+RUN chmod +x ./wait-for-it.sh
+
 RUN CGO_ENABLED=0 GOOS=linux go build -o app
 
 EXPOSE 3000

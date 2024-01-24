@@ -19,4 +19,6 @@ export class UserService {
     //return this.httpClient.get<User>(`${environment.backendURL}/users`);
     return of(this.user).pipe(delay(500));
   }
+
+  
 }

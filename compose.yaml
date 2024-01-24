@@ -21,7 +21,7 @@ services:
   go:
     container_name: backend
     build:
-      context: /backend
+      context: ./backend
     depends_on:
       - "postgres"
     ports:
@@ -31,7 +31,7 @@ services:
   angular:
     container_name: frontend
     build:
-      context: /frontend
+      context: ./frontend
     ports:
       - 4200:4200
     env_file:
