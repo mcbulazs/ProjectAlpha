@@ -1,3 +1,4 @@
 export interface User {
-    users: any[]
+    email: string
+    password: string
 }

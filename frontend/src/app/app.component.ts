@@ -16,14 +16,10 @@ export class AppComponent implements OnInit {
 
   constructor(private user: UserService) {}
 
-  userData: User = {
-    users: []
-  };
+  userData!: User;
 
   ngOnInit(): void {
     this.user.getUsers().subscribe(x => {
-      console.log(x);
-      
       this.userData = x;
     })
   }
