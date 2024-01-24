@@ -4,17 +4,21 @@ import (
 	"fmt"
 	"net/http"
 
+	db "ProjectAlpha/DB"
+	"ProjectAlpha/controllers"
+
+	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
-	db "github.com/mcbulazs/ProjectAlpha/DB"
-	"github.com/mcbulazs/ProjectAlpha/controllers"
 )
 
 func main() {
 	db.Init_db()
 	defer db.Context.Close()
 
-	http.HandleFunc("/users", controllers.Controller_Users)
+	r := mux.NewRouter()
+	controllers.ControllerInit(r)
+	http.Handle("/", r)
 	fmt.Println("Listening on port 3000 ...")
-	http.ListenAndServe(":"+fmt.Sprint(3000), nil)
 
+	http.ListenAndServe(":3000", nil)
 }

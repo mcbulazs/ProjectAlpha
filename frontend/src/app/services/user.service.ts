@@ -14,6 +14,6 @@ export class UserService {
   getUsers(): Observable<User> {
     console.log("getusers");
     
-    return this.httpClient.get<User>(`${environment.backendURL}/users`);
+    return this.httpClient.get<User>(`${environment.backendURL}/logout`);
   }
 }
