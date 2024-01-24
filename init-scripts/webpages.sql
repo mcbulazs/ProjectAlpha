@@ -2,7 +2,7 @@
 CREATE TABLE webpages (
     Id SERIAL PRIMARY KEY,
     Record_Log TIMESTAMP DEFAULT NULL,
-    Name varchar(255) NOT NULL DEFAULT "blank",
+    Name varchar(255) NOT NULL DEFAULT 'blank',
     Owner_Id int NOT NULL,
     Preset_Id int NOT NULL DEFAULT 1,
     Logo_Id int DEFAULT NULL
