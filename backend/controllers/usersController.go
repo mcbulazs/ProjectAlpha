@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/mail"
 
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/JSON"
@@ -78,11 +79,26 @@ func LoginUser(login *models.LoginModel) (int, error) {
 	}
 	return user_id, nil
 }
+func checkRegisterValidity(register *models.LoginModel) error {
+	_, err := mail.ParseAddress(register.Email)
+	if err != nil {
+		return err
+	}
+	if len(register.Password) < 8 {
+		return fmt.Errorf("invalid password format")
+	}
+	return nil
+}
+
 func RegisterUser(register *models.LoginModel) (int, error) {
 	//TODO: email verification
+	err := checkRegisterValidity(register)
+	if err != nil {
+		return 0, err
+	}
 	row := db.Context.QueryRow("SELECT id FROM Users where email=$1", register.Email)
 	var temp int
-	err := row.Scan(&temp)
+	err = row.Scan(&temp)
 	if err == nil {
 		return 0, fmt.Errorf("username taken")
 	} else if err != sql.ErrNoRows {
@@ -93,18 +109,15 @@ func RegisterUser(register *models.LoginModel) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	_, err = db.Context.Exec("INSERT INTO users (Email,Password) values ($1,$2)", register.Email, string(encryptedPW))
+	result, err := db.Context.Exec("INSERT INTO users (Email,Password) values ($1,$2)", register.Email, string(encryptedPW))
 	if err != nil {
 		return 0, err
 	}
-	row = db.Context.QueryRow("SELECT id FROM Users where email=$1", register.Email)
-
-	var user_id int
-	err = row.Scan(&user_id)
+	user_id, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
-	return user_id, nil
+	return int(user_id), nil
 	//creating session
 }
