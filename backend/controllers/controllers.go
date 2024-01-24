@@ -3,6 +3,7 @@ package controllers
 import (
 	"ProjectAlpha/functions"
 	"ProjectAlpha/middleware"
+	"net/http"
 
 	"github.com/gorilla/mux"
 )
@@ -15,7 +16,7 @@ func ControllerInit(r *mux.Router) {
 	r.HandleFunc("/register", Controller_Register).Methods("POST")
 	r.HandleFunc("/logout", Controller_Logout).Methods("GET")
 
-	r.HandleFunc("/auth", nil).Methods("GET")
+	r.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) { w.Write(nil) }).Methods("GET")
 
 	//webpage controllers
 	pageRouter := r.PathPrefix("/page").Subrouter()
