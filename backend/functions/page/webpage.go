@@ -8,6 +8,9 @@ import (
 )
 
 func CreateWebpage(userId int) (int, error) {
+	if userId == 1 {
+		return 0, nil
+	}
 	var webId int
 	row := db.Context.QueryRow("SELECT Id FROM webpages WHERE Owner_Id=$1", userId)
 

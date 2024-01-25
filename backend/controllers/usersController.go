@@ -60,7 +60,11 @@ func Controller_Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//creating session
-	sess.CreateSession(w, r, userId)
+	err = sess.CreateSession(w, r, userId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	JSON.SendJSON(w, "Register successful", "message")
 }
 
