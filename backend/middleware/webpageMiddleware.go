@@ -3,6 +3,7 @@ package middleware
 import (
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/functions"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -15,11 +16,11 @@ func CheckWebpageMiddleware(next http.Handler) http.Handler {
 
 		session, _ := functions.Store.Get(r, "session")
 
-		user_id, _ := session.Values["user_id"].(int)
-
-		row := db.Context.QueryRow("SELECT ownerId FROM webpage WHERE id=$1", id)
+		user_id := session.Values["user_id"]
+		row := db.Context.QueryRow("SELECT Owner_Id FROM webpages WHERE id=$1", id)
 		var ownerId int
 		err := row.Scan(&ownerId)
+
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -28,7 +29,7 @@ func CheckWebpageMiddleware(next http.Handler) http.Handler {
 			http.Error(w, "current user is not the owner of the site", http.StatusUnauthorized)
 			return
 		}
-
+		fmt.Println("webp middlware success")
 		next.ServeHTTP(w, r)
 	})
 }

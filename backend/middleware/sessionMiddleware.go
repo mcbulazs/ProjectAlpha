@@ -28,7 +28,7 @@ func SessionMiddleware(next http.Handler) http.Handler {
 			if !ok && r.URL.Path != "/auth" {
 				http.Error(w, "User not authenticated", http.StatusUnauthorized)
 				return
-			} else if !ok && r.URL.Path == "/auth" { //just to decide whetger the user have a session or not
+			} else if !ok && r.URL.Path == "/auth" { //just to decide whether the user have a session or not
 				w.Header().Set("Access-Control-Expose-Headers", "authenticated")
 				w.Header().Set("authenticated", "false")
 			} else if ok && r.URL.Path == "/auth" {

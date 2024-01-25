@@ -18,30 +18,20 @@ import (
 )
 
 func Controller_Login(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodPost:
-		{
-			var login models.LoginModel
-			err := json.NewDecoder(r.Body).Decode(&login)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			userId, err := LoginUser(&login)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			//creating session
-			sess.CreateSession(w, r, userId)
-			JSON.SendJSON(w, "Login successful", "message")
-		}
-	case http.MethodOptions:
-		{
-			w.Header().Set("Allow", "POST")
-			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		}
+	var login models.LoginModel
+	err := json.NewDecoder(r.Body).Decode(&login)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	userId, err := LoginUser(&login)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//creating session
+	sess.CreateSession(w, r, userId)
+	JSON.SendJSON(w, "Login successful", "message")
 }
 
 func Controller_Logout(w http.ResponseWriter, r *http.Request) {
@@ -58,33 +48,20 @@ func Controller_Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func Controller_Register(w http.ResponseWriter, r *http.Request) {
-	// Switchbe raktam a kérések kezelését, mivel szükség volt OPTIONS kérés kezelésére.
-	// POST kérések előtt küld a böngésző egy preflight kérést OPTIONS metódussal, amely előbb lekérdezi mit szabad
-	// Majd általánosítod, mert minden POST-hoz fog kelleni
-	switch r.Method {
-	case http.MethodPost:
-		{
-			var register models.LoginModel
-			err := json.NewDecoder(r.Body).Decode(&register)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			userId, err := RegisterUser(&register)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			//creating session
-			sess.CreateSession(w, r, userId)
-			JSON.SendJSON(w, "Register successful", "message")
-		}
-	case http.MethodOptions:
-		{
-			w.Header().Set("Allow", "POST")
-			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		}
+	var register models.LoginModel
+	err := json.NewDecoder(r.Body).Decode(&register)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	userId, err := RegisterUser(&register)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//creating session
+	sess.CreateSession(w, r, userId)
+	JSON.SendJSON(w, "Register successful", "message")
 }
 
 func LoginUser(login *models.LoginModel) (int, error) {

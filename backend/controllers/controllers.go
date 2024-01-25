@@ -11,6 +11,7 @@ import (
 func ControllerInit(r *mux.Router) {
 	functions.Init_allowed_origins()
 	r.Use(middleware.SessionMiddleware)
+	r.Use(middleware.OptionsMiddleware)
 	//user controllers
 	r.HandleFunc("/login", Controller_Login).Methods("POST", "OPTIONS")
 	r.HandleFunc("/register", Controller_Register).Methods("POST", "OPTIONS")
@@ -21,6 +22,6 @@ func ControllerInit(r *mux.Router) {
 	//webpage controllers
 	pageRouter := r.PathPrefix("/page").Subrouter()
 	pageRouter.Use(middleware.CheckWebpageMiddleware)
-	pageRouter.HandleFunc("/{id:[0-9]+}", Controller_Page_Post).Methods("POST")
+	pageRouter.HandleFunc("/{id:[0-9]+}", Controller_Page_Post).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/{id:[0-9]+}", Controller_Page_Get).Methods("GET")
 }

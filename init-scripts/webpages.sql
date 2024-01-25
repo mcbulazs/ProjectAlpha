@@ -5,8 +5,8 @@ CREATE TABLE webpages (
     Name varchar(255) NOT NULL DEFAULT 'blank',
     Owner_Id int NOT NULL,
     Preset_Id int NOT NULL DEFAULT 1,
-    Logo_Id int DEFAULT NULL,
-    Banner_ID int DEFAULT NULL
+    Logo_Id int not null DEFAULT 0,
+    Banner_ID int not null DEFAULT 0
 );
 
 
@@ -68,7 +68,7 @@ create table progress (
 create table raids (
     Id SERIAL PRIMARY KEY,
     Record_Log TIMESTAMP DEFAULT NULL,
-    ProgressId int NOT NULL,
+    Progress_Id int NOT NULL,
     Difficulty varchar(255) NOT NULL,
     Max int NOT NULL,
     Current int NOT NULL
