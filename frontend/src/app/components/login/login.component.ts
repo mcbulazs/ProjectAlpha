@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { User } from '../../services/user.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ import { User } from '../../services/user.interface';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   loginForm = new FormGroup({
     email: new FormControl(''),
@@ -21,10 +22,10 @@ export class LoginComponent {
 
   login() {
     this.authService.login(this.loginForm.value as User).subscribe({
-      next: x => console.log(x),
-      error: err => console.log(err)
-      
-      
+      next: res => {
+        this.router.navigate(['admin']);
+      },
+      error: () => this.loginForm.controls.password.reset()
     });
   }
 }

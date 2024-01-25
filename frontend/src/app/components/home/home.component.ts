@@ -19,9 +19,11 @@ export class HomeComponent implements OnInit {
   switch: boolean = false;
 
   ngOnInit(): void {
-    this.authService.isAuthenticated().subscribe(() => {
-      if (this.authService.isLoggedIn) {
-        this.router.navigate(['admin']);
+    this.authService.isAuthenticated().subscribe({
+      next: () => {
+        if (this.authService.isLoggedIn) {
+          this.router.navigate(['admin']);
+        }
       }
     });
   }

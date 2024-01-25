@@ -9,14 +9,7 @@ import { environment } from '../../environments/environment.development';
 })
 export class AuthService {
 
-  constructor(private httpClient: HttpClient) {
-    console.log("AuthService up");
-   }
-
-  user: User = {
-    email: "test@test.hu",
-    password: "hashedpw"
-  }
+  constructor(private httpClient: HttpClient) {}
 
   isLoggedIn: boolean = false;
 
@@ -36,21 +29,19 @@ export class AuthService {
   }
 
   login(user: User): Observable<any> {
-    console.log(user);
-    
     return this.httpClient.post(`${environment.backendURL}/login`, {
       email: user.email,
-      password: user.password
+      password: user.password,
     })
   }
 
-  logout(): Observable<boolean> {
-    return of(true).pipe(map(x => {
-      console.log("Logged out!");
-      
+  logout(): Observable<any> {
+    return this.httpClient.get(`${environment.backendURL}/logout`, {
+      withCredentials: true,
+    }).pipe(map(res => {
       this.isLoggedIn = false;
-      return x;
-    }))
+      return res;
+    }));
   }
   
 }

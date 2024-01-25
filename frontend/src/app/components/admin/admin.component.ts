@@ -14,8 +14,8 @@ export class AdminComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   logout() {
-    this.authService.logout().subscribe(() => {
-      this.router.navigate(['/']);
+    this.authService.logout().subscribe({
+      next: () => this.router.navigate(['/'])
     });
   }
 }

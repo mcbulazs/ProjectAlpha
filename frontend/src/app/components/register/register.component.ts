@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -11,7 +12,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 })
 export class RegisterComponent {
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   registerForm = new FormGroup({
     email: new FormControl(''),
@@ -21,8 +22,15 @@ export class RegisterComponent {
 
   register() {
     this.authService.register(this.registerForm.value).subscribe({
-      next: x => console.log("Register success:", x),
-      error: err => console.log("Register error:", err)
+      next: x => {
+        console.log("Register success:", x);
+        this.router.navigate(['admin']);
+      },
+      error: err => {
+        console.log("Register error:", err)
+        this.registerForm.controls.password.reset();
+        this.registerForm.controls.passwordConfirm.reset();
+      },
     });
   }
 }
