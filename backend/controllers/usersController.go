@@ -109,15 +109,15 @@ func RegisterUser(register *models.LoginModel) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	result, err := db.Context.Exec("INSERT INTO users (Email,Password) values ($1,$2)", register.Email, string(encryptedPW))
+	var user_id int
+	err = db.Context.QueryRow("INSERT INTO users (Email,Password) values ($1,$2) RETURNING  Id", register.Email, string(encryptedPW)).Scan(&user_id)
 	if err != nil {
 		return 0, err
 	}
-	user_id, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
-	return int(user_id), nil
+	return user_id, nil
 	//creating session
 }
