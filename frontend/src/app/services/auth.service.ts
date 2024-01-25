@@ -15,7 +15,7 @@ export class AuthService {
 
   isAuthenticated(): Observable<boolean> {
     if (this.isLoggedIn) return of(true);
-    return this.httpClient.get(`${environment.backendURL}/auth`, { observe: 'response' }).pipe(
+    return this.httpClient.get(`${environment.backendURL}/auth`, { observe: 'response', withCredentials: true }).pipe(
       map(res => this.isLoggedIn = res.headers.get('authenticated') === 'true')
     );
   }
@@ -25,6 +25,8 @@ export class AuthService {
       email: user.email,
       password: user.password,
       passwordconfirm: user.passwordConfirm,
+    }, {
+      withCredentials: true
     })
   }
 
@@ -32,6 +34,8 @@ export class AuthService {
     return this.httpClient.post(`${environment.backendURL}/login`, {
       email: user.email,
       password: user.password,
+    }, {
+      withCredentials: true
     })
   }
 
