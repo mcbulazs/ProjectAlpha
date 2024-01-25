@@ -1,0 +1,7 @@
+<form [formGroup]="loginForm">
+    <label for="email">Email</label>
+    <input type="email" autocomplete="email" formControlName="email" id="email">
+    <label for="password">Password</label>
+    <input type="password" autocomplete="current-password" formControlName="password" id="password">
+    <button (click)="login()">Login</button>
+</form>

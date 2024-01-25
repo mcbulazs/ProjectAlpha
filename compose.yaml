@@ -28,14 +28,15 @@ services:
       - 3000:3000
     env_file:
       - .env
-  angular:
-    container_name: frontend
-    build:
-      context: ./frontend
-    ports:
-      - 4200:4200
-    env_file:
-      - .env
+  #! Kiszedtem amíg nincs használva, így gyorsabb a compose
+  #angular:
+    #container_name: frontend
+    #build:
+      #context: ./frontend
+    #ports:
+      #- 4200:4200
+    #env_file:
+      #- .env
 volumes:
   dbdata: # create the volume for persisting data.
             

@@ -1,0 +1,11 @@
+<div class="titles">
+    <h1>MMO Forge</h1>
+    <h2>YOUR fast guild-website restaurant!</h2>
+</div>
+<div class="form-switch">
+    <button (click)="switchForms(false)" [className]="!switch ? 'switch-active' : ''">Login</button>
+    <div class="spacer"></div>
+    <button (click)="switchForms(true)" [className]="switch ? 'switch-active' : ''">Register</button>
+</div>
+<app-login *ngIf=" !switch"></app-login>
+<app-register *ngIf="switch"></app-register>

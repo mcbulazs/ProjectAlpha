@@ -1,0 +1,46 @@
+:host {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.titles {
+    text-align: center;
+}
+
+.authenticated {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-switch {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.form-switch button {
+    padding: 5px;
+    text-align: center;
+    font-size: larger;
+    width: 90px;
+    background-color: unset;
+    border: unset;
+    color: #eee;
+    cursor: pointer;
+}
+
+.switch-active {
+    border-bottom: 1px solid #eee!important;
+}
+
+.spacer {
+    width: 2px;
+    background-color: #eee;
+}

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"ProjectAlpha/functions"
+	"fmt"
 	"net/http"
 	"slices"
 )
@@ -13,6 +14,7 @@ func SessionMiddleware(next http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 		origin := r.Header.Get("Origin")
+		fmt.Println(r.Method, "from", origin, "on", r.URL) //! DEBUG
 		if slices.Contains(functions.AllowedOrigins, origin) {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 		}
@@ -27,8 +29,10 @@ func SessionMiddleware(next http.Handler) http.Handler {
 				http.Error(w, "User not authenticated", http.StatusUnauthorized)
 				return
 			} else if !ok && r.URL.Path == "/auth" { //just to decide whetger the user have a session or not
+				w.Header().Set("Access-Control-Expose-Headers", "authenticated")
 				w.Header().Set("authenticated", "false")
 			} else if ok && r.URL.Path == "/auth" {
+				w.Header().Set("Access-Control-Expose-Headers", "authenticated")
 				w.Header().Set("authenticated", "true")
 			}
 		}

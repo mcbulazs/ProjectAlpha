@@ -1,0 +1,9 @@
+<form [formGroup]="registerForm">
+    <label for="email">Email</label>
+    <input type="email" autocomplete="email" formControlName="email" id="email">
+    <label for="password">Password</label>
+    <input type="password" autocomplete="new-password" formControlName="password" id="password">
+    <label for="password-confirm">Password</label>
+    <input type="password" autocomplete="new-password" formControlName="passwordConfirm" id="password-confirm">
+    <button (click)="register()">Register</button>
+</form>

@@ -12,8 +12,8 @@ func ControllerInit(r *mux.Router) {
 	functions.Init_allowed_origins()
 	r.Use(middleware.SessionMiddleware)
 	//user controllers
-	r.HandleFunc("/login", Controller_Login).Methods("POST")
-	r.HandleFunc("/register", Controller_Register).Methods("POST")
+	r.HandleFunc("/login", Controller_Login).Methods("POST", "OPTIONS")
+	r.HandleFunc("/register", Controller_Register).Methods("POST", "OPTIONS")
 	r.HandleFunc("/logout", Controller_Logout).Methods("GET")
 
 	r.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) { w.Write(nil) }).Methods("GET")
