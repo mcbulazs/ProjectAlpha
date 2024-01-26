@@ -22,9 +22,8 @@ export class AuthService {
 
   register(user: any) {
     return this.httpClient.post(`${environment.backendURL}/register`, {
-      email: user.email,
+      email: user.email.toLowerCase(),
       password: user.password,
-      passwordconfirm: user.passwordConfirm,
     }, {
       withCredentials: true
     })
@@ -32,7 +31,7 @@ export class AuthService {
 
   login(user: User): Observable<any> {
     return this.httpClient.post(`${environment.backendURL}/login`, {
-      email: user.email,
+      email: user.email.toLowerCase(),
       password: user.password,
     }, {
       withCredentials: true

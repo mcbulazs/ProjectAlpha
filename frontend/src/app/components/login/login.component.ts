@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { User } from '../../services/user.interface';
 import { Router } from '@angular/router';
-import { LoginValidator } from './login.validator';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +13,7 @@ import { LoginValidator } from './login.validator';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  constructor(private authService: AuthService, private router: Router, private loginValidator: LoginValidator) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   loginFail = {
     occured: false,
@@ -37,8 +36,6 @@ export class LoginComponent {
 
   login() {
     if (this.loginForm.valid) {
-      console.log("valid");
-      
       this.authService.login(this.loginForm.value as User).subscribe({
         next: res => {
           this.router.navigate(['admin']);

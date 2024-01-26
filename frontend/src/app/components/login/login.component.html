@@ -1,4 +1,4 @@
-<form [formGroup]="loginForm" (submit)="login()">
+<form [formGroup]="loginForm" (submit)="login()" class="auth-form">
     <div class="errors">
         <div *ngIf="email?.invalid && (email?.dirty || email?.touched)">
             <span>{{email?.errors?.["required"] ? "Email is required" : ""}}</span>
@@ -11,8 +11,8 @@
         <span *ngIf="loginFail.occured && password?.pristine && email?.pristine">{{loginFail.message}}</span>
     </div>
     <label for="email">Email</label>
-    <input type="email" autocomplete="email" formControlName="email" id="email">
+    <span class="input-row"><input type="email" autocomplete="email" formControlName="email" id="email"><span class="tick" *ngIf="email?.valid">✓</span></span>
     <label for="password">Password</label>
-    <input type="password" autocomplete="current-password" formControlName="password" id="password">
+    <span class="input-row"><input type="password" autocomplete="current-password" formControlName="password" id="password"><span class="tick" *ngIf="password?.valid">✓</span></span>
     <button type="submit" [disabled]="loginForm.pristine || loginForm.invalid">Login</button>
 </form>

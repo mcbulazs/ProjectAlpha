@@ -1,9 +1,23 @@
-<form [formGroup]="registerForm">
+<form [formGroup]="registerForm" (submit)="register()" class="auth-form">
+    <div class="errors">
+        <div *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+            <span>{{email?.errors?.["required"] ? "Email is required" : ""}}</span>
+            <span>{{email?.errors?.["email"] ? "Email format is invalid" : ""}}</span>
+        </div>
+        <div *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+            <span >{{password?.errors?.["required"] ? "Password is required" : ""}}</span>
+            <span>{{password?.errors?.["minlength"] ? "Password is too short" : ""}}</span>
+        </div>
+        <span>{{passwordConfirm?.errors?.["match"] === false && password?.valid ? "Passwords must match" : ""}}</span>
+        <span *ngIf="registerFail.occured && password?.pristine && email?.pristine">{{registerFail.message}}</span>
+        <span *ngIf="acceptRules?.dirty && acceptRules?.invalid">You must accept the rules</span>
+    </div>
     <label for="email">Email</label>
-    <input type="email" autocomplete="email" formControlName="email" id="email">
+    <span class="input-row"><input type="email" autocomplete="email" formControlName="email" id="email"><span class="tick" *ngIf="email?.valid">✓</span></span>
     <label for="password">Password</label>
-    <input type="password" autocomplete="new-password" formControlName="password" id="password">
+    <span class="input-row"><input type="password" autocomplete="new-password" formControlName="password" id="password"><span class="tick" *ngIf="password?.valid">✓</span></span>
     <label for="password-confirm">Password</label>
-    <input type="password" autocomplete="new-password" formControlName="passwordConfirm" id="password-confirm">
-    <button (click)="register()">Register</button>
+    <span class="input-row"><input type="password" autocomplete="new-password" formControlName="passwordConfirm" id="password-confirm"><span class="tick" *ngIf="password?.valid && passwordConfirm?.valid">✓</span></span>
+    <span class="input-row"><label for="rules">I accept the <a routerLink="rules" class="link">rules</a></label><input type="checkbox" formControlName="acceptRules" id="rules"></span>
+    <button type="submit" [disabled]="registerForm.pristine || registerForm.invalid">Register</button>
 </form>
