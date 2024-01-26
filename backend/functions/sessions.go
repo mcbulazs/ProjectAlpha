@@ -33,7 +33,6 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userId int) error {
 	if err != nil {
 		return err
 	}
-	//! Nem ad sütit
 	session, _ := Store.Get(r, "session")
 	session.Values["user_id"] = userId
 	session.Values["web_id"] = web_id
@@ -45,4 +44,16 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userId int) error {
 	fmt.Println(session.Options)
 	session.Save(r, w)
 	return nil
+}
+func GetWebId(r *http.Request) (int, error) {
+	session, err := Store.Get(r, "session")
+	if err != nil {
+		return 0, err
+	}
+	web_id := -1
+	web_id, ok := session.Values["web_id"].(int)
+	if !ok {
+		return 0, fmt.Errorf("web_id not int in session")
+	}
+	return web_id, nil
 }

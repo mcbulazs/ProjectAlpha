@@ -3,7 +3,6 @@ package controllers
 import (
 	"ProjectAlpha/functions"
 	"ProjectAlpha/middleware"
-	"net/http"
 
 	"github.com/gorilla/mux"
 )
@@ -17,11 +16,13 @@ func ControllerInit(r *mux.Router) {
 	r.HandleFunc("/register", Controller_Register).Methods("POST", "OPTIONS")
 	r.HandleFunc("/logout", Controller_Logout).Methods("GET")
 
-	r.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) { w.Write(nil) }).Methods("GET")
+	r.HandleFunc("/auth", Controller_Auth).Methods("GET")
 
 	//webpage controllers
-	pageRouter := r.PathPrefix("/page").Subrouter()
+	pageRouter := r.PathPrefix("/page/{webId:[0-9]+}").Subrouter()
 	pageRouter.Use(middleware.CheckWebpageMiddleware)
-	pageRouter.HandleFunc("/{id:[0-9]+}", Controller_Page_Post).Methods("POST", "OPTIONS")
-	pageRouter.HandleFunc("/{id:[0-9]+}", Controller_Page_Get).Methods("GET")
+	pageRouter.HandleFunc("", Controller_Page_Get).Methods("GET")
+	pageRouter.HandleFunc("/articles", Controller_Page_Articles_Save).Methods("POST", "OPTIONS")
+	pageRouter.HandleFunc("/articles/{Id:[0-9]+}", Controller_Page_Articles_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+
 }

@@ -13,7 +13,7 @@ func CheckWebpageMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			vars := mux.Vars(r)
-			id := vars["id"]
+			id := vars["webId"]
 
 			session, _ := functions.Store.Get(r, "session")
 

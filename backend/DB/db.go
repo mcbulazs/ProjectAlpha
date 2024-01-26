@@ -30,3 +30,27 @@ func Init_db() {
 	Context = db
 	fmt.Println("Successfully connected to the database")
 }
+
+func BeginTransaction() (*sql.Tx, func(), error) {
+	tx, err := Context.Begin()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	commitOrRollback := func() {
+		// Defer a function to check for errors and commit or rollback accordingly
+		if err != nil {
+			// An error occurred, rollback the transaction
+			fmt.Println("Rolling back transaction due to error:", err)
+			tx.Rollback()
+		} else {
+			// No errors, commit the transaction
+			err := tx.Commit()
+			if err != nil {
+				fmt.Println("Error committing transaction:", err)
+			}
+		}
+	}
+
+	return tx, commitOrRollback, nil
+}

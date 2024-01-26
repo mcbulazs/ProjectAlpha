@@ -23,19 +23,21 @@ CREATE TABLE articles (
     Id SERIAL PRIMARY KEY,
     Record_Log TIMESTAMP DEFAULT NULL,
     WebId int NOT NULL,
-    Title varchar(255) NOT NULL default '',
+    Title varchar(255) NOT NULL DEFAULT '',
     Date TIMESTAMP ,
-    Content varchar NOT NULL default ''
+    Content varchar NOT NULL DEFAULT ''
 );
+CREATE INDEX idx_articles_webId ON articles (webId);
 
 --recruitment
 CREATE TABLE recruitment (
     Id SERIAL PRIMARY KEY,
     Record_Log TIMESTAMP DEFAULT NULL,
     WebId int NOT NULL,
-    Class varchar(255) NOT NULL default 'any',
-    Subclass varchar(255) NOT NULL default 'any'
+    Class varchar(255) NOT NULL DEFAULT 'any',
+    Subclass text[] NOT NULL DEFAULT ARRAY['any']
 );
+CREATE INDEX idx_recruitment_webId ON recruitment (webId);
 
 --navbar
 CREATE TABLE navbar (
@@ -46,6 +48,7 @@ CREATE TABLE navbar (
     Path varchar(255) NOT NULL,
     Ranking int NOT NULL
 );
+CREATE INDEX idx_navbar_webId ON navbar (webId);
 
 --twitch/youtube
 create table channels (
@@ -56,6 +59,7 @@ create table channels (
     Name varchar(255) NOT NULL,
     Link varchar(255) NOT NULL
 );
+CREATE INDEX idx_channels_webId ON channels (webId);
 
 --progress / raids
 create table progress (
@@ -64,6 +68,7 @@ create table progress (
     WebId int NOT NULL,
     Name varchar(255) NOT NULL
 );
+CREATE INDEX idx_progress_webId ON progress (webId);
 
 create table raids (
     Id SERIAL PRIMARY KEY,
@@ -73,6 +78,7 @@ create table raids (
     Max int NOT NULL,
     Current int NOT NULL
 );
+CREATE INDEX idx_raids_webId ON raids (Progress_Id);
 
 --calendar
 create table calendar (
@@ -83,5 +89,5 @@ create table calendar (
     Date TIMESTAMP NOT NULL,
     Type varchar(255)
 );
-
+CREATE INDEX idx_calendar_webId ON calendar (webId);
 

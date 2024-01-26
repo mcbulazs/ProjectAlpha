@@ -9,6 +9,7 @@ import (
 
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/JSON"
+	"ProjectAlpha/functions"
 	sess "ProjectAlpha/functions"
 	"ProjectAlpha/models"
 
@@ -25,10 +26,14 @@ func Controller_Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	userId, err := LoginUser(&login)
-	if err != nil {
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		JSON.SendJSON(w, "true", "mismatch")
+		return
+	} else if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	//creating session
 	sess.CreateSession(w, r, userId)
 	JSON.SendJSON(w, "Login successful", "message")
@@ -75,11 +80,11 @@ func LoginUser(login *models.LoginModel) (int, error) {
 	var user_id int
 	err := row.Scan(&user_id, &hash)
 	if err != nil {
-		return 0, &models.LoginFailed{}
+		return 0, bcrypt.ErrMismatchedHashAndPassword
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(login.Password))
 	if err != nil {
-		return 0, &models.LoginFailed{}
+		return 0, err
 	}
 	return user_id, nil
 }
@@ -124,4 +129,12 @@ func RegisterUser(register *models.LoginModel) (int, error) {
 
 	return user_id, nil
 	//creating session
+}
+func Controller_Auth(w http.ResponseWriter, r *http.Request) {
+	id, err := functions.GetWebId(r)
+	if err != nil {
+		JSON.SendJSON(w, nil, "webid")
+		return
+	}
+	JSON.SendJSON(w, id, "webid")
 }
