@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { User } from '../../services/user.interface';
 import { Router } from '@angular/router';
+import { LoginValidator } from './login.validator';
 
 @Component({
   selector: 'app-login',
@@ -13,19 +14,49 @@ import { Router } from '@angular/router';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private loginValidator: LoginValidator) {}
+
+  loginFail = {
+    occured: false,
+    message: "Invalid credentials"
+  }
+
 
   loginForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl(''),
+    email: new FormControl('', {
+      validators: [
+        Validators.required, Validators.email
+      ]
+    }),
+    password: new FormControl('', {
+      validators: [
+        Validators.required, Validators.minLength(8)
+      ]
+    }),
   });
 
   login() {
-    this.authService.login(this.loginForm.value as User).subscribe({
-      next: res => {
-        this.router.navigate(['admin']);
-      },
-      error: () => this.loginForm.controls.password.reset()
-    });
+    if (this.loginForm.valid) {
+      console.log("valid");
+      
+      this.authService.login(this.loginForm.value as User).subscribe({
+        next: res => {
+          this.router.navigate(['admin']);
+        },
+        error: () => {
+          this.loginForm.controls.password.reset();
+          this.loginForm.controls.email.markAsPristine({onlySelf: true});
+          this.loginFail.occured = true;
+        }
+      });
+    }
+  }
+
+  get email() {
+    return this.loginForm.get("email");
+  }
+
+  get password() {
+    return this.loginForm.get("password");
   }
 }

@@ -1,7 +1,18 @@
-<form [formGroup]="loginForm">
+<form [formGroup]="loginForm" (submit)="login()">
+    <div class="errors">
+        <div *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+            <span>{{email?.errors?.["required"] ? "Email is required" : ""}}</span>
+            <span>{{email?.errors?.["email"] ? "Email format is invalid" : ""}}</span>
+        </div>
+        <div *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+            <span >{{password?.errors?.["required"] ? "Password is required" : ""}}</span>
+            <span>{{password?.errors?.["minlength"] ? "Password is too short" : ""}}</span>
+        </div>
+        <span *ngIf="loginFail.occured && password?.pristine && email?.pristine">{{loginFail.message}}</span>
+    </div>
     <label for="email">Email</label>
     <input type="email" autocomplete="email" formControlName="email" id="email">
     <label for="password">Password</label>
     <input type="password" autocomplete="current-password" formControlName="password" id="password">
-    <button (click)="login()">Login</button>
+    <button type="submit" [disabled]="loginForm.pristine || loginForm.invalid">Login</button>
 </form>

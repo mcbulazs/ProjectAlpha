@@ -1,11 +1,15 @@
-<div class="titles">
-    <h1>MMO Forge</h1>
-    <h2>YOUR fast guild-website restaurant!</h2>
+<h1 style="position: absolute; top: 50px; font-size: 100px;">DESIGN IS PLACEHOLDER</h1>
+<div class="home">
+    <div class="titles">
+        <h1>McSolutions'</h1>
+        <h2>YOUR fast guild-website restaurant!</h2>
+    </div>
+    <div class="form-switch">
+        <button (click)="switchForms(false)">Login</button>
+        <div class="spacer"></div>
+        <button (click)="switchForms(true)">Register</button>
+        <div [ngClass]="['underline', (switch ? 'underline-register' : 'underline-login')]"></div>
+    </div>
+    <app-login *ngIf="!switch"></app-login>
+    <app-register *ngIf="switch"></app-register>
 </div>
-<div class="form-switch">
-    <button (click)="switchForms(false)" [className]="!switch ? 'switch-active' : ''">Login</button>
-    <div class="spacer"></div>
-    <button (click)="switchForms(true)" [className]="switch ? 'switch-active' : ''">Register</button>
-</div>
-<app-login *ngIf=" !switch"></app-login>
-<app-register *ngIf="switch"></app-register>
