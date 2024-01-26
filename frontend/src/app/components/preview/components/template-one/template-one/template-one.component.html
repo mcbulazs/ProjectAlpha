@@ -1,0 +1,44 @@
+<header [style.background-image]="'url('+data.banner+')'">
+    <div class="titles">
+        <img [src]="data.logo" class="logo">
+        <h1 class="title">{{data.sitename}}</h1>
+    </div>
+
+    <div class="menubar">
+        <div class="menu-item" *ngFor="let item of data.menu; index as i">
+            <a href="">{{item | uppercase}}</a>
+            <div class="spacer" *ngIf="i < data.menu.length-1"></div>
+        </div>
+    </div>
+</header>
+<div class="content">
+    <article>
+        <div class="article" *ngFor="let article of data.articles">
+            <div class="article-header">
+                <h2>{{article.title}}</h2>
+                <span class="article-date">Posted on {{article.created | date}}</span>
+            </div>
+            <div class="article-body">
+                <p class="article-content">{{article.content}}</p>
+            </div>
+        </div>
+    </article>
+    <div class="sidebar">
+        <div class="tgf">
+            <h2 class="tgf-title">Recruiting</h2>
+            <div class="tgf-icons">
+                <img *ngFor="let icon of data.tgf" class="tgf-icon" [src]="'https://wow.zamimg.com/images/wow/icons/large/classicon_'+icon+'.jpg'">
+            </div>
+        </div>
+        <div class="progresses">
+            <h2 class="progress-title">Progress</h2>
+            <div *ngFor="let item of data.progress" class="progress">
+                <span>{{item.raid}}</span>
+                <span>{{item.progress}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <span>&copy; All rights reserved 2024</span>
+</footer>
