@@ -22,7 +22,26 @@ func ControllerInit(r *mux.Router) {
 	pageRouter := r.PathPrefix("/page/{webId:[0-9]+}").Subrouter()
 	pageRouter.Use(middleware.CheckWebpageMiddleware)
 	pageRouter.HandleFunc("", Controller_Page_Get).Methods("GET")
+
 	pageRouter.HandleFunc("/articles", Controller_Page_Articles_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/articles/{Id:[0-9]+}", Controller_Page_Articles_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+
+	pageRouter.HandleFunc("/recruitment", Controller_Page_Recruitment_Save).Methods("POST", "OPTIONS")
+	pageRouter.HandleFunc("/recruitment/{Id:[0-9]+}", Controller_Page_Recruitment_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+
+	pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Save).Methods("POST", "OPTIONS")
+	pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+
+	pageRouter.HandleFunc("/youtube", Controller_Page_Youtube_Save).Methods("POST", "OPTIONS")
+	pageRouter.HandleFunc("/youtube/{Id:[0-9]+}", Controller_Page_Youtube_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+
+	pageRouter.HandleFunc("/twitch", Controller_Page_Twitch_Save).Methods("POST", "OPTIONS")
+	pageRouter.HandleFunc("/twitch/{Id:[0-9]+}", Controller_Page_Twitch_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+
+	pageRouter.HandleFunc("/progress", Controller_Page_Progress_Save).Methods("POST", "OPTIONS")
+	pageRouter.HandleFunc("/progress/{Id:[0-9]+}", Controller_Page_Twitch_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+
+	pageRouter.HandleFunc("/calendar", Controller_Page_Calendar_Save).Methods("POST", "OPTIONS")
+	pageRouter.HandleFunc("/calendar/{Id:[0-9]+}", Controller_Page_Calendar_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
 }

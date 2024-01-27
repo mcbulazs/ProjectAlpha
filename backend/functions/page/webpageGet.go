@@ -141,15 +141,15 @@ func getRecruitment(webId int) ([]models.RecruitmentModel, error) {
 	return result, nil
 }
 
-func getNavbar(webId int) ([]models.Navbar, error) {
-	var result []models.Navbar = make([]models.Navbar, 0)
+func getNavbar(webId int) ([]models.NavItem, error) {
+	var result []models.NavItem = make([]models.NavItem, 0)
 	rows, err := db.Context.Query("SELECT Id, Name, Path, Ranking FROM navbar WHERE WebId=$1 ORDER BY Ranking", webId)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var navbar *models.Navbar
+		var navbar *models.NavItem
 		err = rows.Scan(&navbar.Id, &navbar.Name, &navbar.Path, &navbar.Order)
 		if err != nil {
 			return nil, err

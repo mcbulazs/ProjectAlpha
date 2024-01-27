@@ -3,7 +3,9 @@ package page
 import (
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/models"
+	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/lib/pq"
 )
@@ -24,47 +26,64 @@ func UpdateArticle(model models.ArticleModel) error {
 	return nil
 }
 
-func UpdateRecruitment(model []models.RecruitmentModel) error {
+func UpdateRecruitment(model models.RecruitmentModel) error {
 	tx, commitOrRollback, err := db.BeginTransaction()
 	if err != nil {
 		return nil
 	}
 	defer commitOrRollback()
 
-	for _, item := range model {
-		_, err := tx.Exec("UPDATE recruitment SET Class=$1, Subclass=ARRAY[$2] WHERE Id=$3", item.Class, pq.Array(item.Subclasses), item.Id)
-		if err != nil {
-			return err
-		}
+	_, err = tx.Exec("UPDATE recruitment SET Class=$1, Subclass=ARRAY[$2] WHERE Id=$3", model.Class, pq.Array(model.Subclasses), model.Id)
+	if err != nil {
+		return err
 	}
 	return nil
 }
 
-func UpdateNavbar(model []models.Navbar) error {
+func UpdateNavbar(model []models.NavItem, webId int) error {
+
 	tx, commitOrRollback, err := db.BeginTransaction()
 	if err != nil {
 		return nil
 	}
 	defer commitOrRollback()
+	//checking all ids
+	var navIds []int
+	for _, v := range model {
+		navIds = append(navIds, v.Id)
+	}
+	var placeholders []string
+	for _, i := range navIds {
+		placeholders = append(placeholders, fmt.Sprintf("$%d", i))
+	}
+	query := fmt.Sprintf("SELECT WebID FROM navbar WHERE Id IN (%s)", strings.Join(placeholders, ", "))
+	rows, err := tx.Query(query, navIds)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var webId_db int
+		err = rows.Scan(&webId_db)
+		if err != nil {
+			return err
+		}
+		if webId_db != webId {
+			return fmt.Errorf("invalid webid")
+		}
+	}
 
 	for _, item := range model {
+		slices.DeleteFunc(navIds, func(e int) bool { return e == item.Id })
 		_, err := tx.Exec("UPDATE navbar SET Name=$1, Path=$2, Ranking=$3 WHERE Id=$4", item.Name, item.Path, item.Order, item.Id)
 		if err != nil {
 			return err
 		}
 	}
-	return nil
-}
 
-func UpdateChannel(site string, model []models.ChannelModel) error {
-	tx, commitOrRollback, err := db.BeginTransaction()
-	if err != nil {
-		return nil
-	}
-	defer commitOrRollback()
-
-	for _, item := range model {
-		_, err := tx.Exec("UPDATE channels SET Type=$1, Name=$2, Link=$3 WHERE Id=$4", site, item.Name, item.Link, item.Id)
+	for _, Id := range navIds {
+		_, err := db.Context.Exec("DELETE FROM navbar WHERE id=$1", Id)
 		if err != nil {
 			return err
 		}
@@ -72,34 +91,45 @@ func UpdateChannel(site string, model []models.ChannelModel) error {
 	return nil
 }
 
-func UpdateProgress(model []models.ProgressModel) error {
+func UpdateChannel(site string, model models.ChannelModel) error {
 	tx, commitOrRollback, err := db.BeginTransaction()
 	if err != nil {
 		return nil
 	}
 	defer commitOrRollback()
 
-	for _, item := range model {
-		_, err := tx.Exec("UPDATE progress SET Name=$1 WHERE Id=$2", item.Name, item.Id)
+	_, err = tx.Exec("UPDATE channels SET Type=$1, Name=$2, Link=$3 WHERE Id=$4", site, model.Name, model.Link, model.Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateProgress(model models.ProgressModel) error {
+	tx, commitOrRollback, err := db.BeginTransaction()
+	if err != nil {
+		return nil
+	}
+	defer commitOrRollback()
+	_, err = tx.Exec("UPDATE progress SET Name=$1 WHERE Id=$2", model.Name, model.Id)
+	if err != nil {
+		return err
+	}
+	raidIds, err := getRaidIdsByProgressionId(model.Id)
+	if err != nil {
+		return err
+	}
+	for _, raid := range model.Raids {
+		slices.DeleteFunc(raidIds, func(e int) bool { return e == raid.Id })
+		_, err := tx.Exec("UPDATE raids SET Difficulty=$1, Max=$2, Current=$3 WHERE Id=$4", raid.Difficulty, raid.Max, raid.Current, raid.Id)
 		if err != nil {
 			return err
 		}
-		raidIds, err := getRaidIdsByProgressionId(item.Id)
+	}
+	for _, raidId := range raidIds {
+		err := DeleteRaid(raidId)
 		if err != nil {
 			return err
-		}
-		for _, raid := range item.Raids {
-			slices.DeleteFunc(raidIds, func(e int) bool { return e == raid.Id })
-			_, err := tx.Exec("UPDATE raids SET Difficulty=$1, Max=$2, Current=$3 WHERE Id=$4", raid.Difficulty, raid.Max, raid.Current, raid.Id)
-			if err != nil {
-				return err
-			}
-		}
-		for _, raidId := range raidIds {
-			err := DeleteRaid(raidId)
-			if err != nil {
-				return err
-			}
 		}
 	}
 	return nil

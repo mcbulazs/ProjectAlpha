@@ -48,7 +48,7 @@ func SaveRecruitment(webId int, recruits []models.RecruitmentModel) error {
 	return nil
 }
 
-func SaveNavbar(webId int, navbar []models.Navbar) error {
+func SaveNavbar(webId int, navbar []models.NavItem) error {
 	if len(navbar) == 0 {
 		return nil
 	}
