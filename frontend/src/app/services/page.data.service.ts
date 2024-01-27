@@ -4,7 +4,6 @@ import { PageData } from '../interfaces/page.data.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { AuthService } from './auth.service';
-import { PLACEHOLDER_DATA, getPlaceholders } from '../utility/utility';
 
 @Injectable({
   providedIn: 'root'
@@ -12,26 +11,45 @@ import { PLACEHOLDER_DATA, getPlaceholders } from '../utility/utility';
 export class PageDataService {
 
   devTool: Subject<number>;
-  placeholderLine: Subject<boolean>
+  hotline: Subject<boolean>;
 
   constructor(private httpClient: HttpClient, private authService: AuthService) {
     this.devTool = new Subject<number>;
-    this.placeholderLine = new Subject<boolean>;
+    this.hotline = new Subject<boolean>;
   }
 
   data: PageData | undefined;
+  localData: PageData = {
+    articles: [],
+    banner: { id: -1, path: "" },
+    calendar: [],
+    logo: { id: -1, path: ""},
+    navbar: [],
+    presetId: 0,
+    progress: [],
+    recruitment: [],
+    title: "",
+    twitch: [],
+    youtube: [],
+  }
 
-  usePlaceholders: boolean = false;
-
-  //TODO: implement viewPresetId based on presetId
+  usePlaceholders: boolean = true;
+  init = true;
 
   getData(): Observable<PageData> {
+    if (!this.init) return of(this.localData);
     return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.authService.webID}`, {
       withCredentials: true,
     }).pipe(map(res => {
       res.presetId = 0; //! DEFER REMOVE
+      res.title = "";
       this.data = res;
-      return res;
+      if (this.init) {
+        console.log("Overwritten");
+        this.localData = {...this.data!}
+        this.init = false;
+      }
+      return this.localData;
     }))
   }
 
@@ -43,13 +61,12 @@ export class PageDataService {
     this.devTool.next(n);
   }
 
-  // Notifying component of changing to placeholder data
   placeholderHotline(): Subject<boolean> {
-    return this.placeholderLine;
+    return this.hotline;
   }
 
   togglePlaceholders() {
     this.usePlaceholders = !this.usePlaceholders;
-    this.placeholderLine.next(this.usePlaceholders);
+    this.hotline.next(this.usePlaceholders);
   }
 }

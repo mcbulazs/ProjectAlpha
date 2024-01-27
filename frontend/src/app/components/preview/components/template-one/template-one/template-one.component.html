@@ -1,19 +1,19 @@
-<header [style.background-image]="'url('+data.banner.path+')'">
+<header [style.background-image]="'url('+(usePlaceholders && data.banner.path === '' ? PLACEHOLDERS.banner.path : data.banner.path)+')'">
     <div class="titles">
-        <img [src]="data.logo.path" class="logo">
-        <h1 class="title">{{data.title}}</h1>
+        <img [src]="usePlaceholders && data.logo.path === '' ? PLACEHOLDERS.logo.path : data.logo.path" class="logo">
+        <h1 class="title">{{usePlaceholders && data.title === '' ? PLACEHOLDERS.title : data.title}}</h1>
     </div>
 
     <div class="menubar">
-        <div class="menu-item" *ngFor="let item of data.navbar; index as i">
-            <a routerLink="item.path">{{item.name| uppercase}}</a>
-            <div class="spacer" *ngIf="i < data.navbar.length-1"></div>
+        <div class="menu-item" *ngFor="let item of usePlaceholders && data.navbar.length === 0 ? PLACEHOLDERS.navbar : data.navbar; index as i">
+            <a routerLink="item.path">{{item.name | uppercase}}</a>
+            <div class="spacer" *ngIf="i < (usePlaceholders && data.navbar.length === 0 ? PLACEHOLDERS.navbar.length-1 : data.navbar.length-1)"></div>
         </div>
     </div>
 </header>
 <div class="content">
     <article>
-        <div class="article" *ngFor="let article of data.articles">
+        <div class="article" *ngFor="let article of usePlaceholders && data.articles.length === 0 ? PLACEHOLDERS.articles : data.articles">
             <div class="article-header">
                 <h2>{{article.title}}</h2>
                 <span class="article-date">Posted on {{article.date | date}}</span>
@@ -24,17 +24,19 @@
         </div>
     </article>
     <div class="sidebar">
-        <div class="tgf" *ngIf="data.progress.length != 0">
+        <div class="tgf">
             <h2 class="tgf-title">Recruiting</h2>
             <div class="tgf-icons">
-                <img *ngFor="let item of data.recruitment" class="tgf-icon" [src]="'https://wow.zamimg.com/images/wow/icons/large/classicon_'+item.class+'.jpg'">
+                <img *ngFor="let item of usePlaceholders && data.recruitment.length === 0 ? PLACEHOLDERS.recruitment : data.recruitment" class="tgf-icon" [src]="'https://wow.zamimg.com/images/wow/icons/large/classicon_'+item.class+'.jpg'">
             </div>
         </div>
-        <div class="progresses" *ngIf="data.progress.length != 0">
+        <div class="progresses">
             <h2 class="progress-title">Progress</h2>
-            <div *ngFor="let item of data.progress" class="progress">
+            <div *ngFor="let item of usePlaceholders && data.progress.length === 0 ? PLACEHOLDERS.progress : data.progress" class="raid">
                 <span>{{item.name}}</span>
-                <span>{{item.raids | json}}</span>
+                <div *ngFor="let raid of item.raids">
+                    <span>{{raid.difficulty}} {{raid.current}} / {{raid.max}}</span>
+                </div>
             </div>
         </div>
     </div>

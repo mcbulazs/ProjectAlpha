@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgIterable, OnDestroy, OnInit } from '@angular/core';
 import { PageDataService } from '../../../../../services/page.data.service';
 import { PageData } from '../../../../../interfaces/page.data.interface';
 import { CommonModule } from '@angular/common';
-import { PLACEHOLDER_DATA, getPlaceholders } from '../../../../../utility/utility';
+import { PLACEHOLDER_DATA } from '../../../../../utility/utility';
 import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-template-one',
   standalone: true,
@@ -16,24 +17,31 @@ export class TemplateOneComponent implements OnInit, OnDestroy {
 
   data!: PageData;
 
-  placeholderSub!: Subscription;
+  PLACEHOLDERS = PLACEHOLDER_DATA;
+  usePlaceholders: boolean = true;
+  hotlineSub!: Subscription;
 
   ngOnInit(): void {
-    this.data = this.pds.data!;
-    if (this.pds.usePlaceholders) getPlaceholders(this.data);
-    this.placeholderSub = this.pds.placeholderHotline().subscribe(x => {
-      if (x) this.data = getPlaceholders(this.data);
-      else this.getPageData();
+    this.data = this.pds.localData;
+    this.usePlaceholders = this.pds.usePlaceholders;
+    this.pds.getData().subscribe(x => {
+      console.log("Template got");
+      this.data = x;
+    });
+    this.hotlineSub = this.pds.placeholderHotline().subscribe(x => {
+      this.usePlaceholders = x;
     });
   }
 
-  getPageData() {
-    this.pds.getData().subscribe(data => {
-      this.data = data;
-    })
+  ngOnDestroy(): void {
+    this.hotlineSub.unsubscribe();
   }
 
-  ngOnDestroy(): void {
-    this.placeholderSub.unsubscribe();
+  getDefault(field: string): string | any[] | NgIterable<any> {
+    console.log("call", field);
+    
+    let d = this.data as any
+    if (Array.isArray(d[field])) return d[field].length === 0 ? this.PLACEHOLDERS[field] : d[field]
+    return d[field] === '' ? this.PLACEHOLDERS[field] : d[field]
   }
 }

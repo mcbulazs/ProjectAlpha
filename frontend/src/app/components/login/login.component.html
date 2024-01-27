@@ -14,5 +14,8 @@
     <span class="input-row"><input type="email" autocomplete="email" formControlName="email" id="email"><span class="tick" *ngIf="email?.valid">✓</span></span>
     <label for="password">Password</label>
     <span class="input-row"><input type="password" autocomplete="current-password" formControlName="password" id="password"><span class="tick" *ngIf="password?.valid">✓</span></span>
-    <button type="submit" [disabled]="loginForm.pristine || loginForm.invalid">Login</button>
+    <div class="form-buttons">
+        <button type="submit" [disabled]="loginForm.pristine || loginForm.invalid">Login</button>
+        <button type="submit" (click)="devPass()" style="background-image: url('https://media0.giphy.com/media/yx400dIdkwWdsCgWYp/giphy.gif'); height: 50px; background-size: cover;"></button> <!--! DEFER REMOVE -->
+    </div>
 </form>

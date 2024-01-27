@@ -48,6 +48,13 @@ export class LoginComponent {
     }
   }
 
+  devPass() {
+    this.authService.login({
+      email: "a@a",
+      password: "password",
+    }).subscribe(x => this.router.navigate(['admin']));
+  }
+
   get email() {
     return this.loginForm.get("email");
   }

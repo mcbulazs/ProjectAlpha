@@ -2,10 +2,15 @@
     <p>admin works!</p>
     <button (click)="logout()">Logout</button>
     <button routerLink="/preview">Preview mode</button>
-    <span>Placeholders fill only empty fields and lists</span>
     <button (click)="togglePlaceholders()">Toggle placeholders</button>
-    <img src="https://media.tenor.com/u6bp4CE9JaMAAAAd/mr-bean-dance.gif">
-    <!-- <img src="https://media2.giphy.com/media/jQ9mAVH5VXwty/giphy.gif">
-    <img src="https://i.pinimg.com/originals/25/9b/7e/259b7ea44dc7efea54266b2e7466660e.gif"> -->
+    <form [formGroup]="general">
+        <label for="title">Title</label>
+        <input type="text" id="title" [(ngModel)]="localData.title" [ngModelOptions]="{standalone: true}">
+        <label for="logo">Logo</label>
+        <input type="text" id="logo" [(ngModel)]="localData.logo.path" [ngModelOptions]="{standalone: true}">
+        <label for="banner">Banner</label>
+        <input type="text" id="banner" [(ngModel)]="localData.banner.path" [ngModelOptions]="{standalone: true}">
+        <button (click)="addArticle()">New Article</button>
+    </form>
 </div>
 <app-preview></app-preview>

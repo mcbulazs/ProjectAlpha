@@ -55,6 +55,12 @@ export class RegisterComponent {
       },
     });
   }
+  devPass() { //! DEFER REMOVE
+    this.authService.register({
+      email: "a@a",
+      password: "password",
+    }).subscribe(x=>this.router.navigate(['admin']));
+  }
 
   get email() {
     return this.registerForm.get("email");

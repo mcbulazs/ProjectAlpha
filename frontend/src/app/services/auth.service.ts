@@ -20,7 +20,6 @@ export class AuthService {
     return this.httpClient.get<any>(`${environment.backendURL}/auth`, { withCredentials: true }).pipe(
       map(res => {
         if (res.webid) {
-          
           this.webID = res.webid;
           this.isLoggedIn = true;
           console.log("WebID:", this.webID);

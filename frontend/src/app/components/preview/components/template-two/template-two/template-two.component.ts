@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { PageData } from '../../../../../interfaces/page.data.interface';
 import { PageDataService } from '../../../../../services/page.data.service';
+import { PageData } from '../../../../../interfaces/page.data.interface';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
-import { getPlaceholders } from '../../../../../utility/utility';
+import { PLACEHOLDER_DATA } from '../../../../../utility/utility';
 
 @Component({
   selector: 'app-template-two',
@@ -17,24 +16,12 @@ export class TemplateTwoComponent implements OnInit {
 
   data!: PageData;
 
-  placeholderSub!: Subscription;
+  DEFAULT = PLACEHOLDER_DATA;
 
   ngOnInit(): void {
-    this.data = this.pds.data!;
-    if (this.pds.usePlaceholders) getPlaceholders(this.data);
-    this.placeholderSub = this.pds.placeholderHotline().subscribe(x => {
-      if (x) this.data = getPlaceholders(this.data);
-      else this.getPageData();
+    this.data = this.pds.localData;
+    this.pds.getData().subscribe(x => {
+      this.data = x;
     });
-  }
-
-  getPageData() {
-    this.pds.getData().subscribe(data => {
-      this.data = data;
-    })
-  }
-
-  ngOnDestroy(): void {
-    this.placeholderSub.unsubscribe();
   }
 }

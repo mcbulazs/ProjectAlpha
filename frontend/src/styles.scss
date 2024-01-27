@@ -81,3 +81,10 @@ html, body {
 .link {
     color: #eee;
 }
+
+.auth-form .form-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}

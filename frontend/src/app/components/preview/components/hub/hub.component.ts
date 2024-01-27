@@ -25,10 +25,12 @@ export class HubComponent implements AfterViewInit, OnDestroy {
   sub!: Subscription;
 
   ngAfterViewInit(): void {
-    this.pds.getData().subscribe(data => {
-      this.data = data;
-      this.setComponent(this.data.presetId)
+    this.data = this.pds.localData;
+    this.pds.getData().subscribe(x => {
+      console.log("Hub got");
+      this.data = x;
     })
+    this.setComponent(this.data.presetId);
     this.sub = this.pds.componentChangerDev().subscribe(x => {
       this.setComponent(x);
     });
