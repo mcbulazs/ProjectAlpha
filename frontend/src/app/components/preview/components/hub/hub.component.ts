@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ComponentRef, OnDestroy, ViewContainerRef, inject } from '@angular/core';
 import { COMPONENTS } from '../../components';
-import { DataService } from '../../../../services/data.service';
-import { Data } from '../../interfaces/data.interface';
+import { PageDataService } from '../../../../services/page.data.service';
+import { PageData } from '../../../../interfaces/page.data.interface';
 import { Subscription } from 'rxjs';
 import { DevtoolsComponent } from '../devtools/devtools.component';
 
@@ -16,31 +16,20 @@ import { DevtoolsComponent } from '../devtools/devtools.component';
 
 export class HubComponent implements AfterViewInit, OnDestroy {
 
-  constructor(private dataService: DataService) {}
+  constructor(private pds: PageDataService) {}
   
   vcr = inject(ViewContainerRef);
   ref!: ComponentRef<any>;
 
-  /* data: Data = {
-    articles: [],
-    component: 0,
-    logo: "",
-    menu: [],
-    tgf: false,
-    twitch: ""
-  }; */
-
-  data!: Data;
-
+  data!: PageData;
   sub!: Subscription;
 
   ngAfterViewInit(): void {
-    this.dataService.getData().subscribe(data => {
-      console.log("Got data!");
+    this.pds.getData().subscribe(data => {
       this.data = data;
-      this.setComponent(this.data.component)
+      this.setComponent(this.data.presetId)
     })
-    this.sub = this.dataService.componentChangerDev().subscribe(x => {
+    this.sub = this.pds.componentChangerDev().subscribe(x => {
       this.setComponent(x);
     });
   }

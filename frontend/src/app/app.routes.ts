@@ -9,6 +9,6 @@ export const routes: Routes = [
     { path: '', component: HomeComponent},
     { path: 'admin', component: AdminComponent, canActivate: [authGuard]},
     { path: 'rules', component: RulesComponent },
-    { path: 'preview', component: PreviewComponent },
+    { path: 'preview', component: PreviewComponent, canActivate: [authGuard]},
     { path: '**', redirectTo: '/'}
 ];

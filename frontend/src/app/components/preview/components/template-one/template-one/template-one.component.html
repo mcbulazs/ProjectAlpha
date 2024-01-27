@@ -1,13 +1,13 @@
-<header [style.background-image]="'url('+data.banner+')'">
+<header [style.background-image]="'url('+data.banner.path+')'">
     <div class="titles">
-        <img [src]="data.logo" class="logo">
-        <h1 class="title">{{data.sitename}}</h1>
+        <img [src]="data.logo.path" class="logo">
+        <h1 class="title">{{data.title}}</h1>
     </div>
 
     <div class="menubar">
-        <div class="menu-item" *ngFor="let item of data.menu; index as i">
-            <a href="">{{item | uppercase}}</a>
-            <div class="spacer" *ngIf="i < data.menu.length-1"></div>
+        <div class="menu-item" *ngFor="let item of data.navbar; index as i">
+            <a routerLink="item.path">{{item.name| uppercase}}</a>
+            <div class="spacer" *ngIf="i < data.navbar.length-1"></div>
         </div>
     </div>
 </header>
@@ -16,7 +16,7 @@
         <div class="article" *ngFor="let article of data.articles">
             <div class="article-header">
                 <h2>{{article.title}}</h2>
-                <span class="article-date">Posted on {{article.created | date}}</span>
+                <span class="article-date">Posted on {{article.date | date}}</span>
             </div>
             <div class="article-body">
                 <p class="article-content">{{article.content}}</p>
@@ -24,17 +24,17 @@
         </div>
     </article>
     <div class="sidebar">
-        <div class="tgf">
+        <div class="tgf" *ngIf="data.progress.length != 0">
             <h2 class="tgf-title">Recruiting</h2>
             <div class="tgf-icons">
-                <img *ngFor="let icon of data.tgf" class="tgf-icon" [src]="'https://wow.zamimg.com/images/wow/icons/large/classicon_'+icon+'.jpg'">
+                <img *ngFor="let item of data.recruitment" class="tgf-icon" [src]="'https://wow.zamimg.com/images/wow/icons/large/classicon_'+item.class+'.jpg'">
             </div>
         </div>
-        <div class="progresses">
+        <div class="progresses" *ngIf="data.progress.length != 0">
             <h2 class="progress-title">Progress</h2>
             <div *ngFor="let item of data.progress" class="progress">
-                <span>{{item.raid}}</span>
-                <span>{{item.progress}}</span>
+                <span>{{item.name}}</span>
+                <span>{{item.raids | json}}</span>
             </div>
         </div>
     </div>

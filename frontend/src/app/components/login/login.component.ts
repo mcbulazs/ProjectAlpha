@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { User } from '../../services/user.interface';
+import { User } from '../../interfaces/user.interface';
 import { Router } from '@angular/router';
 
 @Component({
@@ -38,12 +38,11 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value as User).subscribe({
         next: res => {
-          this.router.navigate(['admin']);
-        },
-        error: () => {
-          this.loginForm.controls.password.reset();
-          this.loginForm.controls.email.markAsPristine({onlySelf: true});
-          this.loginFail.occured = true;
+          if (res.mismatch) {
+            this.loginForm.controls.password.reset();
+            this.loginForm.controls.email.markAsPristine({onlySelf: true});
+            this.loginFail.occured = true;
+          } else this.router.navigate(['admin']);
         }
       });
     }

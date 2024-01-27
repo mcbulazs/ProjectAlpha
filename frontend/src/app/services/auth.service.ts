@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, delay, map, of, tap } from 'rxjs';
-import { User } from './user.interface';
+import { User } from '../interfaces/user.interface';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 
@@ -11,12 +11,23 @@ export class AuthService {
 
   constructor(private httpClient: HttpClient) {}
 
+  webID: number = -1;
+
   isLoggedIn: boolean = false;
 
   isAuthenticated(): Observable<boolean> {
     if (this.isLoggedIn) return of(true);
-    return this.httpClient.get(`${environment.backendURL}/auth`, { observe: 'response', withCredentials: true }).pipe(
-      map(res => this.isLoggedIn = res.headers.get('authenticated') === 'true')
+    return this.httpClient.get<any>(`${environment.backendURL}/auth`, { withCredentials: true }).pipe(
+      map(res => {
+        if (res.webid) {
+          
+          this.webID = res.webid;
+          this.isLoggedIn = true;
+          console.log("WebID:", this.webID);
+          return this.isLoggedIn = true;
+        }
+        return false;
+      })
     );
   }
 
@@ -43,6 +54,7 @@ export class AuthService {
       withCredentials: true,
     }).pipe(map(res => {
       this.isLoggedIn = false;
+      this.webID = -1
       return res;
     }));
   }

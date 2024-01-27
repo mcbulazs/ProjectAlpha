@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DataService } from '../../../../services/data.service';
+import { PageDataService } from '../../../../services/page.data.service';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './devtools.component.scss'
 })
 export class DevtoolsComponent {
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: PageDataService) {}
 
   setComponent(n: number) {
     this.dataService.sendComponentChange(n);

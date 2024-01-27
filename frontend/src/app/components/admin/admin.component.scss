@@ -1,0 +1,19 @@
+:host {
+    display: flex;
+    height: 100%;
+}
+
+.admin {
+    width: 50%;
+    height: 100%;
+    border-right: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+}
+
+app-preview {
+    width: 50%;
+    overflow-y: auto;
+}
