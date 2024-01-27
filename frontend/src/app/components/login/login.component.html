@@ -16,6 +16,6 @@
     <span class="input-row"><input type="password" autocomplete="current-password" formControlName="password" id="password"><span class="tick" *ngIf="password?.valid">✓</span></span>
     <div class="form-buttons">
         <button type="submit" [disabled]="loginForm.pristine || loginForm.invalid">Login</button>
-        <button type="submit" (click)="devPass()" style="background-image: url('https://media0.giphy.com/media/yx400dIdkwWdsCgWYp/giphy.gif'); height: 50px; background-size: cover;"></button> <!--! DEFER REMOVE -->
+        <button type="button" (click)="devPass()" style="background-image: url('https://media0.giphy.com/media/yx400dIdkwWdsCgWYp/giphy.gif'); height: 50px; background-size: cover;"></button> <!--! DEFER REMOVE -->
     </div>
 </form>

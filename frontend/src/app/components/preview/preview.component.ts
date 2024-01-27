@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HubComponent } from './components/hub/hub.component';
+import { HubComponent } from './templates/hub/hub.component';
 
 @Component({
   selector: 'app-preview',

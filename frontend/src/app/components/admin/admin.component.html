@@ -12,5 +12,6 @@
         <input type="text" id="banner" [(ngModel)]="localData.banner.path" [ngModelOptions]="{standalone: true}">
         <button (click)="addArticle()">New Article</button>
     </form>
+    {{localData.articles | json}}
 </div>
 <app-preview></app-preview>

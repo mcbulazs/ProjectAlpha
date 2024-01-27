@@ -1,10 +1,10 @@
 import { PageData } from "../interfaces/page.data.interface";
 
-export const PLACEHOLDER_DATA: any = {
+export const PLACEHOLDER_DATA: PageData = {
     title: "Site name",
     logo: {
         id: -1,
-        path: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Square_gray.svg/2048px-Square_gray.svg.png",
+        path: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtzLtm1ubtLwvLLvDmJOfu7pEjJAdPxKR_4j9ms4SplA&s",
     },
     articles: [
         {

@@ -17,3 +17,10 @@ app-preview {
     width: 50%;
     overflow-y: auto;
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 5px;
+}

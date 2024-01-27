@@ -3,7 +3,6 @@ import { Observable, Subject, map, of } from 'rxjs';
 import { PageData } from '../interfaces/page.data.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +12,12 @@ export class PageDataService {
   devTool: Subject<number>;
   hotline: Subject<boolean>;
 
-  constructor(private httpClient: HttpClient, private authService: AuthService) {
+  constructor(private httpClient: HttpClient) {
     this.devTool = new Subject<number>;
     this.hotline = new Subject<boolean>;
   }
 
+  webID!: number;
   data: PageData | undefined;
   localData: PageData = {
     articles: [],
@@ -38,7 +38,7 @@ export class PageDataService {
 
   getData(): Observable<PageData> {
     if (!this.init) return of(this.localData);
-    return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.authService.webID}`, {
+    return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`, {
       withCredentials: true,
     }).pipe(map(res => {
       res.presetId = 0; //! DEFER REMOVE
