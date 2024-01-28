@@ -19,8 +19,5 @@
     <label for="password-confirm">Password</label>
     <span class="input-row"><input type="password" autocomplete="new-password" formControlName="passwordConfirm" id="password-confirm"><span class="tick" *ngIf="password?.valid && passwordConfirm?.valid">✓</span></span>
     <span class="input-row"><label for="rules">I accept the <a routerLink="rules" target="_blank" class="link">rules</a></label><input type="checkbox" formControlName="acceptRules" id="rules"></span>
-    <div class="form-buttons">
-        <button type="submit" [disabled]="registerForm.pristine || registerForm.invalid">Register</button>
-        <button type="button" (click)="devPass()" style="background-image: url('https://media0.giphy.com/media/yx400dIdkwWdsCgWYp/giphy.gif'); height: 50px; background-size: cover;"></button> <!--! DEFER REMOVE -->
-    </div>
+    <button type="submit" [disabled]="registerForm.pristine || registerForm.invalid">Register</button>
 </form>

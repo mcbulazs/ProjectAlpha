@@ -6,7 +6,7 @@
 
     <div class="menubar">
         <div class="menu-item" *ngFor="let item of usePlaceholders && data.navbar.length === 0 ? PLACEHOLDERS.navbar : data.navbar; index as i">
-            <a routerLink="item.path">{{item.name | uppercase}}</a>
+            <a [routerLink]="item.path">{{item.name | uppercase}}</a>
             <div class="spacer" *ngIf="i < (usePlaceholders && data.navbar.length === 0 ? PLACEHOLDERS.navbar.length-1 : data.navbar.length-1)"></div>
         </div>
     </div>
@@ -16,7 +16,7 @@
         <div class="article" *ngFor="let article of usePlaceholders && data.articles.length === 0 ? PLACEHOLDERS.articles : data.articles">
             <div class="article-header">
                 <h2>{{article.title}}</h2>
-                <span class="article-date">Posted on {{article.date | date}}</span>
+                <span class="article-date">Posted on {{article.date | date:'yyyy.MM.dd, H:mm'}}</span>
             </div>
             <div class="article-body">
                 <p class="article-content">{{article.content}}</p>

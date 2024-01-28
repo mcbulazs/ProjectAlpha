@@ -45,7 +45,6 @@ export class PageDataService {
       res.title = "";
       this.data = res;
       if (this.init) {
-        console.log("Overwritten");
         this.localData = {...this.data!}
         this.init = false;
       }

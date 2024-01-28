@@ -13,7 +13,6 @@ import { DevtoolsComponent } from '../devtools/devtools.component';
   styleUrl: './hub.component.scss'
 })
 
-
 export class HubComponent implements AfterViewInit, OnDestroy {
 
   constructor(private pds: PageDataService) {}
@@ -27,7 +26,6 @@ export class HubComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.data = this.pds.localData;
     this.pds.getData().subscribe(x => {
-      console.log("Hub got");
       this.data = x;
     })
     this.setComponent(this.data.presetId);

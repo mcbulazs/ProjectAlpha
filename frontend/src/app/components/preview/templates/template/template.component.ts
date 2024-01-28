@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { PageData } from '../../../../interfaces/page.data.interface';
 import { PageDataService } from '../../../../services/page.data.service';
@@ -10,6 +10,7 @@ import { PLACEHOLDER_DATA } from '../../../../utility/utility';
   imports: [],
   template: '',
   styles: '',
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
 export abstract class TemplateComponent implements OnInit, OnDestroy {
   constructor(public pds: PageDataService) {}

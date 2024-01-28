@@ -1,14 +1,25 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { User } from '../../interfaces/user.interface';
 import { Router } from '@angular/router';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatButtonModule} from '@angular/material/button';
+import {ErrorStateMatcher} from '@angular/material/core';
+
+export class AuthErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatInputModule, MatFormFieldModule, MatButtonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -20,6 +31,7 @@ export class LoginComponent {
     message: "Invalid credentials"
   }
 
+  matcher = new AuthErrorStateMatcher();
 
   loginForm = new FormGroup({
     email: new FormControl('', {
@@ -46,13 +58,6 @@ export class LoginComponent {
         }
       });
     }
-  }
-
-  devPass() {
-    this.authService.login({
-      email: "a@a",
-      password: "password",
-    }).subscribe(x => this.router.navigate(['admin']));
   }
 
   get email() {
