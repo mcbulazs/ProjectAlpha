@@ -28,6 +28,20 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  devPass() {
+    this.authService.login({
+      email: "a@a",
+      password: "password",
+    }).subscribe(x => {
+      if (x.mismatch) {
+        this.authService.register({
+          email: "a@a",
+          password: "password",
+        }).subscribe(x=>this.router.navigate(['admin']));
+      } else this.router.navigate(['admin'])
+    });
+  }
+
   switchForms(mode: boolean) {
     this.switch = mode;
   }

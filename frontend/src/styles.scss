@@ -1,83 +1,20 @@
+@import "../node_modules/@angular/material/prebuilt-themes/indigo-pink.css";
+
 * {
     box-sizing: border-box;
 }
 
 html, body {
     display: flex;
-    padding: 0;
-    margin: 0;
     width: 100%;
     height: 100%;
-    background-color: #333;
-    color: #eee;
-    font-family: Arial, Helvetica, sans-serif;
 }
+
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .auth-form {
     display: flex;
     flex-direction: column;
-    gap: 5px;
     user-select: none;
-}
-
-.auth-form input {
-    padding: 5px;
-    font-size: large;
-}
-
-.auth-form label {
-    font-size: larger;
-}
-
-.auth-form button {
-    all: unset;
-    background-color: #eee;
-    color: #333;
-    padding: 10px;
-    width: 50px;
-    text-align: center;
-    margin: 0 auto;
-    border: 1px solid black;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 10px;
-}
-
-.auth-form button:hover {
-    background-color: #333;
-    color: #eee;
-}
-
-.auth-form button:disabled {
-    opacity: 50%;
-    cursor: default;
-}
-
-.auth-form button:disabled:hover {
-    background-color: #eee;
-    color: #333;
-}
-
-.auth-form .errors {
-    display: flex;
-    flex-direction: column;
-    color: red;
-}
-
-.input-row {
-    position: relative;
-    display: flex;
     align-items: center;
-    gap: 5px;
-}
-
-.tick {
-    color: greenyellow;
-    position: absolute;
-    right: -20px;
-    font-size: larger;
-}
-
-.link {
-    color: #eee;
 }

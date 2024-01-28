@@ -1,10 +1,10 @@
 import { PageData } from "../interfaces/page.data.interface";
 
-export const PLACEHOLDER_DATA: any = {
+export const PLACEHOLDER_DATA: PageData = {
     title: "Site name",
     logo: {
         id: -1,
-        path: "https://images.squarespace-cdn.com/content/v1/55fc0004e4b069a519961e2d/1442580137999-2IE5WSQSTZASOG6EMYR0/logo.gif?format=1000w",
+        path: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtzLtm1ubtLwvLLvDmJOfu7pEjJAdPxKR_4j9ms4SplA&s",
     },
     articles: [
         {
@@ -46,17 +46,35 @@ export const PLACEHOLDER_DATA: any = {
             name: "Aberrus",
             raids: [
                 {
+                    difficulty: "Mythic",
+                    max: 10,
+                    current: 7,
+                    id: -1,
+                },
+                {
                     difficulty: "Heroic",
                     max: 10,
                     current: 10,
                     id: -1,
                 },
+            ]
+        },
+        {
+            id: -1,
+            name: "Castle Nathria",
+            raids: [
                 {
-                    difficulty: "Mythic",
+                    difficulty: "Heroic",
                     max: 10,
-                    current: 7,
+                    current: 9,
                     id: -1,
-                }
+                },
+                {
+                    difficulty: "Normal",
+                    max: 10,
+                    current: 10,
+                    id: -1,
+                },
             ]
         }
     ],
@@ -93,7 +111,7 @@ export const PLACEHOLDER_DATA: any = {
     ]
 }
 
-export function getPlaceholders(data: PageData) {
+/* export function getPlaceholders(data: PageData) {
     console.log(data);
     let d = data as any;
     let key: keyof any;
@@ -108,5 +126,8 @@ export function getPlaceholders(data: PageData) {
     if (data.logo.path === "") {
         data.logo = PLACEHOLDER_DATA.logo;
     }
+    if (data.title === "") {
+        data.title = PLACEHOLDER_DATA.title;
+    }
     return data;
-}
+} */

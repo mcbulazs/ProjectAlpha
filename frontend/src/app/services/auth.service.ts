@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Observable, delay, map, of, tap } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { User } from '../interfaces/user.interface';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
+import { PageDataService } from './page.data.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private pds: PageDataService) {}
 
   webID: number = -1;
-
   isLoggedIn: boolean = false;
 
   isAuthenticated(): Observable<boolean> {
@@ -20,7 +20,6 @@ export class AuthService {
     return this.httpClient.get<any>(`${environment.backendURL}/auth`, { withCredentials: true }).pipe(
       map(res => {
         if (res.webid) {
-          
           this.webID = res.webid;
           this.isLoggedIn = true;
           console.log("WebID:", this.webID);
@@ -37,7 +36,7 @@ export class AuthService {
       password: user.password,
     }, {
       withCredentials: true
-    })
+    });
   }
 
   login(user: User): Observable<any> {
@@ -46,7 +45,7 @@ export class AuthService {
       password: user.password,
     }, {
       withCredentials: true
-    })
+    });
   }
 
   logout(): Observable<any> {
@@ -55,6 +54,7 @@ export class AuthService {
     }).pipe(map(res => {
       this.isLoggedIn = false;
       this.webID = -1
+      this.pds.init = true;
       return res;
     }));
   }
