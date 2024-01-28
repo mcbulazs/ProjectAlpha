@@ -4,10 +4,10 @@ import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { User } from '../../interfaces/user.interface';
 import { Router } from '@angular/router';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatButtonModule} from '@angular/material/button';
-import {ErrorStateMatcher} from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 export class AuthErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -24,12 +24,7 @@ export class AuthErrorStateMatcher implements ErrorStateMatcher {
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  constructor(private authService: AuthService, private router: Router) {}
-
-  loginFail = {
-    occured: false,
-    message: "Invalid credentials"
-  }
+  constructor(private authService: AuthService, private router: Router) { }
 
   matcher = new AuthErrorStateMatcher();
 
@@ -52,8 +47,7 @@ export class LoginComponent {
         next: res => {
           if (res.mismatch) {
             this.loginForm.controls.password.reset();
-            this.loginForm.controls.email.markAsPristine({onlySelf: true});
-            this.loginFail.occured = true;
+            this.loginForm.controls.email.markAsPristine({ onlySelf: true });
           } else this.router.navigate(['admin']);
         }
       });

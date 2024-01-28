@@ -1,7 +1,4 @@
 <form [formGroup]="loginForm" (submit)="login()" class="auth-form">
-    <div class="errors">
-        <span *ngIf="loginFail.occured && password?.pristine && email?.pristine">{{loginFail.message}}</span>
-    </div>
     <mat-form-field>
         <mat-label>Email</mat-label>
         <input matInput type="email" autocomplete="email" formControlName="email" id="email" [errorStateMatcher]="matcher">
