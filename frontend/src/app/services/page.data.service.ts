@@ -3,22 +3,20 @@ import { Observable, Subject, map, of } from 'rxjs';
 import { PageData } from '../interfaces/page.data.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
+import { Article } from '../interfaces/article.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PageDataService {
 
-  devTool: Subject<number>;
   hotline: Subject<boolean>;
-
-  constructor(private httpClient: HttpClient) {
-    this.devTool = new Subject<number>;
-    this.hotline = new Subject<boolean>;
-  }
-
+  usePlaceholders: boolean = true;
+  init = true;
+  
   webID!: number;
   data: PageData | undefined;
+  
   localData: PageData = {
     articles: [],
     banner: { id: -1, path: "" },
@@ -33,8 +31,9 @@ export class PageDataService {
     youtube: [],
   }
 
-  usePlaceholders: boolean = true;
-  init = true;
+  constructor(private httpClient: HttpClient) {
+    this.hotline = new Subject<boolean>;
+  }
 
   getData(): Observable<PageData> {
     if (!this.init) return of(this.localData);
@@ -52,14 +51,6 @@ export class PageDataService {
     }))
   }
 
-  componentChangerDev(): Subject<number> {
-    return this.devTool;
-  }
-
-  sendComponentChange(n: number) {    
-    this.devTool.next(n);
-  }
-
   placeholderHotline(): Subject<boolean> {
     return this.hotline;
   }
@@ -67,5 +58,11 @@ export class PageDataService {
   togglePlaceholders() {
     this.usePlaceholders = !this.usePlaceholders;
     this.hotline.next(this.usePlaceholders);
+  }
+
+  createArticle(article: Article): Observable<Article> {
+    return this.httpClient.post<Article>(`${environment.backendURL}/page/${this.webID}/articles`, article, {
+      withCredentials: true,
+    })
   }
 }

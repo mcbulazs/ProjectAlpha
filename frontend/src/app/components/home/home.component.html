@@ -4,12 +4,9 @@
         <h1>McSolutions'</h1>
         <h2>YOUR fast guild-website restaurant!</h2>
     </div>
-    <div class="form-switch">
-        <button (click)="switchForms(false)">Login</button>
-        <div class="spacer"></div>
-        <button (click)="switchForms(true)">Register</button>
-        <div [ngClass]="['underline', (switch ? 'underline-register' : 'underline-login')]"></div>
-    </div>
-    <app-login *ngIf="!switch"></app-login>
-    <app-register *ngIf="switch"></app-register>
+    <mat-tab-group dynamicHeight>
+        <mat-tab label="Login" class=""><app-login></app-login></mat-tab>
+        <mat-tab label="Register"><app-register></app-register></mat-tab>
+    </mat-tab-group>
 </div>
+<router-outlet name="admin"></router-outlet>

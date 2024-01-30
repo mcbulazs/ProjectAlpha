@@ -30,13 +30,13 @@ export const PLACEHOLDER_DATA: PageData = {
             id: -1,
             name: "Home",
             order: 0,
-            path: "/",
+            path: "",
         },
         {
             id: -1,
             name: "About",
             order: 1,
-            path: "/about",
+            path: "about",
         }
     ],
     presetId: 0,

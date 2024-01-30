@@ -1,50 +1,45 @@
-<div class="admin">
-    <mat-toolbar class="navigation" color="primary">
-        <div class="navigation-header">
-            <button mat-icon-button title="Menu" (click)="drawer.toggle()">
-                <mat-icon>menu</mat-icon>
-              </button>
-              <span>Admin</span>
-        </div>
-        <button mat-raised-button routerLink="/preview">Preview</button>
-        <span class="navigation-spacer"></span>
-        <button mat-icon-button (click)="logout()">
-            <mat-icon>logout</mat-icon>
-        </button>
-    </mat-toolbar>
+<div class="admin {{preview ? 'admin-hidden' : ''}}">
     <mat-drawer-container class="admin-container">
-        <mat-drawer mode="side" #drawer>
+        <mat-drawer mode="side" #drawer opened>
             <mat-list>
                 <mat-list-item>
-                    <button mat-button>General</button>
+                    <button mat-button routerLink="">General</button>
                 </mat-list-item>
-            </mat-list>
-            <mat-list>
                 <mat-list-item>
-                    <button mat-button>Articles</button>
+                    <button mat-button routerLink="articles">Articles</button>
+                </mat-list-item>
+                <mat-list-item>
+                    <button mat-button routerLink="recruitment">Recruitment</button>
+                </mat-list-item>
+                <mat-list-item>
+                    <button mat-button routerLink="progress">Progress</button>
+                </mat-list-item>
+                <mat-list-item>
+                    <button mat-button color="warn" routerLink="/rules">Danger zone</button>
                 </mat-list-item>
             </mat-list>
         </mat-drawer>
-        <mat-drawer-content class="admin-content">
-            <button (click)="togglePlaceholders()">Toggle placeholders</button>
-            <form [formGroup]="general">
-                <mat-form-field>
-                    <mat-label>Title</mat-label>
-                    <input matInput [(ngModel)]="localData.title" [ngModelOptions]="{standalone: true}">
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Logo</mat-label>
-                    <input matInput [(ngModel)]="localData.logo.path" [ngModelOptions]="{standalone: true}">
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Banner</mat-label>
-                    <input matInput [(ngModel)]="localData.banner.path" [ngModelOptions]="{standalone: true}">
-                </mat-form-field>
-            </form>
-            <button mat-raised-button color="primary" (click)="addArticle()">New article</button>
-            <button (click)="addArticle()">New Article</button>
-            {{localData.articles | json}}
+        <mat-drawer-content>
+            <mat-toolbar class="navigation" color="primary">
+                <div class="navigation-header">
+                    <button mat-icon-button title="Menu" (click)="drawer.toggle()">
+                        <mat-icon>menu</mat-icon>
+                      </button>
+                      <span>Admin</span>
+                </div>
+                <button mat-raised-button color="accent" (click)="togglePlaceholders()">Toggle placeholders</button>
+                <span class="navigation-spacer"></span>
+                <button mat-icon-button (click)="logout()">
+                    <mat-icon>logout</mat-icon>
+                </button>
+            </mat-toolbar>
+            <div class="admin-content">
+                <router-outlet></router-outlet>
+            </div>
         </mat-drawer-content>
       </mat-drawer-container>
 </div>
-<app-preview></app-preview>
+<app-preview class="{{preview ? 'preview-full' : ''}}"></app-preview>
+<button mat-fab color="primary" (click)="togglePreview()" class="btn-preview">
+    <mat-icon>fullscreen</mat-icon>
+</button>

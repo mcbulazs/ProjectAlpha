@@ -15,6 +15,7 @@
     align-items: center;
     background-color: #eee;
     color: #333;
+    user-select: none;
     padding: 20px;
     border-radius: 4px;
     box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, .2), 0px 24px 38px 3px rgba(0, 0, 0, .14), 0px 9px 46px 8px rgba(0, 0, 0, .12);
@@ -24,39 +25,6 @@
     text-align: center;
 }
 
-.form-switch {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 10px;
-    position: relative;
-}
-
-.form-switch button {
-    padding: 5px;
-    text-align: center;
-    font-size: larger;
-    width: 90px;
-    background-color: unset;
-    border: unset;
-    cursor: pointer;
-}
-
-.spacer {
-    width: 2px;
-    background-color: #333;
-}
-
-.underline {
-    background-color: #333;
-    width: 90px;
-    height: 1px;
-    position: absolute;
-    transition: all 0.2s;
-    bottom: 0;
-    left: 0;
-}
-
-.underline-register {
-    left: calc(100% - 90px);
+mat-tab-body {
+    overflow: hidden!important;
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, map, of } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { User } from '../interfaces/user.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
@@ -17,7 +17,9 @@ export class AuthService {
 
   isAuthenticated(): Observable<boolean> {
     if (this.isLoggedIn) return of(true);
-    return this.httpClient.get<any>(`${environment.backendURL}/auth`, { withCredentials: true }).pipe(
+    return this.httpClient.get<any>(`${environment.backendURL}/auth`, { withCredentials: true }).pipe( catchError(() => {
+      return of(true);
+    }),
       map(res => {
         if (res.webid) {
           this.webID = res.webid;
@@ -58,5 +60,4 @@ export class AuthService {
       return res;
     }));
   }
-  
 }

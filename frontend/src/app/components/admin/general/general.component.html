@@ -1,0 +1,15 @@
+<form [formGroup]="general">
+    <h1>GENERAL</h1>
+    <mat-form-field>
+        <mat-label>Title</mat-label>
+        <input matInput [(ngModel)]="localData.title" [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Logo</mat-label>
+        <input matInput [(ngModel)]="localData.logo.path" [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Banner</mat-label>
+        <input matInput [(ngModel)]="localData.banner.path" [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+</form>
