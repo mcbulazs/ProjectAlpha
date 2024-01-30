@@ -3,32 +3,10 @@ package page
 import (
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/models"
-	"database/sql"
 	"fmt"
 
 	"github.com/lib/pq"
 )
-
-func CreateWebpage(userId int) (int, error) {
-	var webId int
-	row := db.Context.QueryRow("SELECT Id FROM webpages WHERE Owner_Id=$1", userId)
-
-	err := row.Scan(&webId)
-	if err == nil {
-		return webId, nil
-	} else if err != sql.ErrNoRows {
-		return 0, err
-	}
-
-	err = db.Context.QueryRow("INSERT INTO webpages (Owner_Id) VALUES ($1) RETURNING Id", userId).Scan(&webId)
-	if err != nil {
-		return 0, err
-	}
-	if err != nil {
-		return 0, err
-	}
-	return webId, nil
-}
 
 func GetWebContent(webId int) (*models.WebPageModel, error) {
 	fmt.Println(webId)

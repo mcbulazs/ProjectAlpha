@@ -3,8 +3,10 @@ package page
 import (
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/models"
+	"database/sql"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/lib/pq"
 )
@@ -13,12 +15,42 @@ func SaveFiles() {
 	//Todo: file save
 }
 
-func SaveArticle(webId int, article models.ArticleModel) error { // single article
-	_, err := db.Context.Exec("INSERT INTO articles (WebId,Title,Date,Content) values ($1,$2,$3,$4)", webId, article.Title, article.Date, article.Content)
+func CreateWebpage(userId int) (int, error) {
+	tx, commitOrRollback, err := db.BeginTransaction()
 	if err != nil {
-		return err
+		return 0, nil
 	}
-	return nil
+	defer commitOrRollback()
+	var webId int
+	row := tx.QueryRow("SELECT Id FROM webpages WHERE Owner_Id=$1", userId)
+
+	err = row.Scan(&webId)
+	if err == nil {
+		return webId, nil
+	} else if err != sql.ErrNoRows {
+		return 0, err
+	}
+
+	err = tx.QueryRow("INSERT INTO webpages (Owner_Id) VALUES ($1) RETURNING Id", userId).Scan(&webId)
+	if err != nil {
+		return 0, err
+	}
+	_, err = tx.Exec("INSERT INTO navbar (WebId, Name, Path, Ranking) VALUES ($1,'Home','',0)", webId)
+	if err != nil {
+		return 0, err
+	}
+	return webId, nil
+}
+
+func SaveArticle(webId int, article models.ArticleModel) (*models.ArticleModel, error) { // single article
+	var id int
+	article.Date = time.Now()
+	err := db.Context.QueryRow("INSERT INTO articles (WebId,Title,Date,Content) values ($1,$2,$3,$4) RETURNING Id", webId, article.Title, article.Date, article.Content).Scan(&id)
+	if err != nil {
+		return nil, err
+	}
+	article.Id = id
+	return &article, nil
 }
 
 func SaveRecruitment(webId int, recruits []models.RecruitmentModel) error {
@@ -40,7 +72,7 @@ func SaveRecruitment(webId int, recruits []models.RecruitmentModel) error {
 		params = append(params, webId, item.Class, pq.Array(item.Subclasses))
 	}
 
-	query := "INSERT INTO recruitment (WebId, Class, Subclass) VALUES " + values
+	query := "INSERT INTO recruitment (WebId, Class, Subclass) VALUES " + values + ""
 	_, err := db.Context.Exec(query, params...)
 	if err != nil {
 		return err
