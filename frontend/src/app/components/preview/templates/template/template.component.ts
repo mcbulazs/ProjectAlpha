@@ -30,9 +30,13 @@ export abstract class TemplateComponent implements OnInit, OnDestroy {
     this.pds.getData().subscribe(x => {
       this.data = x;
     });
-    this.hotlineSub = this.pds.placeholderHotline().subscribe(x => {
+    this.hotlineSub = this.pds.getPlaceholderHotline().subscribe(x => {
       this.usePlaceholders = x;
     });
+  }
+
+  changeTemplate(path: string) {
+    this.pds.changeTemplate(this.data.presetId, path);
   }
 
   ngOnDestroy(): void {

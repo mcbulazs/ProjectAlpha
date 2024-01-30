@@ -1,13 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { TemplateOneComponent } from './templates/template-one/template-one/template-one.component';
-import { MatFabButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
+import { HubComponent } from './hub/hub.component';
 
 @Component({
   selector: 'app-preview',
   standalone: true,
-  imports: [RouterModule, TemplateOneComponent, MatFabButton, MatIcon],
+  imports: [HubComponent],
   templateUrl: './preview.component.html',
   styleUrl: './preview.component.scss'
 })

@@ -1,1 +1,1 @@
-<a routerLink="">Home</a>
+<a [routerLink]="PREVIEWMODE ? null : ''" (click)="PREVIEWMODE ? changeTemplate(''): ''">Home</a>

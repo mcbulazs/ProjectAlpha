@@ -5,12 +5,18 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { Article } from '../interfaces/article.interface';
 
+export interface TemplateChanger {
+  templateID: number,
+  path: string
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class PageDataService {
 
-  hotline: Subject<boolean>;
+  placeholderHotline: Subject<boolean>;
+  templateHotline: Subject<TemplateChanger>;
   usePlaceholders: boolean = true;
   init = true;
   
@@ -31,8 +37,10 @@ export class PageDataService {
     youtube: [],
   }
 
+
   constructor(private httpClient: HttpClient) {
-    this.hotline = new Subject<boolean>;
+    this.placeholderHotline = new Subject<boolean>;
+    this.templateHotline = new Subject<TemplateChanger>;
   }
 
   getData(): Observable<PageData> {
@@ -51,13 +59,21 @@ export class PageDataService {
     }))
   }
 
-  placeholderHotline(): Subject<boolean> {
-    return this.hotline;
+  getPlaceholderHotline(): Subject<boolean> {
+    return this.placeholderHotline;
+  }
+
+  getTemplateHotline(): Subject<TemplateChanger> {
+    return this.templateHotline;
+  }
+
+  changeTemplate(templateID: number, path: string) {
+    this.templateHotline.next({templateID: templateID, path: path});
   }
 
   togglePlaceholders() {
     this.usePlaceholders = !this.usePlaceholders;
-    this.hotline.next(this.usePlaceholders);
+    this.placeholderHotline.next(this.usePlaceholders);
   }
 
   createArticle(article: Article): Observable<Article> {
