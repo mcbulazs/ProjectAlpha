@@ -3,22 +3,26 @@ import { Observable, Subject, map, of } from 'rxjs';
 import { PageData } from '../interfaces/page.data.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
+import { Article } from '../interfaces/article.interface';
+
+export interface TemplateChanger {
+  templateID: number,
+  path: string
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class PageDataService {
 
-  devTool: Subject<number>;
-  hotline: Subject<boolean>;
-
-  constructor(private httpClient: HttpClient) {
-    this.devTool = new Subject<number>;
-    this.hotline = new Subject<boolean>;
-  }
-
+  placeholderHotline: Subject<boolean>;
+  templateHotline: Subject<TemplateChanger>;
+  usePlaceholders: boolean = true;
+  init = true;
+  
   webID!: number;
   data: PageData | undefined;
+  
   localData: PageData = {
     articles: [],
     banner: { id: -1, path: "" },
@@ -33,8 +37,11 @@ export class PageDataService {
     youtube: [],
   }
 
-  usePlaceholders: boolean = true;
-  init = true;
+
+  constructor(private httpClient: HttpClient) {
+    this.placeholderHotline = new Subject<boolean>;
+    this.templateHotline = new Subject<TemplateChanger>;
+  }
 
   getData(): Observable<PageData> {
     if (!this.init) return of(this.localData);
@@ -52,20 +59,26 @@ export class PageDataService {
     }))
   }
 
-  componentChangerDev(): Subject<number> {
-    return this.devTool;
+  getPlaceholderHotline(): Subject<boolean> {
+    return this.placeholderHotline;
   }
 
-  sendComponentChange(n: number) {    
-    this.devTool.next(n);
+  getTemplateHotline(): Subject<TemplateChanger> {
+    return this.templateHotline;
   }
 
-  placeholderHotline(): Subject<boolean> {
-    return this.hotline;
+  changeTemplate(templateID: number, path: string) {
+    this.templateHotline.next({templateID: templateID, path: path});
   }
 
   togglePlaceholders() {
     this.usePlaceholders = !this.usePlaceholders;
-    this.hotline.next(this.usePlaceholders);
+    this.placeholderHotline.next(this.usePlaceholders);
+  }
+
+  createArticle(article: Article): Observable<Article> {
+    return this.httpClient.post<Article>(`${environment.backendURL}/page/${this.webID}/articles`, article, {
+      withCredentials: true,
+    })
   }
 }

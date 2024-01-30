@@ -1,0 +1,14 @@
+<h1>Create article</h1>
+<mat-form-field class="full-width">
+    <mat-label>Title</mat-label>
+    <input matInput type="text" [(ngModel)]="article.title">
+</mat-form-field>
+<mat-form-field class="full-width full-height">
+    <mat-label>Content</mat-label>
+    <textarea matInput type="text" [(ngModel)]="article.content" cdkTextareaAutosize [maxlength]="contentMaxLength"></textarea>
+    <mat-hint align="end">{{article.content.length}} / {{contentMaxLength}}</mat-hint>
+</mat-form-field>
+<div class="buttons">
+    <button (click)="create()" mat-raised-button color="primary">Create</button>
+    <button (click)="close()" mat-raised-button color="warn">Close</button>
+</div>

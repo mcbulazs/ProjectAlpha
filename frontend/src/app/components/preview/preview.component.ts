@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HubComponent } from './templates/hub/hub.component';
+import { HubComponent } from './hub/hub.component';
 
 @Component({
   selector: 'app-preview',
@@ -8,6 +8,4 @@ import { HubComponent } from './templates/hub/hub.component';
   templateUrl: './preview.component.html',
   styleUrl: './preview.component.scss'
 })
-export class PreviewComponent {
-
-}
+export class PreviewComponent { }

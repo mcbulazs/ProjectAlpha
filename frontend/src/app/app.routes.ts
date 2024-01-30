@@ -3,12 +3,23 @@ import { authGuard } from './guards/auth.guard';
 import { AdminComponent } from './components/admin/admin.component';
 import { HomeComponent } from './components/home/home.component';
 import { RulesComponent } from './components/rules/rules.component';
-import { PreviewComponent } from './components/preview/preview.component';
+import { homeGuard } from './guards/home.guard';
+import { GeneralComponent } from './components/admin/general/general.component';
+import { ArticlesComponent } from './components/admin/articles/articles.component';
+import { RecruitmentComponent } from './components/admin/recruitment/recruitment.component';
+import { ProgressComponent } from './components/admin/progress/progress.component';
+
+export const PROJECT_TITLE = 'Project';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent},
-    { path: 'admin', component: AdminComponent, canActivate: [authGuard]},
-    { path: 'rules', component: RulesComponent },
-    { path: 'preview', component: PreviewComponent, canActivate: [authGuard]},
-    { path: '**', redirectTo: '/'}
+    { path: '', component: HomeComponent, title: `${PROJECT_TITLE} | Home`, canActivate: [homeGuard], pathMatch: 'full' },
+    { path: 'admin', component: AdminComponent, canActivate: [authGuard], title: `${PROJECT_TITLE} | Admin`, children: [
+        { path: 'general', component: GeneralComponent, },
+        { path: 'articles', component: ArticlesComponent },
+        { path: 'recruitment', component: RecruitmentComponent },
+        { path: 'progress', component: ProgressComponent },
+        { path: '**', redirectTo: 'general' },
+    ]} ,
+    { path: 'rules', component: RulesComponent, title: `${PROJECT_TITLE} | Rules`},
+    { path: '**', redirectTo: '/' },
 ];

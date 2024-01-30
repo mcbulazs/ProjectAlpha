@@ -2,31 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { LoginComponent } from '../login/login.component';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { RegisterComponent } from '../register/register.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [LoginComponent, CommonModule, RouterLink, RegisterComponent],
+  imports: [LoginComponent, CommonModule, RouterLink, RegisterComponent, MatTabsModule, RouterModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
 
-  constructor(private authService: AuthService, private router: Router) {}
-
-  switch: boolean = false;
-
-  ngOnInit(): void {
-    this.authService.isAuthenticated().subscribe({
-      next: () => {
-        if (this.authService.isLoggedIn) {
-          this.router.navigate(['admin']);
-        }
-      }
-    });
-  }
+  constructor(private authService: AuthService, private router: Router) { }
 
   devPass() {
     this.authService.login({
@@ -37,12 +26,8 @@ export class HomeComponent implements OnInit {
         this.authService.register({
           email: "a@a",
           password: "password",
-        }).subscribe(x=>this.router.navigate(['admin']));
+        }).subscribe(x => this.router.navigate(['admin']));
       } else this.router.navigate(['admin'])
     });
-  }
-
-  switchForms(mode: boolean) {
-    this.switch = mode;
   }
 }

@@ -26,16 +26,23 @@
     align-items: start;
 }
 
+.admin-hidden {
+    display: none;
+}
+
+.preview-full {
+    width: 100%;
+}
+
 app-preview {
     width: 50%;
     overflow-y: auto;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    gap: 5px;
+.btn-preview {
+    position: absolute;
+    top: 10px;
+    right: 25px;
 }
 
 .navigation {
@@ -51,4 +58,15 @@ form {
 .navigation-header {
     display: flex;
     align-items: center;
+}
+
+.mat-list-item.is-active {
+    background-color: blue!important;
+}
+.mdc-list-item--with-leading-icon .mdc-list-item__start.danger, .danger, .danger:hover { 
+    color: red!important; 
+}
+
+mat-nav-list {
+    user-select: none;
 }
