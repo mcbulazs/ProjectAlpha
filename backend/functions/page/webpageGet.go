@@ -127,12 +127,12 @@ func getNavbar(webId int) ([]models.NavItem, error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var navbar *models.NavItem
+		var navbar models.NavItem
 		err = rows.Scan(&navbar.Id, &navbar.Name, &navbar.Path, &navbar.Order)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, *navbar)
+		result = append(result, navbar)
 	}
 	return result, nil
 }
@@ -146,15 +146,15 @@ func getChannels(webId int) ([]models.ChannelModel, []models.ChannelModel, error
 	defer rows.Close()
 	for rows.Next() {
 		var ctype string
-		var channel *models.ChannelModel
+		var channel models.ChannelModel
 		err = rows.Scan(&channel.Id, &ctype, &channel.Name, &channel.Link)
 		if err != nil {
 			return nil, nil, err
 		}
 		if ctype == "youtube" {
-			youtube = append(youtube, *channel)
+			youtube = append(youtube, channel)
 		} else if ctype == "twitch" {
-			twitch = append(twitch, *channel)
+			twitch = append(twitch, channel)
 		}
 
 	}
@@ -169,7 +169,7 @@ func getProgress(webId int) ([]models.ProgressModel, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var progress *models.ProgressModel
+		var progress models.ProgressModel
 		progress.Raids = make([]models.RaidModel, 0)
 		err = rows.Scan(&progress.Id, &progress.Name)
 		if err != nil {
@@ -181,14 +181,14 @@ func getProgress(webId int) ([]models.ProgressModel, error) {
 		}
 		defer raids.Close()
 		for raids.Next() {
-			var raid *models.RaidModel
+			var raid models.RaidModel
 			err = raids.Scan(&raid.Id, &raid.Difficulty, &raid.Max, &raid.Current)
 			if err != nil {
 				return nil, err
 			}
-			progress.Raids = append(progress.Raids, *raid)
+			progress.Raids = append(progress.Raids, raid)
 		}
-		result = append(result, *progress)
+		result = append(result, progress)
 	}
 	return result, nil
 }
@@ -200,12 +200,12 @@ func getCalendar(webId int) ([]models.CalendarModel, error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var calendar *models.CalendarModel
+		var calendar models.CalendarModel
 		err = rows.Scan(&calendar.Id, &calendar.Name, &calendar.Date, &calendar.Type)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, *calendar)
+		result = append(result, calendar)
 	}
 	return result, nil
 }
