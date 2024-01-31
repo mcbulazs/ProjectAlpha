@@ -16,4 +16,10 @@ export const TEMPLATES: any = [
         '': TemplateTwoComponent,
         'about': TemplateTwoComponent,
     },
+    {
+        name: 'Template 3',
+        image: 'https://i.imgur.com/pb9CNoN.png',
+        '': TemplateTwoComponent,
+        'about': TemplateTwoComponent,
+    },
 ]
