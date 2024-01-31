@@ -27,13 +27,13 @@ export const PLACEHOLDER_DATA: PageData = {
     calendar: [],
     navbar: [
         {
-            id: -1,
+            id: 0,
             name: "Home",
             order: 0,
             path: "",
         },
         {
-            id: -1,
+            id: 1,
             name: "About",
             order: 1,
             path: "about",

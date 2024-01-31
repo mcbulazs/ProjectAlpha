@@ -4,6 +4,7 @@ import { PageData } from '../interfaces/page.data.interface';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { Article } from '../interfaces/article.interface';
+import { PLACEHOLDER_DATA } from '../utility/utility';
 
 export interface TemplateChanger {
   templateID: number,
@@ -50,6 +51,7 @@ export class PageDataService {
       withCredentials: true,
     }).pipe(map(res => {
       res.presetId = 0; //! DEFER REMOVE
+      res.navbar = PLACEHOLDER_DATA.navbar;
       res.title = "";
       this.data = res;
       if (this.init) {
