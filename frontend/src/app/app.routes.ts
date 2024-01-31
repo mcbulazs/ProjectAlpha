@@ -8,6 +8,10 @@ import { GeneralComponent } from './components/admin/general/general.component';
 import { ArticlesComponent } from './components/admin/articles/articles.component';
 import { RecruitmentComponent } from './components/admin/recruitment/recruitment.component';
 import { ProgressComponent } from './components/admin/progress/progress.component';
+import { TemplatesComponent } from './components/admin/templates/templates.component';
+import { MediaComponent } from './components/admin/media/media.component';
+import { CalendarComponent } from './components/admin/calendar/calendar.component';
+import { DangerZoneComponent } from './components/admin/danger-zone/danger-zone.component';
 
 export const PROJECT_TITLE = 'Project';
 
@@ -15,9 +19,13 @@ export const routes: Routes = [
     { path: '', component: HomeComponent, title: `${PROJECT_TITLE} | Home`, canActivate: [homeGuard], pathMatch: 'full' },
     { path: 'admin', component: AdminComponent, canActivate: [authGuard], title: `${PROJECT_TITLE} | Admin`, children: [
         { path: 'general', component: GeneralComponent, },
+        { path: 'templates', component: TemplatesComponent, },
         { path: 'articles', component: ArticlesComponent },
         { path: 'recruitment', component: RecruitmentComponent },
         { path: 'progress', component: ProgressComponent },
+        { path: 'media', component: MediaComponent },
+        { path: 'calendar', component: CalendarComponent },
+        { path: 'settings', component: DangerZoneComponent },
         { path: '**', redirectTo: 'general' },
     ]} ,
     { path: 'rules', component: RulesComponent, title: `${PROJECT_TITLE} | Rules`},

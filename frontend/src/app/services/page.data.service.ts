@@ -116,7 +116,10 @@ export class PageDataService {
       return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`, {
         withCredentials: true
       }).pipe(map(x => {
-        return x.articles.find(item => item.id === article.id)!;
+        let prevArticle = this.localData.articles.find(x => x.id === article.id)!;
+        let elem = x.articles.find(item => item.id === article.id)!;
+        Object.assign(elem, prevArticle);
+        return elem;
       }))
     }));
   }

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { MatDialogActions, MatDialogClose, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-create-article',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, CdkTextareaAutosize],
+  imports: [CommonModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, CdkTextareaAutosize, MatDialogTitle, MatDialogActions, MatDialogClose],
   templateUrl: './create-article.component.html',
   styleUrl: './create-article.component.scss'
 })
@@ -32,26 +32,18 @@ export class CreateArticleComponent {
     title: '',
   };
 
-  // TODO: material-lal
-  close() {
-    this.dialogRef.close();
-  }
-
+  // TODO: validation for input length
   create() {
     if (this.article.content === '' || this.article.title === '') return;
-    if (this.article.content.length > ARTICLE_CONTENT_MAX_LENGTH || this.article.title.length > ARTICLE_TITLE_MAX_LENGTH) {
-      this.close();
-      return;
-    }
+    if (this.article.content.length > ARTICLE_CONTENT_MAX_LENGTH || this.article.title.length > ARTICLE_TITLE_MAX_LENGTH) return;
     let date = new Date();
     this.article.date = date.toISOString();
     this.pds.createArticle(this.article).subscribe(x => {
-    this.snackBar.open('Article created!', '', {
-      duration: 2000,
-      horizontalPosition: 'start',
-      verticalPosition: 'bottom',
-    });
-    this.close();
+      this.snackBar.open('Article created!', '', {
+        duration: 2000,
+        horizontalPosition: 'start',
+        verticalPosition: 'bottom',
+      });
     });
   }
 }

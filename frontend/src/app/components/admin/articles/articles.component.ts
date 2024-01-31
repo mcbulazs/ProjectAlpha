@@ -10,6 +10,7 @@ import { MatList, MatListItem, MatListItemIcon, MatListItemLine, MatListItemMeta
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatDivider } from '@angular/material/divider';
 import { DeleteArticleComponent } from './delete-article/delete-article.component';
+import { EditArticleComponent } from './edit-article/edit-article.component';
 
 @Component({
   selector: 'app-articles',
@@ -26,7 +27,7 @@ export class ArticlesComponent implements OnInit {
 
   pageSizeOptions = [5, 10, 20, 30];
   pageSize = 5;
-  length = this.data.articles.length
+  length = 0;
   pageIndex = 0;
 
   displayedArticles: Article[] = [];
@@ -36,6 +37,7 @@ export class ArticlesComponent implements OnInit {
   }
 
   setDisplayedArticles() {
+    this.length = this.data.articles.length
     this.displayedArticles = this.data.articles.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
   }
 
@@ -50,12 +52,28 @@ export class ArticlesComponent implements OnInit {
     const dialogRef = this.dialog.open(CreateArticleComponent, {
       width: '500px',
     });
+    dialogRef.afterClosed().subscribe(x => {
+      this.setDisplayedArticles();
+    });
+  }
+
+  editArticle(article: Article) {
+    const dialogRef = this.dialog.open(EditArticleComponent, {
+      width: '500px',
+      data: article,
+    });
+    dialogRef.afterClosed().subscribe(x => {
+      this.setDisplayedArticles();
+    });
   }
 
   deleteArticle(id: number) {
     const dialogRef = this.dialog.open(DeleteArticleComponent, {
       width: '200px',
       data: id,
+    });
+    dialogRef.afterClosed().subscribe(x => {
+      this.setDisplayedArticles();
     });
   }
 }
