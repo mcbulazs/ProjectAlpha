@@ -2,13 +2,13 @@
 <button mat-raised-button color="primary" (click)="addArticle()">New article</button>
 <div class="articles-list">
     <mat-list>
-        <mat-list-item *ngFor="let article of displayedArticles">
+        <mat-list-item *ngFor="let article of displayedArticles" (click)="editArticle(article)">
             <mat-icon matListItemIcon>article</mat-icon>
             <div matListItemTitle class="article-line">
                 <span class="article-title">{{article.title}}</span>
                 <span>{{article.date | date:'yyyy.MM.dd H:mm'}}</span>
             </div>
-            <button mat-icon-button matListItemMeta (click)="editArticle(article)">
+            <button mat-icon-button matListItemMeta>
                 <mat-icon>edit</mat-icon>
             </button>
             <button mat-icon-button matListItemMeta (click)="deleteArticle(article.id)">

@@ -30,6 +30,7 @@ export class EditArticleComponent {
   article: Article = {...this.data};
 
   edit() {
+    if (this.article.title === this.data.title && this.article.content === this.data.content) return;
     this.pds.updateArticle(this.article).subscribe(x => {
       this.snackBar.open(`Article ${x ? 'deleted' : 'deletion failed'}!`, '', {
         duration: 2000,
