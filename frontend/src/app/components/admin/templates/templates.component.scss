@@ -1,0 +1,31 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.templates {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.template {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 33%;
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 10px 10px 30px -11px rgba(0,0,0,0.75);
+}
+
+.selected {
+    border: 2px solid black;
+    background-color: rgba($color: royalblue, $alpha: 0.3);
+}

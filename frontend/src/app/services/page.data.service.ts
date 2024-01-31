@@ -22,6 +22,7 @@ export class PageDataService {
   
   webID!: number;
   data: PageData | undefined;
+  currentPreviewPath: string = '';
   
   localData: PageData = {
     articles: [],

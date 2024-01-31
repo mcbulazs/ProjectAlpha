@@ -36,6 +36,7 @@ export abstract class TemplateComponent implements OnInit, OnDestroy {
   }
 
   changeTemplate(path: string) {
+    this.pds.currentPreviewPath = path;
     this.pds.changeTemplate(this.data.presetId, path);
   }
 

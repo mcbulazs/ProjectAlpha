@@ -5,10 +5,14 @@ import { TemplateTwoComponent } from "./templates/template-two/template-two/temp
 // ALL USABLE TEMPLATES MUST BE INCLUDED
 export const TEMPLATES: any = [
     {
+        name: 'Template 1',
+        image: 'https://i.imgur.com/gBkiK5w.png',
         '': TemplateOneComponent,
         'about': TemplateOneAboutComponent,
     },
     {
+        name: 'Template 2',
+        image: 'https://i.imgur.com/pb9CNoN.png',
         '': TemplateTwoComponent,
         'about': TemplateTwoComponent,
     },
