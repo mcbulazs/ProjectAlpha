@@ -1,4 +1,5 @@
 <button type="button" (click)="devPass()" style="background-image: url('https://media0.giphy.com/media/yx400dIdkwWdsCgWYp/giphy.gif'); height: 50px; background-size: cover; position: absolute; top: 0; left: 0; width: 50px; border: unset; cursor: pointer;"></button>
+<h1 *ngIf="!serverState">BACKEND IS OFFLINE</h1>
 <div class="home">
     <div class="titles">
         <h1>McSolutions'</h1>
@@ -9,4 +10,3 @@
         <mat-tab label="Register"><app-register></app-register></mat-tab>
     </mat-tab-group>
 </div>
-<router-outlet name="admin"></router-outlet>

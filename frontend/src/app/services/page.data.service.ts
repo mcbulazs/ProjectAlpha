@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, map, of } from 'rxjs';
+import { Observable, Subject, map, of, switchMap } from 'rxjs';
 import { PageData } from '../interfaces/page.data.interface';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { Article } from '../interfaces/article.interface';
 
@@ -52,6 +52,7 @@ export class PageDataService {
       res.title = "";
       this.data = res;
       if (this.init) {
+        this.data.articles.reverse();
         this.localData = {...this.data!}
         this.init = false;
       }
@@ -78,7 +79,45 @@ export class PageDataService {
 
   createArticle(article: Article): Observable<Article> {
     return this.httpClient.post<Article>(`${environment.backendURL}/page/${this.webID}/articles`, article, {
-      withCredentials: true,
-    })
+      withCredentials: true, observe: 'response'
+    }).pipe(switchMap(res => {
+      if (res.body) {
+        this.localData.articles.unshift(res.body);
+        return of(res.body);
+      }
+      return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`, {
+        withCredentials: true
+      }).pipe(map(x => {
+        let createdArticle = x.articles.pop()!
+        this.localData.articles.unshift(createdArticle);
+        return createdArticle;
+      }));
+    }));
+  }
+
+  deleteArticle(id: number): Observable<boolean> {
+    return this.httpClient.delete<boolean>(`${environment.backendURL}/page/articles/${this.webID}`, {
+      withCredentials: true, observe: 'response'
+    }).pipe(map(res => {
+      if (res.status === 200) return true;
+      return false;
+    }))
+  }
+
+  updateArticle(article: Article): Observable<Article> {
+    return this.httpClient.patch<Article>(`${environment.backendURL}/page/${this.webID}/${article.id}`, article, {
+      withCredentials: true, observe: 'response'
+    }).pipe(switchMap(res => {
+      if (res.body) {
+        let elem = this.localData.articles.find(x => x.id === res.body?.id)!;
+        Object.assign(elem, res.body);
+        return of(res.body);
+      }
+      return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`, {
+        withCredentials: true
+      }).pipe(map(x => {
+        return x.articles.find(item => item.id === article.id)!;
+      }))
+    }));
   }
 }

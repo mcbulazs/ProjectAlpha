@@ -17,6 +17,8 @@ export class HomeComponent {
 
   constructor(private authService: AuthService, private router: Router) { }
 
+  serverState = this.authService.serverState;
+
   devPass() {
     this.authService.login({
       email: "a@a",

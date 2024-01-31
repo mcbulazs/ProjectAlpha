@@ -1,0 +1,42 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 10px;
+}
+
+.articles-list {
+    width: 100%;
+}
+
+.mat-mdc-list-item-icon {
+    color: royalblue;
+}
+
+.mat-mdc-list-item-icon:hover {
+    color: pink;
+}
+
+.article-line {
+    display: flex;
+    justify-content: space-between;
+}
+
+.article-title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+mat-list-item:hover {
+    background-color: rgba($color: #000000, $alpha: 0.2);
+    border-radius: 10px;
+}
+
+.mdc-list-item--with-trailing-meta .mdc-list-item__end:last-of-type {
+    margin-left: 0;
+}
+
+.mdc-list-item--with-trailing-meta .mdc-list-item__end:first-of-type {
+    margin-right: 0;
+}

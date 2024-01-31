@@ -1,1 +1,2 @@
 export const ARTICLE_CONTENT_MAX_LENGTH = 500;
+export const ARTICLE_TITLE_MAX_LENGTH = 150;

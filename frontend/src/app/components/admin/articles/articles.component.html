@@ -1,3 +1,20 @@
-<h1>ARTICLES</h1>
+<h2>Article management</h2>
 <button mat-raised-button color="primary" (click)="addArticle()">New article</button>
-{{data.articles | json}}
+<div class="articles-list">
+    <mat-list>
+        <mat-list-item *ngFor="let article of displayedArticles">
+            <mat-icon matListItemIcon>article</mat-icon>
+            <div matListItemTitle class="article-line">
+                <span class="article-title">{{article.title}}</span>
+                <span>{{article.date | date:'yyyy.MM.dd H:mm'}}</span>
+            </div>
+            <button mat-icon-button matListItemMeta>
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button matListItemMeta (click)="deleteArticle(article.id)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-list-item>
+    </mat-list>
+    <mat-paginator #paginator [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [length]="length" (page)="pageEventHandler($event)" showFirstLastButtons="true"></mat-paginator>
+</div>

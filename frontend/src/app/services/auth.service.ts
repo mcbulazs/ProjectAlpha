@@ -15,9 +15,12 @@ export class AuthService {
   webID: number = -1;
   isLoggedIn: boolean = false;
 
+  serverState = true;
+
   isAuthenticated(): Observable<boolean> {
     if (this.isLoggedIn) return of(true);
     return this.httpClient.get<any>(`${environment.backendURL}/auth`, { withCredentials: true }).pipe( catchError(() => {
+      this.serverState = false;
       return of(true);
     }),
       map(res => {

@@ -1,4 +1,10 @@
-:host, form {
+:host {
+    padding: 10px;
+    display: flex;
+}
+
+form {
     display: flex;
     flex-direction: column;
+    align-items: start;
 }
