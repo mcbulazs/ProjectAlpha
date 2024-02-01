@@ -4,14 +4,13 @@ export const PasswordValidator: ValidatorFn = (control: AbstractControl): Valida
     const password = control.get('password');
     const passwordConfirm = control.get('passwordConfirm');
     
-
-    if (passwordConfirm?.invalid) return { passwordInvalid: true };
-    console.log(password?.value === passwordConfirm?.value);
+    if (passwordConfirm?.invalid)
+    return { passwordInvalid: true };
     
-    if (password?.value === passwordConfirm?.value) {
-        return null;
-    }
+    if (password?.value === passwordConfirm?.value)
+    return null;
+
     let error = { match: false };
     passwordConfirm?.setErrors(error);
-    return error
+    return error;
 }

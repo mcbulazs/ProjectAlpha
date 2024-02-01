@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, map, of, switchMap } from 'rxjs';
+import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
 import { PageData } from '../interfaces/page.data.interface';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { Article } from '../interfaces/article.interface';
-import { PLACEHOLDER_DATA } from '../utility/utility';
+import { PLACEHOLDER_DATA } from '../constants';
 
 export interface TemplateChanger {
   templateID: number,
@@ -16,50 +16,32 @@ export interface TemplateChanger {
 })
 export class PageDataService {
 
-  placeholderHotline: Subject<boolean>;
-  templateHotline: Subject<TemplateChanger>;
-  usePlaceholders: boolean = true;
-  init = true;
-  
+  constructor(private httpClient: HttpClient) { }
+
   webID!: number;
-  data: PageData | undefined;
+  data!: PageData;
+
+  placeholderHotline = new Subject<boolean>;
+  templateHotline = new Subject<TemplateChanger>;
+
+  usePlaceholders: boolean = true;
+
   currentPreviewPath: string = '';
-  
-  localData: PageData = {
-    articles: [],
-    banner: { id: -1, path: "" },
-    calendar: [],
-    logo: { id: -1, path: ""},
-    navbar: [],
-    presetId: 0,
-    progress: [],
-    recruitment: [],
-    title: "",
-    twitch: [],
-    youtube: [],
-  }
 
-
-  constructor(private httpClient: HttpClient) {
-    this.placeholderHotline = new Subject<boolean>;
-    this.templateHotline = new Subject<TemplateChanger>;
-  }
-
-  getData(): Observable<PageData> {
-    if (!this.init) return of(this.localData);
+  getData(): Observable<boolean> {
     return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`, {
-      withCredentials: true,
+      withCredentials: true, observe: 'response',
     }).pipe(map(res => {
-      res.presetId = 0; //! DEFER REMOVE
-      res.navbar = PLACEHOLDER_DATA.navbar;
-      res.title = "";
-      this.data = res;
-      if (this.init) {
+      if (res.status === 200 && res.body) {
+        res.body.presetId = 0; //! DEFER REMOVE
+        res.body.navbar = PLACEHOLDER_DATA.navbar;
+        res.body.title = "";
+        this.data = res.body;
+        console.log("Page data is ready!");
         this.data.articles.reverse();
-        this.localData = {...this.data!}
-        this.init = false;
+        return true;
       }
-      return this.localData;
+      return false;
     }))
   }
 
@@ -72,7 +54,7 @@ export class PageDataService {
   }
 
   changeTemplate(templateID: number, path: string) {
-    this.templateHotline.next({templateID: templateID, path: path});
+    this.templateHotline.next({ templateID: templateID, path: path });
   }
 
   togglePlaceholders() {
@@ -80,50 +62,64 @@ export class PageDataService {
     this.placeholderHotline.next(this.usePlaceholders);
   }
 
-  createArticle(article: Article): Observable<Article> {
+  // TODO: remove temporary measures when backend is working
+  createArticle(article: Article): Observable<Boolean> {
     return this.httpClient.post<Article>(`${environment.backendURL}/page/${this.webID}/articles`, article, {
-      withCredentials: true, observe: 'response'
-    }).pipe(switchMap(res => {
-      if (res.body) {
-        this.localData.articles.unshift(res.body);
-        return of(res.body);
-      }
-      return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`, {
-        withCredentials: true
-      }).pipe(map(x => {
-        let createdArticle = x.articles.pop()!
-        this.localData.articles.unshift(createdArticle);
-        return createdArticle;
+      withCredentials: true, observe: 'response',
+    }).pipe(
+      catchError(() => of(false)),
+      switchMap(res => {
+        if (!res) return of(false);
+        if (typeof res !== 'boolean' && res.body) {
+          this.data.articles.unshift(res.body);
+          return of(true);
+        }
+        return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`, {
+          withCredentials: true,
+        }).pipe(
+          map(x => {
+            let createdArticle = x.articles.pop()!
+            this.data.articles.unshift(createdArticle);
+            return true;
+          }));
       }));
-    }));
   }
 
   deleteArticle(id: number): Observable<boolean> {
-    return this.httpClient.delete<boolean>(`${environment.backendURL}/page/articles/${this.webID}`, {
+    return this.httpClient.delete<any>(`${environment.backendURL}/page/articles/${id}`, {
       withCredentials: true, observe: 'response'
-    }).pipe(map(res => {
-      if (res.status === 200) return true;
-      return false;
-    }))
+    }).pipe(
+      catchError(() => of(false)),
+      map(res => {
+        if (res) return true;
+        return false;
+      })
+    );
   }
 
-  updateArticle(article: Article): Observable<Article> {
+  // TODO: remove temporary measures when backend is working
+  updateArticle(article: Article): Observable<boolean> {
     return this.httpClient.patch<Article>(`${environment.backendURL}/page/${this.webID}/${article.id}`, article, {
       withCredentials: true, observe: 'response'
-    }).pipe(switchMap(res => {
-      if (res.body) {
-        let elem = this.localData.articles.find(x => x.id === res.body?.id)!;
-        Object.assign(elem, res.body);
-        return of(res.body);
-      }
-      return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`, {
-        withCredentials: true
-      }).pipe(map(x => {
-        let prevArticle = this.localData.articles.find(x => x.id === article.id)!;
-        let elem = x.articles.find(item => item.id === article.id)!;
-        Object.assign(elem, prevArticle);
-        return elem;
-      }))
-    }));
+    }).pipe(
+      catchError(() => of(false)),
+      switchMap(res => {
+        if (!res) return of(false);
+        if (typeof res !== 'boolean' && res.body) {
+          let elem = this.data.articles.find(x => x.id === res.body?.id)!;
+          Object.assign(elem, res.body);
+          return of(true);
+        }
+        //! TEMPORARY
+        return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`, {
+          withCredentials: true
+        }).pipe(
+          map(x => {
+            let prevArticle = this.data.articles.find(x => x.id === article.id)!;
+            let elem = x.articles.find(item => item.id === article.id)!;
+            Object.assign(elem, prevArticle);
+            return true;
+          }));
+      }));
   }
 }

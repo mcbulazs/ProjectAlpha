@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { PageDataService } from '../../services/page.data.service';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListItemIcon, MatListModule } from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
 import { MatButton, MatFabButton, MatIconButton } from '@angular/material/button';
 import { PreviewComponent } from '../preview/preview.component';
 import { CommonModule } from '@angular/common';
-import { LinkActiveDirective } from '../../utility/link-active.directive';
+import { LinkActiveDirective } from '../../directives/link-active.directive';
 import { MatLine } from '@angular/material/core';
 
 @Component({
@@ -21,13 +21,13 @@ import { MatLine } from '@angular/material/core';
 })
 export class AdminComponent {
 
-  constructor(private authService: AuthService, private router: Router, private pds: PageDataService) {}
+  constructor(private authService: AuthService, private router: Router, private pds: PageDataService) { }
+
+  preview = false;
 
   togglePlaceholders() {
     this.pds.togglePlaceholders();
   }
-
-  preview = false;
 
   togglePreview() {
     this.preview = !this.preview;

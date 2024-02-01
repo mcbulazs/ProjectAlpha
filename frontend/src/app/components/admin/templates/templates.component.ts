@@ -4,6 +4,7 @@ import { TEMPLATES } from '../../preview/components';
 import { PageDataService } from '../../../services/page.data.service';
 import { MatButton } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MAT_SNACKBAR_CONFIG } from '../../../constants';
 
 @Component({
   selector: 'app-templates',
@@ -14,10 +15,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class TemplatesComponent implements OnDestroy {
   templates = TEMPLATES;
-  currentTemplate = this.pds.localData.presetId;
-  selectedTemplate = this.pds.localData.presetId;
+  currentTemplate = this.pds.data.presetId;
+  selectedTemplate = this.pds.data.presetId;
 
-  constructor(private pds: PageDataService, private snackBar: MatSnackBar) {}
+  constructor(private pds: PageDataService, private snackBar: MatSnackBar) { }
 
   selectTemplate(id: number) {
     this.selectedTemplate = id;
@@ -33,11 +34,7 @@ export class TemplatesComponent implements OnDestroy {
   // TODO: send to backend
   switchTemplate() {
     this.currentTemplate = this.selectedTemplate;
-    this.pds.localData.presetId = this.selectedTemplate;
-    this.snackBar.open('Template changed!', '', {
-      duration: 2000,
-      horizontalPosition: 'start',
-      verticalPosition: 'bottom',
-    });
+    this.pds.data.presetId = this.selectedTemplate;
+    this.snackBar.open('Template changed!', undefined, MAT_SNACKBAR_CONFIG);
   }
 }

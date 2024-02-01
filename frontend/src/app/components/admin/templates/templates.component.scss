@@ -16,6 +16,12 @@
     gap: 10px;
 }
 
+.template-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .template {
     display: flex;
     flex-direction: column;

@@ -8,9 +8,8 @@ import { MatFormField, MatLabel, MatHint } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { Article } from '../../../../interfaces/article.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ARTICLE_CONTENT_MAX_LENGTH, ARTICLE_TITLE_MAX_LENGTH } from '../../../../constants';
+import { ARTICLE_CONTENT_MAX_LENGTH, ARTICLE_TITLE_MAX_LENGTH, MAT_SNACKBAR_CONFIG } from '../../../../constants';
 import { PageDataService } from '../../../../services/page.data.service';
-import { AdminComponent } from '../../admin.component';
 import { ArticlesComponent } from '../articles.component';
 
 @Component({
@@ -27,16 +26,12 @@ export class EditArticleComponent {
   contentMaxLength = ARTICLE_CONTENT_MAX_LENGTH;
   titleMaxLength = ARTICLE_TITLE_MAX_LENGTH;
 
-  article: Article = {...this.data};
+  article: Article = { ...this.data };
 
-  edit() {
+  update() {
     if (this.article.title === this.data.title && this.article.content === this.data.content) return;
-    this.pds.updateArticle(this.article).subscribe(x => {
-      this.snackBar.open(`Article ${x ? 'deleted' : 'deletion failed'}!`, '', {
-        duration: 2000,
-        horizontalPosition: 'start',
-        verticalPosition: 'bottom',
-      });
+    this.pds.updateArticle(this.article).subscribe(success => {
+      this.snackBar.open(`Article ${success ? 'updated!' : 'update failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
     });
   }
 }

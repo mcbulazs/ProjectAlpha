@@ -2,7 +2,9 @@
 <button mat-raised-button color="warn" *ngIf="currentTemplate !== selectedTemplate" (click)="switchTemplate()" class="btn-switch">Switch</button>
 <div class="templates">
     <button mat-button class="template {{i === selectedTemplate ? 'selected' : ''}}" *ngFor="let template of templates; index as i" (click)="selectTemplate(i)">
-        <img src="{{template.image}}" alt="" style="background-color: black; width: 160px; height: 90px;">
-        <span>{{template.name}}</span>
+        <div class="template-inner">
+            <img src="{{template.image}}" alt="" style="background-color: black; width: 160px; height: 90px;">
+            <span>{{template.name}}</span>
+        </div>
     </button>
 </div>

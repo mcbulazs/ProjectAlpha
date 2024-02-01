@@ -3,12 +3,11 @@ import { CreateArticleComponent } from './create-article/create-article.componen
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { PageDataService } from '../../../services/page.data.service';
-import { MatButton, MatButtonModule, MatIconButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { Article } from '../../../interfaces/article.interface';
-import { MatList, MatListItem, MatListItemIcon, MatListItemLine, MatListItemMeta, MatListItemTitle, MatListModule } from '@angular/material/list';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
-import { MatDivider } from '@angular/material/divider';
+import { MatList, MatListItem, MatListItemIcon, MatListItemLine, MatListItemMeta, MatListItemTitle } from '@angular/material/list';
+import { MatIcon } from '@angular/material/icon';
 import { DeleteArticleComponent } from './delete-article/delete-article.component';
 import { EditArticleComponent } from './edit-article/edit-article.component';
 
@@ -23,8 +22,6 @@ export class ArticlesComponent implements OnInit {
 
   constructor(private dialog: MatDialog, private pds: PageDataService) { }
 
-  data = this.pds.localData;
-
   pageSizeOptions = [5, 10, 20, 30];
   pageSize = 5;
   length = 0;
@@ -37,22 +34,21 @@ export class ArticlesComponent implements OnInit {
   }
 
   setDisplayedArticles() {
-    this.length = this.data.articles.length
-    this.displayedArticles = this.data.articles.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
+    this.length = this.pds.data.articles.length
+    this.displayedArticles = this.pds.data.articles.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
   }
 
   pageEventHandler(e: PageEvent) {
-    console.log(e);
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex
     this.setDisplayedArticles();
   }
 
-  addArticle() {
+  createArticle() {
     const dialogRef = this.dialog.open(CreateArticleComponent, {
       width: '500px',
     });
-    dialogRef.afterClosed().subscribe(x => {
+    dialogRef.afterClosed().subscribe(() => {
       this.setDisplayedArticles();
     });
   }
@@ -62,7 +58,7 @@ export class ArticlesComponent implements OnInit {
       width: '500px',
       data: article,
     });
-    dialogRef.afterClosed().subscribe(x => {
+    dialogRef.afterClosed().subscribe(() => {
       this.setDisplayedArticles();
     });
   }

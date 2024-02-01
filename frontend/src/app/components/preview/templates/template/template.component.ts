@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { PageData } from '../../../../interfaces/page.data.interface';
 import { PageDataService } from '../../../../services/page.data.service';
-import { PLACEHOLDER_DATA } from '../../../../utility/utility';
 import { PREVIEW_MODE } from '../../../../../main';
+import { PLACEHOLDER_DATA } from '../../../../constants';
 
 @Component({
   selector: 'app-template',
@@ -14,25 +14,23 @@ import { PREVIEW_MODE } from '../../../../../main';
   encapsulation: ViewEncapsulation.ShadowDom,
 })
 export abstract class TemplateComponent implements OnInit, OnDestroy {
-  constructor(public pds: PageDataService) {}
+
+  constructor(public pds: PageDataService) { }
 
   data!: PageData;
 
   PLACEHOLDERS = PLACEHOLDER_DATA;
   PREVIEWMODE = PREVIEW_MODE;
-  usePlaceholders: boolean = true;
-  hotlineSub!: Subscription;
+  usePlaceholders!: boolean;
 
+  private subs = new Subscription();
 
   ngOnInit(): void {
-    this.data = this.pds.localData;
+    this.data = this.pds.data;
     this.usePlaceholders = this.pds.usePlaceholders;
-    this.pds.getData().subscribe(x => {
-      this.data = x;
-    });
-    this.hotlineSub = this.pds.getPlaceholderHotline().subscribe(x => {
-      this.usePlaceholders = x;
-    });
+    this.subs.add(this.pds.getPlaceholderHotline().subscribe(command => {
+      this.usePlaceholders = command;
+    }));
   }
 
   changeTemplate(path: string) {
@@ -41,6 +39,6 @@ export abstract class TemplateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.hotlineSub.unsubscribe();
+    this.subs.unsubscribe();
   }
 }

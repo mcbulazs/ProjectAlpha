@@ -1,4 +1,4 @@
-import { Component, ComponentRef, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
+import { Component, ComponentRef, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { TEMPLATES } from '../components';
 import { PageData } from '../../../interfaces/page.data.interface';
 import { PageDataService } from '../../../services/page.data.service';
@@ -12,32 +12,30 @@ import { Subscription } from 'rxjs';
   styleUrl: './hub.component.scss'
 })
 export class HubComponent implements OnInit, OnDestroy {
-  vcr = inject(ViewContainerRef);
-  ref!: ComponentRef<any>;
+
+  constructor(private pds: PageDataService, private vcr: ViewContainerRef) { }
 
   data!: PageData;
-  templateChanger!: Subscription;
-
-  constructor(private pds: PageDataService) {}
+  private subs = new Subscription();
+  private component!: ComponentRef<any>;
 
   ngOnInit(): void {
-    this.data = this.pds.localData;
+    this.data = this.pds.data;
     this.setComponent(this.data.presetId, '');
-    this.templateChanger = this.pds.getTemplateHotline().subscribe(x => {
+    this.subs.add(this.pds.getTemplateHotline().subscribe(x => {
       this.setComponent(x.templateID, x.path);
-    })
+    }));
   }
 
   ngOnDestroy(): void {
-    this.templateChanger.unsubscribe();
+    this.subs.unsubscribe();
   }
 
   setComponent(n: number, page: string) {
-    if (this.ref) {
-      const index = this.vcr.indexOf(this.ref.hostView);
-    if (index != -1) this.vcr.remove(index);
+    if (this.component) {
+      const index = this.vcr.indexOf(this.component.hostView);
+      if (index != -1) this.vcr.remove(index);
     }
-    this.ref = this.vcr.createComponent<any>(TEMPLATES[n][page]);
-    this.ref.changeDetectorRef.detectChanges();
+    this.component = this.vcr.createComponent<any>(TEMPLATES[n][page]);
   }
 }

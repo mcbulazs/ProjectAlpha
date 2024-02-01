@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PageData } from '../../../interfaces/page.data.interface';
-import { MatFormField, MatFormFieldControl, MatLabel } from '@angular/material/form-field';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { PageDataService } from '../../../services/page.data.service';
 import { CommonModule } from '@angular/common';
 import { MatInput } from '@angular/material/input';
@@ -19,29 +19,26 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 })
 export class GeneralComponent implements OnInit, OnDestroy {
 
-  constructor(private pds: PageDataService) {}
+  constructor(private pds: PageDataService) { }
 
   general = new FormGroup({
     title: new FormControl(''),
   })
-  localData!: PageData;
+  data!: PageData;
 
   navOrderChanged = false;
   originalNavbar: NavItem[] = [];
 
   ngOnInit(): void {
-    this.localData = this.pds.localData;
-    this.pds.getData().subscribe(x => {
-      this.localData = x;
-      for (const item of this.localData.navbar) {
-        this.originalNavbar.push({...item});
-      }
-    })
+    this.data = this.pds.data;
+    for (const navItem of this.data.navbar) {
+      this.originalNavbar.push({ ...navItem });
+    }
   }
 
   checkOrder() {
     for (let i = 0; i < this.originalNavbar.length; i++) {
-      if (this.originalNavbar[i].id !== this.localData.navbar[i].id) {
+      if (this.originalNavbar[i].id !== this.data.navbar[i].id) {
         this.navOrderChanged = true;
         return;
       }
@@ -51,17 +48,15 @@ export class GeneralComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.navOrderChanged) {
-      for (let i = 0; i < this.localData.navbar.length; i++) {
-        this.localData.navbar[i] = this.originalNavbar[i];
+      for (let i = 0; i < this.data.navbar.length; i++) {
+        this.data.navbar[i] = this.originalNavbar[i];
       }
     }
   }
 
   drop(event: CdkDragDrop<NavItem[]>) {
-    moveItemInArray(this.localData.navbar, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.data.navbar, event.previousIndex, event.currentIndex);
     this.checkOrder();
-    console.log(this.originalNavbar);
-    console.log(this.localData.navbar);
   }
 
   // TODO: send to backend

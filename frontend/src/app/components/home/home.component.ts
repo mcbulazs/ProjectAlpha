@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { LoginComponent } from '../login/login.component';
 import { CommonModule } from '@angular/common';
@@ -18,31 +18,35 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, private router: Router) { }
 
-  backgrounds = [
+  imageSrc = [
     'https://moewalls.com/wp-content/uploads/2023/06/illidan-stormrage-demon-world-of-warcraft-thumb.jpg',
     'https://i.imgur.com/WNbU18l.jpeg',
     'https://www.gamewallpapers.com/wallpapers_slechte_compressie/wallpaper_world_of_warcraft_shadowlands_01_1920x1080.jpg',
     'https://wallpaperset.com/w/full/5/2/9/212596.jpg',
-    'https://initiate.alphacoders.com/images/123/cropped-1920-1080-1230603.jpg?6725',
+    'https://i.imgur.com/ubjAfCO.jpeg',
   ];
-  serverState = this.authService.serverState;
 
-  bgChanger!: Subscription;
-  @HostBinding('style.background-image') bgImage = `url('${this.backgrounds[this.backgrounds.length-1]}')`;
+  backgrounds = new Array();
+  serverState = this.authService.backendState;
+
+  private bgChanger = new Subscription();
+  @HostBinding('style.background-image') bgImage: string = '';
 
   ngOnInit(): void {
     this.loadImages();
-    this.bgChanger = interval(10000, ).subscribe(() => {
-      let next = this.backgrounds.shift()!;
+    this.bgImage = `url('${this.backgrounds[this.backgrounds.length - 1].src}')`;
+    this.bgChanger.add(interval(10000).subscribe(() => {
+      const next = this.backgrounds.shift()!;
       this.backgrounds.push(next);
-      this.bgImage = `url('${next}')`;
-    })
+      this.bgImage = `url('${next.src}')`;
+    }));
   }
 
   loadImages() {
-    for (const image of this.backgrounds) {
+    for (const image of this.imageSrc) {
       let img = new Image();
       img.src = image;
+      this.backgrounds.push(img);
     }
   }
 
@@ -50,6 +54,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.bgChanger.unsubscribe();
   }
 
+  //! DEFER REMOVE
   devPass() {
     this.authService.login({
       email: "a@a",
