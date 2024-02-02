@@ -76,7 +76,6 @@ func Controller_Register(w http.ResponseWriter, r *http.Request) {
 
 func LoginUser(login *models.LoginModel) (int, error) {
 	login.Email = strings.ToLower(login.Email)
-
 	row := db.Context.QueryRow("SELECT id, password FROM Users where email=$1", login.Email)
 
 	var hash string
