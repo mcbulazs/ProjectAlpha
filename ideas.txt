@@ -1,0 +1,13 @@
+Project szintű ötletek:
+- product js cdn-ről érkezik mindehova, így updatelhető könnyen
+
+
+Frontend:
+- undo feature
+- game (preset) selection -> displays the game's placeholders in template selection and offers options for images
+- szabályzat implementáció
+
+
+Backend:
+- template és preset id
+- szabályzat model
