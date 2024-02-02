@@ -30,19 +30,17 @@ func Controller_Page_Get(w http.ResponseWriter, r *http.Request) {
 }
 func Controller_Page_Modify(w http.ResponseWriter, r *http.Request) {
 	var webpageBasics models.WebpageBasicsModel
-	var article models.ArticleModel
-	err := json.NewDecoder(r.Body).Decode(&article)
+	err := json.NewDecoder(r.Body).Decode(&webpageBasics)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	article.Id = id
-	updatedArticle, err := page.UpdateArticle(article)
+	updatedWebpage, err := page.UpdateWebpage(webpageBasics)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	JSON.SendJSON(w, updatedArticle)
+	JSON.SendJSON(w, updatedWebpage)
 
 }
 func Controller_Page_Articles_Save(w http.ResponseWriter, r *http.Request) {
