@@ -53,9 +53,9 @@ func SaveArticle(webId int, article models.ArticleModel) (*models.ArticleModel, 
 	return &article, nil
 }
 
-func SaveRecruitment(webId int, recruits []models.RecruitmentModel) error {
+func SaveRecruitment(webId int, recruits []models.RecruitmentModel) ([]models.RecruitmentModel, error) {
 	if len(recruits) == 0 {
-		return nil
+		return nil, nil
 	}
 
 	numberOfRows := len(recruits)
@@ -75,34 +75,42 @@ func SaveRecruitment(webId int, recruits []models.RecruitmentModel) error {
 	query := "INSERT INTO recruitment (WebId, Class, Subclass) VALUES " + values + ""
 	_, err := db.Context.Exec(query, params...)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	recruitsObject, err := getRecruitment(webId)
+	if err != nil {
+		return nil, err
+	}
+	return recruitsObject, nil
 }
 
-func SaveNavbar(webId int, navbar []models.NavItem) error {
+func SaveNavbar(webId int, navbar []models.NavItem) ([]models.NavItem, error) {
 	if len(navbar) == 0 {
-		return nil
+		return nil, nil
 	}
 
 	values := GetValueString(len(navbar), 4)
 	params := make([]interface{}, 0, len(navbar)*4)
 
-	for _, item := range navbar {
-		params = append(params, webId, item.Name, item.Path, item.Order)
+	for i, item := range navbar {
+		params = append(params, webId, item.Name, item.Path, i)
 	}
 
 	query := "INSERT INTO navbar (WebId, Name, Path, Ranking) VALUES " + values
 	_, err := db.Context.Exec(query, params...)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	navbarObject, err := getNavbar(webId)
+	if err != nil {
+		return nil, err
+	}
+	return navbarObject, nil
 }
 
-func SaveChannels(webId int, channel []models.ChannelModel, site string) error {
+func SaveChannels(webId int, channel []models.ChannelModel, site string) ([]models.ChannelModel, error) {
 	if len(channel) == 0 {
-		return nil
+		return nil, nil
 	}
 	numberOfData := 4
 	values := GetValueString(len(channel), numberOfData)
@@ -115,20 +123,29 @@ func SaveChannels(webId int, channel []models.ChannelModel, site string) error {
 	query := "INSERT INTO channels (WebId, Type, Name, Link) VALUES " + values
 	_, err := db.Context.Exec(query, params...)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	youtubeObject, twitchObject, err := getChannels(webId)
+	if err != nil {
+		return nil, err
+	}
+	if site == "youtbe" {
+		return youtubeObject, nil
+	} else {
+
+		return twitchObject, nil
+	}
 }
 
-func SaveProgress(webId int, progess []models.ProgressModel) error {
+func SaveProgress(webId int, progess []models.ProgressModel) ([]models.ProgressModel, error) {
 	if len(progess) == 0 {
-		return nil
+		return nil, nil
 	}
 
 	//transaciot because we insert to multiple tables
 	tx, commitOrRollback, err := db.BeginTransaction()
 	if err != nil {
-		return nil
+		return nil, nil
 	}
 	defer commitOrRollback()
 
@@ -138,7 +155,7 @@ func SaveProgress(webId int, progess []models.ProgressModel) error {
 		var progressId int
 		err := tx.QueryRow("INSERT INTO progress (WebId,Name) values ($1,$2) RETURNING  Id", webId, item.Name).Scan(&progressId)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		values := GetValueString(len(item.Raids), 3)
 
@@ -151,15 +168,19 @@ func SaveProgress(webId int, progess []models.ProgressModel) error {
 		//err := tx.QueryRow("INSERT INTO raids (ProgressId,Difficulty,Maz,Current) values ($1,$2) RETURNING  Id", webId, item.Name).Scan(&progressId)
 		_, err = tx.Exec(query, params...)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	progressObject, err := getProgress(webId)
+	if err != nil {
+		return nil, err
+	}
+	return progressObject, nil
 }
 
-func SaveCalendar(webId int, calendar []models.CalendarModel) error {
+func SaveCalendar(webId int, calendar []models.CalendarModel) ([]models.CalendarModel, error) {
 	if len(calendar) == 0 {
-		return nil
+		return nil, nil
 	}
 	numberOfData := 4
 	values := GetValueString(len(calendar), numberOfData)
@@ -172,9 +193,13 @@ func SaveCalendar(webId int, calendar []models.CalendarModel) error {
 	query := "INSERT INTO calendar (WebId, Name, Date, Type) VALUES " + values
 	_, err := db.Context.Exec(query, params...)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	calendarObject, err := getCalendar(webId)
+	if err != nil {
+		return nil, err
+	}
+	return calendarObject, nil
 }
 
 func GetValueString(numberOfRows int, numberOfData int) string {

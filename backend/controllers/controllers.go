@@ -30,7 +30,7 @@ func ControllerInit(r *mux.Router) {
 	pageRouter.HandleFunc("/recruitment/{Id:[0-9]+}", Controller_Page_Recruitment_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
 	pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Save).Methods("POST", "OPTIONS")
-	pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+	pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Modify).Methods("PATCH", "OPTIONS")
 
 	pageRouter.HandleFunc("/youtube", Controller_Page_Youtube_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/youtube/{Id:[0-9]+}", Controller_Page_Youtube_Modify).Methods("PATCH", "DELETE", "OPTIONS")

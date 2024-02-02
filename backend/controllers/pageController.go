@@ -41,7 +41,12 @@ func Controller_Page_Articles_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	page.SaveArticle(web_id, article)
+	articleObject, err := page.SaveArticle(web_id, article)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON.SendJSON(w, articleObject)
 
 }
 
@@ -96,8 +101,12 @@ func Controller_Page_Recruitment_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	page.SaveRecruitment(web_id, recruitment)
-
+	recruitObject, err := page.SaveRecruitment(web_id, recruitment)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON.SendJSON(w, recruitObject)
 }
 
 func Controller_Page_Recruitment_Modify(w http.ResponseWriter, r *http.Request) {
@@ -151,8 +160,12 @@ func Controller_Page_Progress_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	page.SaveProgress(web_id, progress)
-
+	progressObject, err := page.SaveProgress(web_id, progress)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON.SendJSON(w, progressObject)
 }
 
 func Controller_Page_Progress_Modify(w http.ResponseWriter, r *http.Request) {
@@ -206,8 +219,12 @@ func Controller_Page_Navbar_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	page.SaveNavbar(web_id, navbar)
-
+	navbarObject, err := page.SaveNavbar(web_id, navbar)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON.SendJSON(w, navbarObject)
 }
 
 func Controller_Page_Navbar_Modify(w http.ResponseWriter, r *http.Request) {
@@ -226,34 +243,26 @@ func Controller_Page_Navbar_Modify(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
-	switch r.Method {
-	case http.MethodDelete:
-		err = page.DeleteRecord(id, "progress")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	case http.MethodPatch:
-		var navbar []models.NavItem
-		err := json.NewDecoder(r.Body).Decode(&navbar)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		webId, err := functions.GetWebId(r)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		err = page.UpdateNavbar(navbar, webId)
-		if err.Error() == "invalid webid" {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
-			return
-		} else if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	var navbar []models.NavItem
+	err = json.NewDecoder(r.Body).Decode(&navbar)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	webId, err := functions.GetWebId(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = page.UpdateNavbar(navbar, webId)
+	if err.Error() == "invalid webid" {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	} else if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 }
 
 func Controller_Page_Youtube_Save(w http.ResponseWriter, r *http.Request) {
@@ -268,8 +277,12 @@ func Controller_Page_Youtube_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	page.SaveChannels(web_id, youtube, "youtube")
-
+	channelObject, err := page.SaveChannels(web_id, youtube, "youtube")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON.SendJSON(w, channelObject)
 }
 
 func Controller_Page_Twitch_Save(w http.ResponseWriter, r *http.Request) {
@@ -284,7 +297,12 @@ func Controller_Page_Twitch_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	page.SaveChannels(web_id, twitch, "twitch")
+	channelObject, err := page.SaveChannels(web_id, twitch, "twitch")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON.SendJSON(w, channelObject)
 
 }
 
@@ -378,8 +396,12 @@ func Controller_Page_Calendar_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	page.SaveCalendar(web_id, calendar)
-
+	calendarObject, err := page.SaveCalendar(web_id, calendar)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON.SendJSON(w, calendarObject)
 }
 
 func Controller_Page_Calendar_Modify(w http.ResponseWriter, r *http.Request) {

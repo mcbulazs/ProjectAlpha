@@ -82,7 +82,7 @@ func GetWebContent(webId int) (*models.WebPageModel, error) {
 
 func getArticles(webId int) ([]models.ArticleModel, error) {
 	var result []models.ArticleModel = make([]models.ArticleModel, 0)
-	rows, err := db.Context.Query("SELECT Id, Title, Date, Content FROM articles WHERE WebId=$1 ORDER BY Date", webId)
+	rows, err := db.Context.Query("SELECT Id, Title, Date, Content FROM articles WHERE WebId=$1 ORDER BY Date DESC", webId)
 	if err != nil {
 		return nil, err
 	}
@@ -121,14 +121,14 @@ func getRecruitment(webId int) ([]models.RecruitmentModel, error) {
 
 func getNavbar(webId int) ([]models.NavItem, error) {
 	var result []models.NavItem = make([]models.NavItem, 0)
-	rows, err := db.Context.Query("SELECT Id, Name, Path, Ranking FROM navbar WHERE WebId=$1 ORDER BY Ranking", webId)
+	rows, err := db.Context.Query("SELECT Id, Name, Path FROM navbar WHERE WebId=$1 ORDER BY Ranking", webId)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var navbar models.NavItem
-		err = rows.Scan(&navbar.Id, &navbar.Name, &navbar.Path, &navbar.Order)
+		err = rows.Scan(&navbar.Id, &navbar.Name, &navbar.Path)
 		if err != nil {
 			return nil, err
 		}

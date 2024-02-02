@@ -74,9 +74,9 @@ func UpdateNavbar(model []models.NavItem, webId int) error {
 		}
 	}
 
-	for _, item := range model {
+	for i, item := range model {
 		slices.DeleteFunc(navIds, func(e int) bool { return e == item.Id })
-		_, err := tx.Exec("UPDATE navbar SET Name=$1, Path=$2, Ranking=$3 WHERE Id=$4", item.Name, item.Path, item.Order, item.Id)
+		_, err := tx.Exec("UPDATE navbar SET Name=$1, Path=$2, Ranking=$3 WHERE Id=$4", item.Name, item.Path, i, item.Id)
 		if err != nil {
 			return err
 		}

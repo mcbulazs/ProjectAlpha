@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/mail"
+	"strings"
 
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/JSON"
@@ -74,6 +75,8 @@ func Controller_Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginUser(login *models.LoginModel) (int, error) {
+	login.Email = strings.ToLower(login.Email)
+
 	row := db.Context.QueryRow("SELECT id, password FROM Users where email=$1", login.Email)
 
 	var hash string
@@ -101,6 +104,7 @@ func checkRegisterValidity(register *models.LoginModel) error {
 
 func RegisterUser(register *models.LoginModel) (int, error) {
 	//TODO: email verification
+	register.Email = strings.ToLower(register.Email)
 	err := checkRegisterValidity(register)
 	if err != nil {
 		return 0, err
