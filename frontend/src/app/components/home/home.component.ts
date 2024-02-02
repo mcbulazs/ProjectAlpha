@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { RegisterComponent } from '../register/register.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Subscription, interval } from 'rxjs';
+import { Subscription, interval, timer } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ];
 
   backgrounds = new Array();
+  usedBackgrounds = new Array();
   serverState = this.authService.backendState;
 
   private bgChanger = new Subscription();
@@ -34,11 +35,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadImages();
-    this.bgImage = `url('${this.backgrounds[this.backgrounds.length - 1].src}')`;
-    this.bgChanger.add(interval(10000).subscribe(() => {
-      const next = this.backgrounds.shift()!;
-      this.backgrounds.push(next);
-      this.bgImage = `url('${next.src}')`;
+    this.bgChanger.add(timer(0, 10000).subscribe(() => {
+      if (this.backgrounds.length === 0) {
+        let len = this.usedBackgrounds.length;
+        for (let i = 0; i < len; ++i) {
+          this.backgrounds.push(this.usedBackgrounds.shift());
+        }
+      }
+      const next = this.backgrounds.splice(Math.floor(Math.random()*this.backgrounds.length), 1);
+      this.usedBackgrounds.push(next[0]);
+      this.bgImage = `url('${next[0].src}')`;
     }));
   }
 

@@ -12,6 +12,7 @@ import { TemplatesComponent } from './components/admin/templates/templates.compo
 import { MediaComponent } from './components/admin/media/media.component';
 import { CalendarComponent } from './components/admin/calendar/calendar.component';
 import { DangerZoneComponent } from './components/admin/danger-zone/danger-zone.component';
+import { GuildRulesComponent } from './components/admin/guild-rules/guild-rules.component';
 
 export const PROJECT_TITLE = 'Project';
 
@@ -21,6 +22,7 @@ export const routes: Routes = [
         { path: 'general', component: GeneralComponent, },
         { path: 'templates', component: TemplatesComponent, },
         { path: 'articles', component: ArticlesComponent },
+        { path: 'rules', component: GuildRulesComponent },
         { path: 'recruitment', component: RecruitmentComponent },
         { path: 'progress', component: ProgressComponent },
         { path: 'media', component: MediaComponent },
