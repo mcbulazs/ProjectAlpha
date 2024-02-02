@@ -68,7 +68,9 @@ export class ArticlesComponent implements OnInit {
       width: '200px',
       data: id,
     });
-    dialogRef.afterClosed().subscribe(x => {
+    dialogRef.afterClosed().subscribe(() => {
+      console.log(this.pds.data.articles);
+      
       this.setDisplayedArticles();
     });
   }
