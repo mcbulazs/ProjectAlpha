@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { Article } from '../interfaces/article.interface';
 import { PLACEHOLDER_DATA } from '../constants';
+import { PageBasics } from '../interfaces/page.basics.interface';
 
 export interface TemplateChanger {
   templateID: number,
@@ -33,9 +34,7 @@ export class PageDataService {
       withCredentials: true, observe: 'response',
     }).pipe(map(res => {
       if (res.status === 200 && res.body) {
-        res.body.presetId = 0; //! DEFER REMOVE
         res.body.navbar = PLACEHOLDER_DATA.navbar;
-        res.body.title = "";
         this.data = res.body;
         this.data.backgroundColor = '#333333';
         console.log("Page data is ready!");
@@ -104,11 +103,17 @@ export class PageDataService {
       }));
   }
 
-  updateTemplate(): Observable<boolean> {
-    return of(true);
-  }
-
-  updateTitle(title: string): Observable<boolean> {
-    return of(true);
+  updateBasics(pageBasics: PageBasics): Observable<boolean> {
+    return this.httpClient.patch<PageBasics>(`${environment.backendURL}/page/${this.webID}`, pageBasics, {
+      withCredentials: true,
+    }).pipe(
+      catchError(() => of(false)),
+      map(res => {
+        if (typeof res === 'boolean') return false;
+        this.data.title = res.title;
+        this.data.templateid = res.templateid;
+        return true;
+      }),
+    );
   }
 }

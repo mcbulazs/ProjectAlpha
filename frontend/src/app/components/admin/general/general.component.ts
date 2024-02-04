@@ -27,17 +27,21 @@ export class GeneralComponent implements OnInit, OnDestroy {
   data!: PageData;
 
   navOrderChanged = false;
-  originalNavbar: NavItem[] = [];
+
+  initState: any = {};
 
   ngOnInit(): void {
     this.data = this.pds.data;
+    this.initState = {
+      title: this.data.title,
+      logo: {...this.data.logo},
+      banner: {...this.data.banner},
+      navigation: [],
+    }
     for (const navItem of this.data.navbar) {
-      this.originalNavbar.push({ ...navItem });
+      this.initState.navigation.push({ ...navItem });
     }
   }
-
-
-  logoSrc: any = '';
 
   changeLogo(e: any) {
     if (!e.target.files[0]) return;
@@ -48,8 +52,8 @@ export class GeneralComponent implements OnInit, OnDestroy {
   }
 
   checkOrder() {
-    for (let i = 0; i < this.originalNavbar.length; i++) {
-      if (this.originalNavbar[i].id !== this.data.navbar[i].id) {
+    for (let i = 0; i < this.initState.navigation.length; i++) {
+      if (this.initState.navigation[i].id !== this.data.navbar[i].id) {
         this.navOrderChanged = true;
         return;
       }
@@ -60,9 +64,11 @@ export class GeneralComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.navOrderChanged) {
       for (let i = 0; i < this.data.navbar.length; i++) {
-        this.data.navbar[i] = this.originalNavbar[i];
+        this.data.navbar[i] = this.initState.navigation[i];
       }
     }
+    if (this.initState.title !== this.data.title) this.data.title = this.initState.title;
+    if (this.initState.logo.path !== this.data.logo.path) this.data.logo = this.initState.logo;
   }
 
   drop(event: CdkDragDrop<NavItem[]>) {

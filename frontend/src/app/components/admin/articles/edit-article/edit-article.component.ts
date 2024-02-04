@@ -11,11 +11,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ARTICLE_CONTENT_MAX_LENGTH, ARTICLE_TITLE_MAX_LENGTH, MAT_SNACKBAR_CONFIG } from '../../../../constants';
 import { PageDataService } from '../../../../services/page.data.service';
 import { ArticlesComponent } from '../articles.component';
+import { QuillModule } from 'ngx-quill';
 
 @Component({
   selector: 'app-edit-article',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, CdkTextareaAutosize, MatDialogTitle, MatDialogActions, MatDialogClose],
+  imports: [CommonModule, QuillModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, CdkTextareaAutosize, MatDialogTitle, MatDialogActions, MatDialogClose],
   templateUrl: './edit-article.component.html',
   styleUrl: './edit-article.component.scss'
 })

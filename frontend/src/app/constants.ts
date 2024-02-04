@@ -40,17 +40,17 @@ export const PLACEHOLDER_DATA: PageData = {
         {
             id: 0,
             name: "Home",
-            order: 0,
             path: "",
+            enabled: true,
         },
         {
             id: 1,
             name: "About",
-            order: 1,
             path: "about",
+            enabled: true,
         }
     ],
-    presetId: 0,
+    templateid: 0,
     progress: [
         {
             id: -1,

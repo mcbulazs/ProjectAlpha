@@ -8,7 +8,7 @@ import { Recruitment } from "./recruitment.interface"
 
 export interface PageData {
     title: string
-    presetId: number
+    templateid: number
     logo: FileModel
     banner: FileModel
     articles: Article[]

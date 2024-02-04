@@ -1,0 +1,18 @@
+<!-- <div class="tools">
+<button mat-icon-button (click)="formatSelection('bold')">
+    <mat-icon>format_bold</mat-icon>
+</button>
+<button mat-icon-button (click)="formatSelection('italic')">
+    <mat-icon>format_italic</mat-icon>
+</button>
+</div>
+<mat-form-field>
+    <mat-label>Input text</mat-label>
+    <textarea type="text" matInput [(ngModel)]="data.articles[0].content" [innerHTML]="data.articles[0].content" cdkTextareaAutosize></textarea>
+</mat-form-field>
+
+<div class="test" contenteditable="true" #input (input)="updateContent(input.innerHTML)"></div>
+ -->
+<!-- innerHTML="{{data.articles[0].content}}" -->
+
+<quill-editor [(ngModel)]="data.articles[0].content"></quill-editor>

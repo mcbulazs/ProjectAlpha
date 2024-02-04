@@ -9,7 +9,6 @@ Frontend:
 
 
 Backend:
-+ ! webpage basic data patch nem működik
 + template és preset id 
             --refactored ami eddig presetId- mostmar templateId
             --presetId felesleges
@@ -26,3 +25,5 @@ Backend:
                 Path string `json:"path"`
                 Enabled bool `json:"enabled"`
             }
+
+- default templateid 0 legyen

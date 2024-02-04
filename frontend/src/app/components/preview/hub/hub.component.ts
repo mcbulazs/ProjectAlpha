@@ -21,7 +21,7 @@ export class HubComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.data = this.pds.data;
-    this.setComponent(this.data.presetId, '');
+    this.setComponent(this.data.templateid, '');
     this.subs.add(this.pds.getTemplateHotline().subscribe(x => {
       this.setComponent(x.templateID, x.path);
     }));

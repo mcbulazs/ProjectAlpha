@@ -13,6 +13,7 @@ import { MediaComponent } from './components/admin/media/media.component';
 import { CalendarComponent } from './components/admin/calendar/calendar.component';
 import { DangerZoneComponent } from './components/admin/danger-zone/danger-zone.component';
 import { GuildRulesComponent } from './components/admin/guild-rules/guild-rules.component';
+import { HtmlEditorComponent } from './components/html-editor/html-editor.component';
 
 export const PROJECT_TITLE = 'Project';
 
@@ -28,8 +29,9 @@ export const routes: Routes = [
         { path: 'media', component: MediaComponent },
         { path: 'calendar', component: CalendarComponent },
         { path: 'settings', component: DangerZoneComponent },
+        { path: 'editor', component: HtmlEditorComponent },
         { path: '**', redirectTo: 'general' },
-    ]} ,
+    ]},
     { path: 'rules', component: RulesComponent, title: `${PROJECT_TITLE} | Rules`},
     { path: '**', redirectTo: '/' },
 ];

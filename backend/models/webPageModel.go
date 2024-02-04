@@ -2,7 +2,7 @@ package models
 
 type WebPageModel struct {
 	Title       string             `json:"title"`
-	TemplateId  int                `json:"templateId"`
+	TemplateId  int                `json:"templateid"`
 	Logo        fileModel          `json:"logo"`
 	Banner      fileModel          `json:"banner"`
 	Articles    []ArticleModel     `json:"articles"`    //[{"content": "asdas<span style=\"color:red\">dasd</span>", "date": "2015-07-19T15.23.32.000Z", "title": "asd"}]

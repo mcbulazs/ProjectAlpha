@@ -10,11 +10,12 @@ import { Article } from '../../../../interfaces/article.interface';
 import { PageDataService } from '../../../../services/page.data.service';
 import { AdminComponent } from '../../admin.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { QuillModule } from 'ngx-quill';
 
 @Component({
   selector: 'app-create-article',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, CdkTextareaAutosize, MatDialogTitle, MatDialogActions, MatDialogClose],
+  imports: [CommonModule, QuillModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, CdkTextareaAutosize, MatDialogTitle, MatDialogActions, MatDialogClose],
   templateUrl: './create-article.component.html',
   styleUrl: './create-article.component.scss'
 })
@@ -35,7 +36,7 @@ export class CreateArticleComponent {
   // TODO: validation for input length AND remove date setting when it is done at backend
   create() {
     if (this.article.content === '' || this.article.title === '') return;
-    if (this.article.content.length > ARTICLE_CONTENT_MAX_LENGTH || this.article.title.length > ARTICLE_TITLE_MAX_LENGTH) return;
+    //if (this.article.content.length > ARTICLE_CONTENT_MAX_LENGTH || this.article.title.length > ARTICLE_TITLE_MAX_LENGTH) return;
     let date = new Date();
     this.article.date = date.toISOString();
     this.pds.createArticle(this.article).subscribe(x => {

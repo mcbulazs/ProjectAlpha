@@ -6,6 +6,8 @@ import { MatButton } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_SNACKBAR_CONFIG } from '../../../constants';
 import { TemplateOneComponent } from '../../preview/templates/template-one/template-one/template-one.component';
+import { PageBasics } from '../../../interfaces/page.basics.interface';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-templates',
@@ -28,8 +30,8 @@ export class TemplatesComponent implements OnDestroy {
   templates = TEMPLATES;
   currentGame = 0;
   selectedGame = 0;
-  currentTemplate = this.pds.data.presetId;
-  selectedTemplate = this.pds.data.presetId;
+  currentTemplate = this.pds.data.templateid;
+  selectedTemplate = this.pds.data.templateid;
 
 
   selectGame(id: number) {
@@ -51,10 +53,20 @@ export class TemplatesComponent implements OnDestroy {
 
   }
 
-  // TODO: send to backend
   switchTemplate() {
-    this.currentTemplate = this.selectedTemplate;
-    this.pds.data.presetId = this.selectedTemplate;
-    this.snackBar.open('Template changed!', undefined, MAT_SNACKBAR_CONFIG);
+    let basics: PageBasics = {
+      id: this.pds.webID,
+      templateid: this.selectedTemplate,
+      title: this.pds.data.title,
+    }
+    this.pds.updateBasics(basics).subscribe(
+      succeded => {
+        if (succeded) {
+          this.pds.data.templateid = this.selectedTemplate;
+          this.currentTemplate = this.selectedTemplate;
+        }
+        this.snackBar.open(`Template change${succeded ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+      }
+    )
   }
 }

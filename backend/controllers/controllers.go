@@ -21,7 +21,7 @@ func ControllerInit(r *mux.Router) {
 	//webpage controllers
 	pageRouter := r.PathPrefix("/page/{webId:[0-9]+}").Subrouter()
 	pageRouter.Use(middleware.CheckWebpageMiddleware)
-	pageRouter.HandleFunc("", Controller_Page_Get).Methods("GET", "OPTIONS")
+	pageRouter.HandleFunc("", Controller_Page_Get).Methods("GET")
 	pageRouter.HandleFunc("", Controller_Page_Modify).Methods("PATCH", "OPTIONS")
 
 	pageRouter.HandleFunc("/articles", Controller_Page_Articles_Save).Methods("POST", "OPTIONS")

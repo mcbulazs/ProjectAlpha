@@ -4,11 +4,12 @@
     <input matInput type="text" [(ngModel)]="article.title" [maxlength]="titleMaxLength">
     <mat-hint align="end">{{article.title.length}} / {{titleMaxLength}}</mat-hint>
 </mat-form-field>
-<mat-form-field class="full-width">
+<quill-editor [(ngModel)]="article.content"></quill-editor>
+<!-- <mat-form-field class="full-width">
     <mat-label>Content</mat-label>
     <textarea matInput type="text" [(ngModel)]="article.content" cdkTextareaAutosize [maxlength]="contentMaxLength"></textarea>
     <mat-hint align="end">{{article.content.length}} / {{contentMaxLength}}</mat-hint>
-</mat-form-field>
+</mat-form-field> -->
 <div mat-dialog-actions class="buttons">
     <button mat-dialog-close mat-raised-button (click)="update()" color="primary">Update</button>
     <button mat-dialog-close mat-raised-button color="warn">Close</button>
