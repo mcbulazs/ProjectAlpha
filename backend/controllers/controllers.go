@@ -14,14 +14,14 @@ func ControllerInit(r *mux.Router) {
 	//user controllers
 	r.HandleFunc("/login", Controller_Login).Methods("POST", "OPTIONS")
 	r.HandleFunc("/register", Controller_Register).Methods("POST", "OPTIONS")
-	r.HandleFunc("/logout", Controller_Logout).Methods("GET")
-
-	r.HandleFunc("/auth", Controller_Auth).Methods("GET")
+	r.HandleFunc("/logout", Controller_Logout).Methods("GET", "OPTIONS")
+	r.HandleFunc("/testing", Controller_Test).Methods("GET", "OPTIONS")
+	r.HandleFunc("/auth", Controller_Auth).Methods("GET", "OPTIONS")
 
 	//webpage controllers
 	pageRouter := r.PathPrefix("/page/{webId:[0-9]+}").Subrouter()
 	pageRouter.Use(middleware.CheckWebpageMiddleware)
-	pageRouter.HandleFunc("", Controller_Page_Get).Methods("GET")
+	pageRouter.HandleFunc("", Controller_Page_Get).Methods("GET", "OPTIONS")
 	pageRouter.HandleFunc("", Controller_Page_Modify).Methods("PATCH", "OPTIONS")
 
 	pageRouter.HandleFunc("/articles", Controller_Page_Articles_Save).Methods("POST", "OPTIONS")
@@ -30,7 +30,7 @@ func ControllerInit(r *mux.Router) {
 	pageRouter.HandleFunc("/recruitment", Controller_Page_Recruitment_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/recruitment/{Id:[0-9]+}", Controller_Page_Recruitment_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
-	pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Save).Methods("POST", "OPTIONS")
+	//pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Modify).Methods("PATCH", "OPTIONS")
 
 	pageRouter.HandleFunc("/youtube", Controller_Page_Youtube_Save).Methods("POST", "OPTIONS")
@@ -44,5 +44,8 @@ func ControllerInit(r *mux.Router) {
 
 	pageRouter.HandleFunc("/calendar", Controller_Page_Calendar_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/calendar/{Id:[0-9]+}", Controller_Page_Calendar_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+
+	pageRouter.HandleFunc("/rules", Controller_Page_Rules_Save).Methods("POST", "OPTIONS")
+	pageRouter.HandleFunc("/rules/{Id:[0-9]+}", Controller_Page_Rules_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
 }

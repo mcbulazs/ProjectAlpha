@@ -14,8 +14,8 @@ func GetWebContent(webId int) (*models.WebPageModel, error) {
 	var Logo_Id int
 	var Banner_ID int
 	//Title and Preset Id
-	row := db.Context.QueryRow("SELECT Name,Preset_Id,Logo_Id,Banner_ID FROM webpages WHERE id=$1", webId)
-	err := row.Scan(&result.Title, &result.PresetId, &Logo_Id, &Banner_ID)
+	row := db.Context.QueryRow("SELECT Name, Template_Id,Logo_Id,Banner_ID FROM webpages WHERE id=$1", webId)
+	err := row.Scan(&result.Title, &result.TemplateId, &Logo_Id, &Banner_ID)
 
 	if err != nil {
 		return nil, err
@@ -64,6 +64,7 @@ func GetWebContent(webId int) (*models.WebPageModel, error) {
 	}
 	result.Youtube = youtube
 	result.Twitch = twitch
+
 	//progress
 	progess, err := getProgress(webId)
 	if err != nil {
@@ -77,6 +78,13 @@ func GetWebContent(webId int) (*models.WebPageModel, error) {
 		fmt.Println("Calendar get: " + err.Error())
 	}
 	result.Calendar = calendar
+
+	//rules
+	rules, err := getRules(webId)
+	if err != nil {
+		fmt.Println("Rules get: " + err.Error())
+	}
+	result.Rules = rules
 	return &result, nil
 }
 
@@ -121,14 +129,14 @@ func getRecruitment(webId int) ([]models.RecruitmentModel, error) {
 
 func getNavbar(webId int) ([]models.NavItem, error) {
 	var result []models.NavItem = make([]models.NavItem, 0)
-	rows, err := db.Context.Query("SELECT Id, Name, Path FROM navbar WHERE WebId=$1 ORDER BY Ranking", webId)
+	rows, err := db.Context.Query("SELECT Id, Name, Path, Enabled FROM navbar WHERE WebId=$1 ORDER BY Ranking", webId)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var navbar models.NavItem
-		err = rows.Scan(&navbar.Id, &navbar.Name, &navbar.Path)
+		err = rows.Scan(&navbar.Id, &navbar.Name, &navbar.Path, &navbar.IsEnabled)
 		if err != nil {
 			return nil, err
 		}
@@ -206,6 +214,23 @@ func getCalendar(webId int) ([]models.CalendarModel, error) {
 			return nil, err
 		}
 		result = append(result, calendar)
+	}
+	return result, nil
+}
+
+func getRules(webId int) ([]models.RulesModel, error) {
+	var result []models.RulesModel = make([]models.RulesModel, 0)
+	rows, err := db.Context.Query("SELECT Id, Rule FROM rules WHERE WebId=$1", webId)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var rule models.RulesModel
+		err = rows.Scan(&rule.Id, &rule.Rule)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, rule)
 	}
 	return result, nil
 }

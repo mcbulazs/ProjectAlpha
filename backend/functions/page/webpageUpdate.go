@@ -5,17 +5,16 @@ import (
 	"ProjectAlpha/models"
 	"fmt"
 	"slices"
-	"strings"
 
 	"github.com/lib/pq"
 )
 
 func UpdateWebpage(model models.WebpageBasicsModel) (*models.WebpageBasicsModel, error) {
 	var updatedWebpage models.WebpageBasicsModel
-	err := db.Context.QueryRow("UPDATE webpage SET Title=$1, PresetId=$2 WHERE Id=$3 RETURNING Id, Title, PresetId", model.Title, model.PresetId, model.Id).Scan(
+	err := db.Context.QueryRow("UPDATE webpages SET Name=$1, Template_Id=$2 WHERE Id=$3 RETURNING Id, Name, Template_Id", model.Title, model.TemplateId, model.Id).Scan(
 		&updatedWebpage.Id,
 		&updatedWebpage.Title,
-		&updatedWebpage.PresetId,
+		&updatedWebpage.TemplateId,
 	)
 	if err != nil {
 		return nil, err
@@ -54,61 +53,30 @@ func UpdateRecruitment(model models.RecruitmentModel) (*models.RecruitmentModel,
 }
 
 func UpdateNavbar(model []models.NavItem, webId int) ([]models.NavItem, error) {
-
+	//Begin sql transaction
 	tx, commitOrRollback, err := db.BeginTransaction()
-	if err != nil {
-		return nil, nil
-	}
-	defer commitOrRollback()
-	//checking all ids
-	var navIds []int
-	for _, v := range model {
-		navIds = append(navIds, v.Id)
-	}
-	var placeholders []string
-	for _, i := range navIds {
-		placeholders = append(placeholders, fmt.Sprintf("$%d", i))
-	}
-	query := fmt.Sprintf("SELECT WebID FROM navbar WHERE Id IN (%s)", strings.Join(placeholders, ", "))
-	rows, err := tx.Query(query, navIds)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer commitOrRollback(&err)
 
-	for rows.Next() {
-		var webId_db int
-		err = rows.Scan(&webId_db)
-		if err != nil {
-			return nil, err
-		}
-		if webId_db != webId {
-			return nil, fmt.Errorf("invalid webid")
-		}
-	}
-
+	//updating the rows as needed
 	var updatedNavbar []models.NavItem
-
 	for i, item := range model {
-		slices.DeleteFunc(navIds, func(e int) bool { return e == item.Id })
 		var updatedNavitem models.NavItem
-		err := tx.QueryRow("UPDATE navbar SET Name=$1, Path=$2, Ranking=$3 WHERE Id=$4 RETURNING Id, Name, Path", item.Name, item.Path, i, item.Id).Scan(
+		row := tx.QueryRow("UPDATE navbar SET Name=$1, Path=$2, Ranking=$3, Enabled=$4 WHERE Id=$5 AND WebID=$6 RETURNING Id, Name, Path, Enabled", item.Name, item.Path, i, item.IsEnabled, item.Id, webId)
+		err = row.Scan(
 			&updatedNavitem.Id,
 			&updatedNavitem.Name,
 			&updatedNavitem.Path,
+			&updatedNavitem.IsEnabled,
 		)
 		if err != nil {
 			return nil, err
 		}
 		updatedNavbar = append(updatedNavbar, updatedNavitem)
 	}
-
-	for _, Id := range navIds {
-		_, err := db.Context.Exec("DELETE FROM navbar WHERE id=$1", Id)
-		if err != nil {
-			return nil, err
-		}
-	}
+	fmt.Println("no error in UpdateNavbar")
 	return updatedNavbar, nil
 }
 
@@ -129,9 +97,9 @@ func UpdateProgress(model models.ProgressModel) (*models.ProgressModel, error) {
 	var updatedProgress models.ProgressModel
 	tx, commitOrRollback, err := db.BeginTransaction()
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
-	defer commitOrRollback()
+	defer commitOrRollback(&err)
 	err = tx.QueryRow("UPDATE progress SET Name=$1 WHERE Id=$2 RETURNING Id, Name", model.Name, model.Id).Scan(
 		&updatedProgress.Id,
 		&updatedProgress.Name,
@@ -146,7 +114,7 @@ func UpdateProgress(model models.ProgressModel) (*models.ProgressModel, error) {
 	for _, raid := range model.Raids {
 		slices.DeleteFunc(raidIds, func(e int) bool { return e == raid.Id })
 		var updatedRaid models.RaidModel
-		err := tx.QueryRow("UPDATE raids SET Difficulty=$1, Max=$2, Current=$3 WHERE Id=$4 Returning Id, Difficulty, Max, Current", raid.Difficulty, raid.Max, raid.Current, raid.Id).Scan(
+		err = tx.QueryRow("UPDATE raids SET Difficulty=$1, Max=$2, Current=$3 WHERE Id=$4 Returning Id, Difficulty, Max, Current", raid.Difficulty, raid.Max, raid.Current, raid.Id).Scan(
 			&updatedRaid.Id,
 			&updatedRaid.Difficulty,
 			&updatedRaid.Max,
@@ -155,10 +123,10 @@ func UpdateProgress(model models.ProgressModel) (*models.ProgressModel, error) {
 		if err != nil {
 			return nil, err
 		}
-		updatedProgress.Raids = append(updatedProgress.Raids)
+		updatedProgress.Raids = append(updatedProgress.Raids, updatedRaid)
 	}
 	for _, raidId := range raidIds {
-		err := DeleteRaid(raidId)
+		err = DeleteRaid(raidId)
 		if err != nil {
 			return nil, err
 		}
@@ -196,4 +164,18 @@ func UpdateCalendar(model models.CalendarModel) (*models.CalendarModel, error) {
 	}
 
 	return &updatedCalendar, nil
+}
+
+func UpdateRule(model models.RulesModel) (*models.RulesModel, error) {
+	fmt.Println(model)
+	var updatedRule models.RulesModel
+	err := db.Context.QueryRow("UPDATE rules SET Rule=$1 WHERE Id=$2 RETURNING Id, Rule", model.Rule, model.Id).Scan(
+		&updatedRule.Id,
+		&updatedRule.Rule,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &updatedRule, nil
 }

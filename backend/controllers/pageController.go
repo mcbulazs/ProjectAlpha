@@ -224,44 +224,10 @@ func Controller_Page_Progress_Modify(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Controller_Page_Navbar_Save(w http.ResponseWriter, r *http.Request) {
-	var navbar []models.NavItem
-	err := json.NewDecoder(r.Body).Decode(&navbar)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	web_id, err := functions.GetWebId(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	navbarObject, err := page.SaveNavbar(web_id, navbar)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	JSON.SendJSON(w, navbarObject)
-}
-
 func Controller_Page_Navbar_Modify(w http.ResponseWriter, r *http.Request) {
 	//check if the webid and records webid are the same
-	id, err := strconv.Atoi(mux.Vars(r)["Id"])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	ok, err := validateId(r, id, "progress")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if !ok {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
-		return
-	}
 	var navbar []models.NavItem
-	err = json.NewDecoder(r.Body).Decode(&navbar)
+	err := json.NewDecoder(r.Body).Decode(&navbar)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -272,10 +238,7 @@ func Controller_Page_Navbar_Modify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	updatedNavbar, err := page.UpdateNavbar(navbar, webId)
-	if err.Error() == "invalid webid" {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
-		return
-	} else if err != nil {
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -461,6 +424,67 @@ func Controller_Page_Calendar_Modify(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		JSON.SendJSON(w, updatedCalendar)
+	}
+}
+
+func Controller_Page_Rules_Save(w http.ResponseWriter, r *http.Request) {
+	var rules []models.RulesModel
+	err := json.NewDecoder(r.Body).Decode(&rules)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	web_id, err := functions.GetWebId(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rulesObject, err := page.SaveRules(web_id, rules)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON.SendJSON(w, rulesObject)
+}
+
+func Controller_Page_Rules_Modify(w http.ResponseWriter, r *http.Request) {
+	//check if the webid and records webid are the same
+	id, err := strconv.Atoi(mux.Vars(r)["Id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ok, err := validateId(r, id, "rules")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if !ok {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	switch r.Method {
+	case http.MethodDelete:
+		err = page.DeleteRecord(id, "rules")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	case http.MethodPatch:
+		var rule models.RulesModel
+		err := json.NewDecoder(r.Body).Decode(&rule)
+		fmt.Println(rule)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		rule.Id = id
+		updatedRule, err := page.UpdateRule(rule)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		JSON.SendJSON(w, updatedRule)
 	}
 }
 

@@ -18,9 +18,9 @@ func SaveFiles() {
 func CreateWebpage(userId int) (int, error) {
 	tx, commitOrRollback, err := db.BeginTransaction()
 	if err != nil {
-		return 0, nil
+		return 0, err
 	}
-	defer commitOrRollback()
+	defer commitOrRollback(&err)
 	var webId int
 	row := tx.QueryRow("SELECT Id FROM webpages WHERE Owner_Id=$1", userId)
 
@@ -35,7 +35,7 @@ func CreateWebpage(userId int) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	_, err = tx.Exec("INSERT INTO navbar (WebId, Name, Path, Ranking) VALUES ($1,'Home','',0)", webId)
+	_, err = tx.Exec("INSERT INTO navbar (WebId, Name, Path, Ranking) VALUES ($1,'Home','',0), ($2,'About','About',0)", webId, webId)
 	if err != nil {
 		return 0, err
 	}
@@ -84,6 +84,7 @@ func SaveRecruitment(webId int, recruits []models.RecruitmentModel) ([]models.Re
 	return recruitsObject, nil
 }
 
+/*
 func SaveNavbar(webId int, navbar []models.NavItem) ([]models.NavItem, error) {
 	if len(navbar) == 0 {
 		return nil, nil
@@ -93,10 +94,10 @@ func SaveNavbar(webId int, navbar []models.NavItem) ([]models.NavItem, error) {
 	params := make([]interface{}, 0, len(navbar)*4)
 
 	for i, item := range navbar {
-		params = append(params, webId, item.Name, item.Path, i)
+		params = append(params, webId, item.Name, item.Path, i, item.Enabled)
 	}
 
-	query := "INSERT INTO navbar (WebId, Name, Path, Ranking) VALUES " + values
+	query := "INSERT INTO navbar (WebId, Name, Path, Ranking, Enabled) VALUES " + values
 	_, err := db.Context.Exec(query, params...)
 	if err != nil {
 		return nil, err
@@ -106,14 +107,14 @@ func SaveNavbar(webId int, navbar []models.NavItem) ([]models.NavItem, error) {
 		return nil, err
 	}
 	return navbarObject, nil
-}
+}*/
 
 func SaveChannels(webId int, channel []models.ChannelModel, site string) ([]models.ChannelModel, error) {
 	if len(channel) == 0 {
 		return nil, nil
 	}
 	numberOfData := 4
-	values := GetValueString(len(channel), numberOfData)
+	values := getValueString(len(channel), numberOfData)
 	params := make([]interface{}, 0, len(channel)*numberOfData)
 
 	for _, item := range channel {
@@ -145,19 +146,19 @@ func SaveProgress(webId int, progess []models.ProgressModel) ([]models.ProgressM
 	//transaciot because we insert to multiple tables
 	tx, commitOrRollback, err := db.BeginTransaction()
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
-	defer commitOrRollback()
+	defer commitOrRollback(&err)
 
 	for _, item := range progess {
 
 		//params = append(params, webId, item.Name, item.Path, item.Order)
 		var progressId int
-		err := tx.QueryRow("INSERT INTO progress (WebId,Name) values ($1,$2) RETURNING  Id", webId, item.Name).Scan(&progressId)
+		err = tx.QueryRow("INSERT INTO progress (WebId,Name) values ($1,$2) RETURNING  Id", webId, item.Name).Scan(&progressId)
 		if err != nil {
 			return nil, err
 		}
-		values := GetValueString(len(item.Raids), 3)
+		values := getValueString(len(item.Raids), 3)
 
 		params := make([]interface{}, 0, len(item.Raids)*3)
 		for _, item := range item.Raids {
@@ -183,7 +184,7 @@ func SaveCalendar(webId int, calendar []models.CalendarModel) ([]models.Calendar
 		return nil, nil
 	}
 	numberOfData := 4
-	values := GetValueString(len(calendar), numberOfData)
+	values := getValueString(len(calendar), numberOfData)
 	params := make([]interface{}, 0, len(calendar)*numberOfData)
 
 	for _, item := range calendar {
@@ -202,7 +203,32 @@ func SaveCalendar(webId int, calendar []models.CalendarModel) ([]models.Calendar
 	return calendarObject, nil
 }
 
-func GetValueString(numberOfRows int, numberOfData int) string {
+func SaveRules(webId int, rules []models.RulesModel) ([]models.RulesModel, error) {
+
+	if len(rules) == 0 {
+		return nil, nil
+	}
+	numberOfData := 2
+	values := getValueString(len(rules), numberOfData)
+	params := make([]interface{}, 0, len(rules)*numberOfData)
+
+	for _, item := range rules {
+		params = append(params, webId, item.Rule)
+	}
+
+	query := "INSERT INTO rules (WebId, Rule) VALUES " + values
+	_, err := db.Context.Exec(query, params...)
+	if err != nil {
+		return nil, err
+	}
+	rulesObject, err := getRules(webId)
+	if err != nil {
+		return nil, err
+	}
+	return rulesObject, nil
+}
+
+func getValueString(numberOfRows int, numberOfData int) string {
 	//($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10)
 	var result string
 	for i := 0; i < numberOfRows; i++ {

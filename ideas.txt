@@ -9,7 +9,20 @@ Frontend:
 
 
 Backend:
-- ! webpage basic data patch nem működik
-- template és preset id
-- szabályzat model
-- navigation itemekhez hozzávenni egy enabled booleant
++ ! webpage basic data patch nem működik
++ template és preset id 
+            --refactored ami eddig presetId- mostmar templateId
+            --presetId felesleges
++ szabályzat model
+            type RulesModel struct {
+                Id    int      `json:"id"`
+                Rules string `json:"rules"`
+            }
+
++ navigation itemekhez hozzávenni egy enabled booleant
+            type NavItem struct {
+                Id   int    `json:"id"`
+                Name string `json:"name"`
+                Path string `json:"path"`
+                Enabled bool `json:"enabled"`
+            }

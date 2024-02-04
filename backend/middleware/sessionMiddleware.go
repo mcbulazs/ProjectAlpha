@@ -19,8 +19,8 @@ func SessionMiddleware(next http.Handler) http.Handler {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 		}
 		//except for login and register u need session for everything
-		unSessionedEndPoints := []string{"/login", "/register"}
-		if !slices.Contains(unSessionedEndPoints, r.URL.Path) && r.Method != http.MethodOptions {
+		unSessionedEndPoints := []string{"/login", "/register", "/testing"}
+		if !slices.Contains(unSessionedEndPoints, r.URL.Path) && r.Method != http.MethodOptions && r.Method != http.MethodGet { //temporarily all gets are allowed
 			// Get the session from the store
 			session, _ := functions.Store.Get(r, "session")
 

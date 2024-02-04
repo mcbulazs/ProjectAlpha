@@ -4,7 +4,7 @@ CREATE TABLE webpages (
     Record_Log TIMESTAMP DEFAULT NULL,
     Name varchar(255) NOT NULL DEFAULT 'blank',
     Owner_Id int NOT NULL,
-    Preset_Id int NOT NULL DEFAULT 1,
+    Template_Id int NOT NULL DEFAULT 1,
     Logo_Id int not null DEFAULT 0,
     Banner_ID int not null DEFAULT 0
 );
@@ -46,7 +46,8 @@ CREATE TABLE navbar (
     WebId int NOT NULL,
     Name varchar(255) NOT NULL,
     Path varchar(255) NOT NULL,
-    Ranking int NOT NULL
+    Ranking int NOT NULL,
+    Enabled BOOLEAN NOT NULL DEFAULT TRUE
 );
 CREATE INDEX idx_navbar_webId ON navbar (webId);
 
@@ -88,6 +89,14 @@ create table calendar (
     Name varchar(255) NOT NULL,
     Date TIMESTAMP NOT NULL,
     Type varchar(255)
+);
+
+--rules
+create table rules (
+    Id SERIAL PRIMARY KEY,
+    Record_Log TIMESTAMP DEFAULT NULL,
+    WebId int NOT NULL,
+    Rule varchar NOT NULL DEFAULT ''
 );
 CREATE INDEX idx_calendar_webId ON calendar (webId);
 
