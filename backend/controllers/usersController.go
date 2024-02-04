@@ -10,7 +10,6 @@ import (
 
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/JSON"
-	"ProjectAlpha/functions"
 	sess "ProjectAlpha/functions"
 	"ProjectAlpha/models"
 
@@ -134,7 +133,7 @@ func RegisterUser(register *models.LoginModel) (int, error) {
 	//creating session
 }
 func Controller_Auth(w http.ResponseWriter, r *http.Request) {
-	id, err := functions.GetWebId(r)
+	id, err := sess.GetWebId(r)
 	if err != nil {
 		JSON.SendJSON(w, nil, "webid")
 		return
