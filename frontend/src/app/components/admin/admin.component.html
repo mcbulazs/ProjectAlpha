@@ -1,7 +1,7 @@
 <div class="admin {{preview ? 'admin-hidden' : ''}}">
-    <mat-drawer-container class="admin-container">
-        <mat-drawer mode="side" #drawer opened>
-            <mat-nav-list>
+    <mat-drawer-container class="admin-container" [hasBackdrop]="drawerBackdrop">
+        <mat-drawer [mode]="drawerMode" [opened]="drawerOpened" #drawer>
+            <mat-nav-list (click)="closeDrawerMobile(drawer)">
                 <mat-list-item routerLink="templates" routerLinkActive="" mat-list-item>
                     <mat-icon matListItemIcon>format_paint</mat-icon>
                     <a matListItemTitle>Templates</a>
@@ -50,6 +50,10 @@
                 </div>
                 <button mat-raised-button color="accent" (click)="togglePlaceholders()">Toggle placeholders</button>
                 <span class="navigation-spacer"></span>
+                <button mat-icon-button (click)="togglePreview()" class="btn-preview-mobile">
+                    <mat-icon *ngIf="!preview">fullscreen</mat-icon>
+                    <mat-icon *ngIf="preview">fullscreen_exit</mat-icon>
+                </button>
                 <button mat-icon-button (click)="logout()">
                     <mat-icon>logout</mat-icon>
                 </button>

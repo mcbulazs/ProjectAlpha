@@ -1,5 +1,5 @@
-<h1>Choose game</h1>
-<!-- <button mat-raised-button color="warn" *ngIf="currentTemplate !== selectedTemplate" (click)="switchGame()" class="btn-switch">Switch</button> -->
+<h1>Choose game preset</h1>
+<button mat-raised-button color="warn" *ngIf="currentGame !== selectedGame" (click)="switchGame()" class="btn-switch">Switch</button>
 <div class="templates">
     <button mat-button class="template {{i === selectedGame ? 'selected' : ''}}" *ngFor="let game of games; index as i" (click)="selectGame(i)">
         <div class="template-inner">
@@ -7,12 +7,12 @@
         </div>
     </button>
 </div>
-<h1>Template settings</h1>
+<h1>Choose template</h1>
 <button mat-raised-button color="warn" *ngIf="currentTemplate !== selectedTemplate" (click)="switchTemplate()" class="btn-switch">Switch</button>
 <div class="templates">
     <button mat-button class="template {{i === selectedTemplate ? 'selected' : ''}}" *ngFor="let template of templates; index as i" (click)="selectTemplate(i)">
         <div class="template-inner">
-            <img [src]="template.image" alt="" style="background-color: black; width: 160px; height: 90px;">
+            <img [src]="template.image" style="background-color: black;" class="template-image">
             <span>{{template.name}}</span>
         </div>
     </button>

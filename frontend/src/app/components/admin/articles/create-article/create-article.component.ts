@@ -39,7 +39,7 @@ export class CreateArticleComponent {
     let date = new Date();
     this.article.date = date.toISOString();
     this.pds.createArticle(this.article).subscribe(x => {
-      this.snackBar.open(`Article ${x ? 'created!' : 'creation failed!'}`, undefined, MAT_SNACKBAR_CONFIG);
+      this.snackBar.open(`Article ${x ? 'created' : 'creation failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
     });
   }
 }

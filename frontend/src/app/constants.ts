@@ -11,6 +11,7 @@ export const MAT_SNACKBAR_CONFIG: MatSnackBarConfig = {
 };
 
 export const PLACEHOLDER_DATA: PageData = {
+    backgroundColor: '#333333',
     title: "Site name",
     logo: {
         id: -1,

@@ -18,4 +18,5 @@ export interface PageData {
     youtube: Channel[]
     progress: Progress[]
     calendar: Calendar[]
+    backgroundColor: string
 }

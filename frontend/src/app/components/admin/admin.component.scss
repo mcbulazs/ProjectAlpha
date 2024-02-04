@@ -27,6 +27,7 @@
 }
 
 .preview-full {
+    display: block;
     width: 100%;
 }
 
@@ -57,12 +58,32 @@ app-preview {
 }
 
 .mat-list-item.is-active {
-    background-color: blue!important;
+    background-color: blue !important;
 }
-.mdc-list-item--with-leading-icon .mdc-list-item__start.danger, .danger, .danger:hover { 
-    color: red!important; 
+
+.mdc-list-item--with-leading-icon .mdc-list-item__start.danger,
+.danger,
+.danger:hover {
+    color: red !important;
 }
 
 mat-nav-list {
     user-select: none;
+}
+
+.btn-preview-mobile {
+    display: none;
+}
+
+@media only screen and (max-width: 1530px) {
+    app-preview {
+        display: none;
+    }
+    .admin {
+        width: 100%;
+        border: none;
+    }
+    .btn-preview-mobile {
+        display: block;
+    }
 }

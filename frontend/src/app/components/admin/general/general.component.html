@@ -1,16 +1,19 @@
 <form [formGroup]="general">
-    <h1>General page settings &lt;WIP&gt;</h1>
+    <h1>General page settings</h1>
     <mat-form-field>
         <mat-label>Title</mat-label>
-        <input matInput [(ngModel)]="data.title" [ngModelOptions]="{standalone: true}">
+        <input matInput [(ngModel)]="data.title" [ngModelOptions]="{standalone: true}" maxlength="20">
     </mat-form-field>
-    <mat-form-field>
-        <mat-label>Logo</mat-label>
-        <input matInput [(ngModel)]="data.logo.path" [ngModelOptions]="{standalone: true}">
-    </mat-form-field>
+    <label for="logo-upload">Logo</label>
+    <input type="file" id="logo-upload" accept="image/*" (change)="changeLogo($event)">
+    <img [src]="data.logo.path" style="width: 200px;">
     <mat-form-field>
         <mat-label>Banner</mat-label>
         <input matInput [(ngModel)]="data.banner.path" [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Background color</mat-label>
+        <input type="color" matInput [(ngModel)]="data.backgroundColor" [ngModelOptions]="{standalone: true}">
     </mat-form-field>
 </form>
 <h1>Pages & Navigation</h1>

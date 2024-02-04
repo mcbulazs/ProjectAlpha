@@ -37,6 +37,7 @@ export class PageDataService {
         res.body.navbar = PLACEHOLDER_DATA.navbar;
         res.body.title = "";
         this.data = res.body;
+        this.data.backgroundColor = '#333333';
         console.log("Page data is ready!");
         return true;
       }
@@ -67,8 +68,8 @@ export class PageDataService {
     }).pipe(
       catchError(() => of(false)),
       map(res => {
-        if (typeof res === 'boolean') return false;
-        this.data.articles.unshift(res.body!);
+        if (typeof res === 'boolean' || res.body === null) return false;
+        this.data.articles.unshift(res.body);
         return true;
       }));
   }
@@ -95,11 +96,19 @@ export class PageDataService {
     }).pipe(
       catchError(() => of(false)),
       map(res => {
-        console.log(res);
-        if (typeof res === 'boolean') return false;
-        let elem = this.data.articles.find(x => x.id === res.body?.id)!;
-        Object.assign(elem, res.body);
+        if (typeof res === 'boolean' || res.body === null) return false;
+        let oldArticle = this.data.articles.find(x => x.id === res.body?.id);
+        if (!oldArticle) return false;
+        Object.assign(oldArticle, res.body);
         return true;
       }));
+  }
+
+  updateTemplate(): Observable<boolean> {
+    return of(true);
+  }
+
+  updateTitle(title: string): Observable<boolean> {
+    return of(true);
   }
 }

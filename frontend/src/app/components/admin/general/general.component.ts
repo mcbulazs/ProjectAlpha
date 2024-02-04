@@ -36,6 +36,17 @@ export class GeneralComponent implements OnInit, OnDestroy {
     }
   }
 
+
+  logoSrc: any = '';
+
+  changeLogo(e: any) {
+    if (!e.target.files[0]) return;
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => this.data.logo.path = reader.result?.toString()!;
+    reader.readAsDataURL(file);
+  }
+
   checkOrder() {
     for (let i = 0; i < this.originalNavbar.length; i++) {
       if (this.originalNavbar[i].id !== this.data.navbar[i].id) {

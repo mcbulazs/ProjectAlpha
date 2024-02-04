@@ -54,3 +54,21 @@
     right: calc(50% + 20px);
     z-index: 999;
 }
+
+@media only screen and (max-width: 1530px) {
+    .btn-switch {
+        right: 20px;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .template {
+        width: 40%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .template {
+        width: 80%;
+    }
+}

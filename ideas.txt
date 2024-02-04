@@ -9,5 +9,7 @@ Frontend:
 
 
 Backend:
+- ! webpage basic data patch nem működik
 - template és preset id
 - szabályzat model
+- navigation itemekhez hozzávenni egy enabled booleant

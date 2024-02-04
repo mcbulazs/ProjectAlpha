@@ -12,13 +12,13 @@ export const TEMPLATES: any = [
     },
     {
         name: 'Template 2',
-        image: '',
+        image: 'https://via.placeholder.com/1900x990',
         '': TemplateTwoComponent,
         'about': TemplateTwoComponent,
     },
     {
         name: 'Template 3',
-        image: '',
+        image: 'https://via.placeholder.com/1900x990',
         '': TemplateTwoComponent,
         'about': TemplateTwoComponent,
     },
