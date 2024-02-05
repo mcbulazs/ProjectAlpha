@@ -11,6 +11,7 @@ const (
 	TypeDoesntExist       = "TypeDoesntExist"
 	InvalidPasswordFormat = "InvalidPasswordFormat"
 	UsernameTaken         = "UsernameTaken"
+	BadFileFormat         = "BadFileFormat"
 )
 
 // Error implements the error interface for CustomError.

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 )
 
@@ -24,6 +25,12 @@ func SaveFile(webId int, file models.FileModel) (*models.FileModel, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	ok := isImgFormat(file.Extension())
+	if !ok {
+		return nil, errors.NewError(errors.BadFileFormat)
+	}
+
 	err = removeFileIfExists(webId, file.Type, file.CorrId)
 	if err != nil {
 		return nil, err
@@ -93,6 +100,11 @@ func GetFile(webId int, Type string, corrId int) (*models.FileModel, error) {
 }
 
 // returns nil if everything is ok
+func isImgFormat(extension string) bool {
+	alloweds := []string{".jpg", ".jpeg", ".png"}
+	return slices.Contains(alloweds, extension)
+}
+
 func checkFileValidity(fileType string, webId int, corrId int) error {
 	switch fileType {
 	case ImageType.LOGO, ImageType.BANNER, ImageType.WALLPAPER:
