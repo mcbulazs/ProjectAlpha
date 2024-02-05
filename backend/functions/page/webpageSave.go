@@ -2,6 +2,7 @@ package page
 
 import (
 	db "ProjectAlpha/DB"
+	ChannelType "ProjectAlpha/enums/channelEnum"
 	"ProjectAlpha/models"
 	"database/sql"
 	"fmt"
@@ -130,10 +131,9 @@ func SaveChannels(webId int, channel []models.ChannelModel, site string) ([]mode
 	if err != nil {
 		return nil, err
 	}
-	if site == "youtbe" {
+	if site == ChannelType.YOUTUBE {
 		return youtubeObject, nil
 	} else {
-
 		return twitchObject, nil
 	}
 }

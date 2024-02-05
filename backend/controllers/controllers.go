@@ -19,10 +19,12 @@ func ControllerInit(r *mux.Router) {
 	r.HandleFunc("/auth", Controller_Auth).Methods("GET", "OPTIONS")
 
 	//webpage controllers
+
 	pageRouter := r.PathPrefix("/page/{webId:[0-9]+}").Subrouter()
 	pageRouter.Use(middleware.CheckWebpageMiddleware)
-	pageRouter.HandleFunc("", Controller_Page_Get).Methods("GET")
-	pageRouter.HandleFunc("", Controller_Page_Modify).Methods("PATCH", "OPTIONS")
+	pageRouter.HandleFunc("", Controller_Page).Methods("GET", "PATCH", "OPTIONS")
+
+	pageRouter.HandleFunc("/files", Controller_File_Save).Methods("POST", "OPTIONS")
 
 	pageRouter.HandleFunc("/articles", Controller_Page_Articles_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/articles/{Id:[0-9]+}", Controller_Page_Articles_Modify).Methods("PATCH", "DELETE", "OPTIONS")
@@ -30,7 +32,6 @@ func ControllerInit(r *mux.Router) {
 	pageRouter.HandleFunc("/recruitment", Controller_Page_Recruitment_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/recruitment/{Id:[0-9]+}", Controller_Page_Recruitment_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
-	//pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Modify).Methods("PATCH", "OPTIONS")
 
 	pageRouter.HandleFunc("/youtube", Controller_Page_Youtube_Save).Methods("POST", "OPTIONS")

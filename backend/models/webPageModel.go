@@ -3,8 +3,8 @@ package models
 type WebPageModel struct {
 	Title       string             `json:"title"`
 	TemplateId  int                `json:"templateid"`
-	Logo        fileModel          `json:"logo"`
-	Banner      fileModel          `json:"banner"`
+	Logo        *FileModel         `json:"logo"`
+	Banner      *FileModel         `json:"banner"`
 	Articles    []ArticleModel     `json:"articles"`    //[{"content": "asdas<span style=\"color:red\">dasd</span>", "date": "2015-07-19T15.23.32.000Z", "title": "asd"}]
 	Recruitment []RecruitmentModel `json:"recruitment"` //[{"class": "dk", "subclass": ["asd", "csa"]}]
 	Navbar      []NavItem          `json:"navbar"`      //[{"name": "Aboutasd", "path": "about","order":1}]

@@ -3,6 +3,7 @@ package controllers
 import (
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/JSON"
+	ChannelType "ProjectAlpha/enums/channelEnum"
 	"ProjectAlpha/functions"
 	"ProjectAlpha/functions/page"
 	"ProjectAlpha/models"
@@ -14,34 +15,35 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Controller_Page_Get(w http.ResponseWriter, r *http.Request) {
-	webId, err := functions.GetWebId(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+func Controller_Page(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		webId, err := functions.GetWebId(r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		fmt.Println(webId)
+		result, err := page.GetWebContent(webId)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		JSON.SendJSON(w, result)
+	case http.MethodPatch:
+		var webpageBasics models.WebpageBasicsModel
+		err := json.NewDecoder(r.Body).Decode(&webpageBasics)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		updatedWebpage, err := page.UpdateWebpage(webpageBasics)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		JSON.SendJSON(w, updatedWebpage)
 	}
-	fmt.Println(webId)
-	result, err := page.GetWebContent(webId)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	JSON.SendJSON(w, result)
-}
-func Controller_Page_Modify(w http.ResponseWriter, r *http.Request) {
-	var webpageBasics models.WebpageBasicsModel
-	err := json.NewDecoder(r.Body).Decode(&webpageBasics)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	updatedWebpage, err := page.UpdateWebpage(webpageBasics)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	JSON.SendJSON(w, updatedWebpage)
-
 }
 func Controller_Page_Articles_Save(w http.ResponseWriter, r *http.Request) {
 	var article models.ArticleModel
@@ -258,7 +260,7 @@ func Controller_Page_Youtube_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	channelObject, err := page.SaveChannels(web_id, youtube, "youtube")
+	channelObject, err := page.SaveChannels(web_id, youtube, ChannelType.YOUTUBE)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -278,7 +280,7 @@ func Controller_Page_Twitch_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	channelObject, err := page.SaveChannels(web_id, twitch, "twitch")
+	channelObject, err := page.SaveChannels(web_id, twitch, ChannelType.TWITCH)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -318,7 +320,7 @@ func Controller_Page_Youtube_Modify(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		channel.Id = id
-		updatedYoutube, err := page.UpdateChannel("youtube", channel)
+		updatedYoutube, err := page.UpdateChannel(ChannelType.YOUTUBE, channel)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -358,7 +360,7 @@ func Controller_Page_Twitch_Modify(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		channel.Id = id
-		updatedTwitch, err := page.UpdateChannel("twitch", channel)
+		updatedTwitch, err := page.UpdateChannel(ChannelType.TWITCH, channel)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

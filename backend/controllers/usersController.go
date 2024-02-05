@@ -3,13 +3,13 @@ package controllers
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/mail"
 	"strings"
 
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/JSON"
+	"ProjectAlpha/enums/errors"
 	sess "ProjectAlpha/functions"
 	"ProjectAlpha/models"
 
@@ -60,7 +60,10 @@ func Controller_Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	userId, err := RegisterUser(&register)
-	if err != nil {
+	if err.Error() == errors.UsernameTaken {
+		JSON.SendJSON(w, err.Error(), "error")
+		return
+	} else if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -95,7 +98,7 @@ func checkRegisterValidity(register *models.LoginModel) error {
 		return err
 	}
 	if len(register.Password) < 8 {
-		return fmt.Errorf("invalid password format")
+		return errors.NewError(errors.InvalidPasswordFormat)
 	}
 	return nil
 }
@@ -111,7 +114,7 @@ func RegisterUser(register *models.LoginModel) (int, error) {
 	var temp int
 	err = row.Scan(&temp)
 	if err == nil {
-		return 0, fmt.Errorf("username taken")
+		return 0, errors.NewError(errors.UsernameTaken)
 	} else if err != sql.ErrNoRows {
 		return 0, err
 	}

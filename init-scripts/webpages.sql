@@ -4,9 +4,7 @@ CREATE TABLE webpages (
     Record_Log TIMESTAMP DEFAULT NULL,
     Name varchar(255) NOT NULL DEFAULT 'blank',
     Owner_Id int NOT NULL,
-    Template_Id int NOT NULL DEFAULT 1,
-    Logo_Id int not null DEFAULT 0,
-    Banner_ID int not null DEFAULT 0
+    Template_Id int NOT NULL DEFAULT 0
 );
 
 
@@ -15,7 +13,8 @@ CREATE TABLE files (
     Id SERIAL PRIMARY KEY,
     Record_Log TIMESTAMP DEFAULT NULL,
     Type varchar(255) NOT NULL,
-    Path varchar(255) NOT NULL
+    Path varchar(255) NOT NULL,
+    CorrId int not null
 );
 
 --articles

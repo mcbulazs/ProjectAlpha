@@ -2,6 +2,9 @@ package page
 
 import (
 	db "ProjectAlpha/DB"
+	ChannelType "ProjectAlpha/enums/channelEnum"
+	ImageType "ProjectAlpha/enums/imageTypeEmum.go"
+	"ProjectAlpha/functions/file"
 	"ProjectAlpha/models"
 	"fmt"
 
@@ -11,31 +14,29 @@ import (
 func GetWebContent(webId int) (*models.WebPageModel, error) {
 	fmt.Println(webId)
 	result := models.WebPageModel{}
-	var Logo_Id int
-	var Banner_ID int
 	//Title and Preset Id
-	row := db.Context.QueryRow("SELECT Name, Template_Id,Logo_Id,Banner_ID FROM webpages WHERE id=$1", webId)
-	err := row.Scan(&result.Title, &result.TemplateId, &Logo_Id, &Banner_ID)
+	row := db.Context.QueryRow("SELECT Name, Template_Id FROM webpages WHERE id=$1", webId)
+	err := row.Scan(&result.Title, &result.TemplateId)
 
 	if err != nil {
 		return nil, err
 	}
+
 	//logo
-	if Logo_Id != 0 {
-		row = db.Context.QueryRow("SELECT Id, Path FROM files WHERE id=$1", Logo_Id)
-		err = row.Scan(&result.Logo.Id, &result.Logo.Path)
-		if err != nil {
-			fmt.Println("Logo get: " + err.Error())
-		}
+	logo, err := file.GetFile(webId, ImageType.LOGO, webId)
+	if err != nil {
+		fmt.Println("Logo get: " + err.Error())
 	}
+
+	result.Logo = logo
+
 	//banner
-	if Banner_ID != 0 {
-		row = db.Context.QueryRow("SELECT Id, Path FROM files WHERE id=$1", Banner_ID)
-		err = row.Scan(&result.Banner.Id, &result.Banner)
-		if err != nil {
-			fmt.Println("Banner get: " + err.Error())
-		}
+	banner, err := file.GetFile(webId, ImageType.BANNER, webId)
+	if err != nil {
+		fmt.Println("Banner get: " + err.Error())
 	}
+	result.Banner = banner
+
 	//articles
 	articles, err := getArticles(webId)
 	if err != nil {
@@ -159,9 +160,9 @@ func getChannels(webId int) ([]models.ChannelModel, []models.ChannelModel, error
 		if err != nil {
 			return nil, nil, err
 		}
-		if ctype == "youtube" {
+		if ctype == ChannelType.YOUTUBE {
 			youtube = append(youtube, channel)
-		} else if ctype == "twitch" {
+		} else if ctype == ChannelType.TWITCH {
 			twitch = append(twitch, channel)
 		}
 
