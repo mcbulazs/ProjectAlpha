@@ -3,6 +3,7 @@ package controllers
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/mail"
 	"strings"
@@ -41,6 +42,11 @@ func Controller_Login(w http.ResponseWriter, r *http.Request) {
 
 func Controller_Logout(w http.ResponseWriter, r *http.Request) {
 	session, _ := sess.Store.Get(r, "session")
+	_, ok := session.Values["user_id"].(int)
+	if !ok {
+		http.Error(w, "User not authenticated", http.StatusUnauthorized)
+		return
+	}
 	session.Options = &sessions.Options{
 		MaxAge: -1,
 	}
@@ -137,10 +143,21 @@ func RegisterUser(register *models.LoginModel) (int, error) {
 	//creating session
 }
 func Controller_Auth(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("auth")
+	session, _ := sess.Store.Get(r, "session")
+	_, ok := session.Values["user_id"].(int)
+	w.Header().Set("Access-Control-Expose-Headers", "authenticated")
+	if !ok { //just to decide whether the user have a session or not
+		w.Header().Set("authenticated", "false")
+	} else if ok {
+		w.Header().Set("authenticated", "true")
+	}
+
 	id, err := sess.GetWebId(r)
 	if err != nil {
 		JSON.SendJSON(w, nil, "webid")
 		return
 	}
+
 	JSON.SendJSON(w, id, "webid")
 }

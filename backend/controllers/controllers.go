@@ -1,15 +1,13 @@
 package controllers
 
 import (
-	"ProjectAlpha/functions"
 	"ProjectAlpha/middleware"
 
 	"github.com/gorilla/mux"
 )
 
 func ControllerInit(r *mux.Router) {
-	functions.Init_allowed_origins()
-	r.Use(middleware.SessionMiddleware)
+	r.Use(middleware.LoggingMiddleware)
 	r.Use(middleware.OptionsMiddleware)
 	//user controllers
 	r.HandleFunc("/login", Controller_Login).Methods("POST", "OPTIONS")
@@ -19,11 +17,12 @@ func ControllerInit(r *mux.Router) {
 	r.HandleFunc("/auth", Controller_Auth).Methods("GET", "OPTIONS")
 
 	//outer webpage get
-	r.HandleFunc("/page", Controller_Page_Get)
+	r.HandleFunc("/page", Controller_Page_Get).Methods("GET")
 
 	//webpage controllers
 	pageRouter := r.PathPrefix("/page/{webId:[0-9]+}").Subrouter()
 	pageRouter.Use(middleware.CheckWebpageMiddleware)
+	pageRouter.Use(middleware.SessionMiddleware)
 	pageRouter.HandleFunc("", Controller_Page).Methods("GET", "PATCH", "OPTIONS")
 
 	pageRouter.HandleFunc("/files", Controller_File_Save).Methods("POST", "OPTIONS")

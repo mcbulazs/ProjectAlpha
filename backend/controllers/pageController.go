@@ -22,7 +22,7 @@ func Controller_Page_Get(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(webId)
+	w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
 	result, err := page.GetWebContent(webId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -31,4 +31,3 @@ SELECT apply_record_log_trigger();
 
 
 --creating default values
-INSERT INTO allowed_origins VALUES (DEFAULT, DEFAULT, 'http://localhost:4200');
