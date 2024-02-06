@@ -11,6 +11,15 @@ import (
 	"github.com/lib/pq"
 )
 
+func GetWebIdByOrigin(origin string) (int, error) {
+	var webId int
+	err := db.Context.QueryRow("SELECT WebId FROM allowed_origins WHERE Origin = $1", origin).Scan(&webId)
+	if err != nil {
+		return -1, err
+	}
+	return webId, nil
+}
+
 func GetWebContent(webId int) (*models.WebPageModel, error) {
 	fmt.Println(webId)
 	result := models.WebPageModel{}

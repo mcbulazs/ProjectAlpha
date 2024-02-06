@@ -7,6 +7,7 @@ import (
 	"ProjectAlpha/functions"
 	"ProjectAlpha/functions/page"
 	"ProjectAlpha/models"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -15,14 +16,18 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Controller_Page_Get(w http.ResponseWriter, r *http.Request) {
-	var webId int
-	err := db.Context.QueryRow("SELECT WebId FROM allowed_origins WHERE Origin = $1", r.Header.Get("Origin")).Scan(&webId)
+func Controller_Outer_Page_Get(w http.ResponseWriter, r *http.Request) {
+	origin := r.Header.Get("Origin")
+	webId, err := page.GetWebIdByOrigin(origin)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Origin is not the owner", http.StatusUnauthorized)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+	w.Header().Set("Access-Control-Allow-Origin", origin)
 	result, err := page.GetWebContent(webId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

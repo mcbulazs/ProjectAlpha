@@ -5,10 +5,14 @@ import (
 	"ProjectAlpha/enums/errors"
 	"ProjectAlpha/functions"
 	"ProjectAlpha/functions/file"
+	"ProjectAlpha/functions/page"
 	"ProjectAlpha/models"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -59,4 +63,28 @@ func Controller_File_Serve(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "image/png")
 	http.ServeFile(w, r, filePath)
 
+}
+func Controller_Outer_File_Serve(w http.ResponseWriter, r *http.Request) {
+	origin := r.Header.Get("Origin")
+	webId, err := page.GetWebIdByOrigin(origin)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Origin is not the owner", http.StatusUnauthorized)
+			return
+		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", origin)
+
+	if len(strings.Split(r.URL.Path, ".")) != 2 {
+		http.Error(w, "can't access directory", http.StatusForbidden)
+		return
+	}
+
+	filePath := filepath.Join("/app/files", strconv.Itoa(webId), r.URL.Path[len("/page/"+strconv.Itoa(webId)+"/files/"):])
+	fmt.Printf("trying to serve: %s \n", filePath)
+	// Use http.ServeFile to serve the file
+	w.Header().Set("Content-Type", "image/png")
+	http.ServeFile(w, r, filePath)
 }
