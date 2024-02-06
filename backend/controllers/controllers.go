@@ -18,7 +18,7 @@ func ControllerInit(r *mux.Router) {
 
 	//outer webpage get
 	r.HandleFunc("/", Controller_Outer_Page_Get).Methods("GET")
-	r.PathPrefix("/files").HandlerFunc(Controller_File_Serve).Methods("GET")
+	r.PathPrefix("/files").HandlerFunc(Controller_Outer_File_Serve).Methods("GET")
 
 	//webpage controllers
 	pageRouter := r.PathPrefix("/page/{webId:[0-9]+}").Subrouter()

@@ -6,10 +6,9 @@ import (
 	"ProjectAlpha/functions"
 	"ProjectAlpha/functions/file"
 	"ProjectAlpha/functions/page"
-	"ProjectAlpha/models"
 	"database/sql"
-	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -24,13 +23,16 @@ func Controller_File_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	var fileModel models.FileModel
-	err = json.NewDecoder(r.Body).Decode(&fileModel)
+	if !strings.Contains(r.Header.Get("Content-Type"), "image") {
+		http.Error(w, "not image type", http.StatusBadRequest)
+		return
+	}
+	img, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	file, err := file.SaveFile(web_id, fileModel)
+	file, err := file.SaveFile(web_id, img)
 	if err != nil {
 		if err.Error() == errors.FileSizeTooBig {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -51,7 +53,21 @@ func Controller_File_Serve(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-
+	fmt.Println(r.URL.Path)
+	if r.URL.Path == fmt.Sprintf("/page/%s/files", webID) {
+		id, err := strconv.Atoi(webID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		files, err := file.GetFiles(id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		JSON.SendJSON(w, files)
+		return
+	}
 	// Construct the file path based on the dynamic {webId} parameter
 	if len(strings.Split(r.URL.Path, ".")) != 2 {
 		http.Error(w, "can't access directory", http.StatusForbidden)

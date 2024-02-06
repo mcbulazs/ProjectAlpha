@@ -11,10 +11,19 @@ import (
 
 func UpdateWebpage(model models.WebpageBasicsModel) (*models.WebpageBasicsModel, error) {
 	var updatedWebpage models.WebpageBasicsModel
-	err := db.Context.QueryRow("UPDATE webpages SET Name=$1, Template_Id=$2 WHERE Id=$3 RETURNING Id, Name, Template_Id", model.Title, model.TemplateId, model.Id).Scan(
+	err := db.Context.QueryRow(
+		"UPDATE webpages SET Name=$1, Template_Id=$2, Logo_AccessUrl=$3, Banner_AccessUrl=$4 WHERE Id=$5 RETURNING Id, Name, Template_Id, Logo_AccessUrl, Banner_AccessUrl",
+		model.Title,
+		model.TemplateId,
+		model.Logo,
+		model.Banner,
+		model.Id).Scan(
+
 		&updatedWebpage.Id,
 		&updatedWebpage.Title,
 		&updatedWebpage.TemplateId,
+		&updatedWebpage.Logo,
+		&updatedWebpage.Banner,
 	)
 	if err != nil {
 		return nil, err
@@ -100,9 +109,10 @@ func UpdateProgress(model models.ProgressModel) (*models.ProgressModel, error) {
 		return nil, err
 	}
 	defer commitOrRollback(&err)
-	err = tx.QueryRow("UPDATE progress SET Name=$1 WHERE Id=$2 RETURNING Id, Name", model.Name, model.Id).Scan(
+	err = tx.QueryRow("UPDATE progress SET Name=$1, Background_AccessUrl=$2 WHERE Id=$3 RETURNING Id, Name, Background_AccessUrl", model.Name, model.BackgroundImg, model.Id).Scan(
 		&updatedProgress.Id,
 		&updatedProgress.Name,
+		&updatedProgress.BackgroundImg,
 	)
 	if err != nil {
 		return nil, err

@@ -4,19 +4,35 @@ CREATE TABLE webpages (
     Record_Log TIMESTAMP DEFAULT NULL,
     Name varchar(255) NOT NULL DEFAULT '',
     Owner_Id int NOT NULL,
-    Template_Id int NOT NULL DEFAULT 0
+    Template_Id int NOT NULL DEFAULT 0,
+    Logo_AccessUrl varchar(255) NOT NULL DEFAULT '',
+    Banner_AccessUrl varchar(255) NOT NULL DEFAULT ''
 );
 
 
 --files table
 CREATE TABLE files (
-    Id SERIAL PRIMARY KEY,
+    Id SERIAL PRIMARY KEY, 
     Record_Log TIMESTAMP DEFAULT NULL,
-    Type varchar(255) NOT NULL,
     Path varchar(255) NOT NULL,
-    AccessUrl varchar(255) NOT NULL,
-    CorrId int not null
+    AccessUrl varchar(255) NOT NULL, 
+    WebId int NOT NULL,
+    Extension varchar(255)
 );
+
+CREATE OR REPLACE FUNCTION set_default_values()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.Path := '/app/files/' || NEW.WebId::TEXT || '/images/' || NEW.Id::TEXT  || COALESCE('.' || NEW.Extension, '');
+    NEW.AccessUrl := 'images/' || NEW.Id::TEXT || COALESCE('.' || NEW.Extension, '');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_default_values_trigger
+BEFORE INSERT ON files
+FOR EACH ROW
+EXECUTE FUNCTION set_default_values();
 
 --articles
 CREATE TABLE articles (
@@ -67,7 +83,8 @@ create table progress (
     Id SERIAL PRIMARY KEY,
     Record_Log TIMESTAMP DEFAULT NULL,
     WebId int NOT NULL,
-    Name varchar(255) NOT NULL
+    Name varchar(255) NOT NULL,
+    Background_AccessUrl varchar(255) NOT NULL DEFAULT ''
 );
 CREATE INDEX idx_progress_webId ON progress (webId);
 

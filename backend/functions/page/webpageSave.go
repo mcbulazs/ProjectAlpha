@@ -12,10 +12,6 @@ import (
 	"github.com/lib/pq"
 )
 
-func SaveFiles() {
-	//Todo: file save
-}
-
 func CreateWebpage(userId int) (int, error) {
 	tx, commitOrRollback, err := db.BeginTransaction()
 	if err != nil {
@@ -85,31 +81,6 @@ func SaveRecruitment(webId int, recruits []models.RecruitmentModel) ([]models.Re
 	return recruitsObject, nil
 }
 
-/*
-func SaveNavbar(webId int, navbar []models.NavItem) ([]models.NavItem, error) {
-	if len(navbar) == 0 {
-		return nil, nil
-	}
-
-	values := GetValueString(len(navbar), 4)
-	params := make([]interface{}, 0, len(navbar)*4)
-
-	for i, item := range navbar {
-		params = append(params, webId, item.Name, item.Path, i, item.Enabled)
-	}
-
-	query := "INSERT INTO navbar (WebId, Name, Path, Ranking, Enabled) VALUES " + values
-	_, err := db.Context.Exec(query, params...)
-	if err != nil {
-		return nil, err
-	}
-	navbarObject, err := getNavbar(webId)
-	if err != nil {
-		return nil, err
-	}
-	return navbarObject, nil
-}*/
-
 func SaveChannels(webId int, channel []models.ChannelModel, site string) ([]models.ChannelModel, error) {
 	if len(channel) == 0 {
 		return nil, nil
@@ -154,7 +125,7 @@ func SaveProgress(webId int, progess []models.ProgressModel) ([]models.ProgressM
 
 		//params = append(params, webId, item.Name, item.Path, item.Order)
 		var progressId int
-		err = tx.QueryRow("INSERT INTO progress (WebId,Name) values ($1,$2) RETURNING  Id", webId, item.Name).Scan(&progressId)
+		err = tx.QueryRow("INSERT INTO progress (WebId,Name,Background_AccessUrl) values ($1,$2) RETURNING  Id", webId, item.Name, item.BackgroundImg).Scan(&progressId)
 		if err != nil {
 			return nil, err
 		}

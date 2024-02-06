@@ -3,8 +3,6 @@ package page
 import (
 	db "ProjectAlpha/DB"
 	ChannelType "ProjectAlpha/enums/channelEnum"
-	ImageType "ProjectAlpha/enums/imageTypeEmum.go"
-	"ProjectAlpha/functions/file"
 	"ProjectAlpha/models"
 	"fmt"
 
@@ -24,27 +22,17 @@ func GetWebContent(webId int) (*models.WebPageModel, error) {
 	fmt.Println(webId)
 	result := models.WebPageModel{}
 	//Title and Preset Id
-	row := db.Context.QueryRow("SELECT Name, Template_Id FROM webpages WHERE id=$1", webId)
-	err := row.Scan(&result.Title, &result.TemplateId)
+	row := db.Context.QueryRow("SELECT Name, Template_Id, Logo_AccessUrl, Banner_AccessUrl FROM webpages WHERE id=$1", webId)
+	err := row.Scan(
+		&result.Title,
+		&result.TemplateId,
+		&result.Logo,
+		&result.Banner,
+	)
 
 	if err != nil {
 		return nil, err
 	}
-
-	//logo
-	logo, err := file.GetFile(webId, ImageType.LOGO, webId)
-	if err != nil {
-		fmt.Println("Logo get: " + err.Error())
-	}
-
-	result.Logo = logo
-
-	//banner
-	banner, err := file.GetFile(webId, ImageType.BANNER, webId)
-	if err != nil {
-		fmt.Println("Banner get: " + err.Error())
-	}
-	result.Banner = banner
 
 	//articles
 	articles, err := getArticles(webId)
@@ -180,7 +168,7 @@ func getChannels(webId int) ([]models.ChannelModel, []models.ChannelModel, error
 }
 func getProgress(webId int) ([]models.ProgressModel, error) {
 	var result []models.ProgressModel = make([]models.ProgressModel, 0)
-	rows, err := db.Context.Query("SELECT Id, Name FROM progress WHERE WebId=$1", webId)
+	rows, err := db.Context.Query("SELECT Id, Name, Background_AccessUrl FROM progress WHERE WebId=$1", webId)
 	if err != nil {
 		return nil, err
 	}
@@ -189,7 +177,7 @@ func getProgress(webId int) ([]models.ProgressModel, error) {
 	for rows.Next() {
 		var progress models.ProgressModel
 		progress.Raids = make([]models.RaidModel, 0)
-		err = rows.Scan(&progress.Id, &progress.Name)
+		err = rows.Scan(&progress.Id, &progress.Name, &progress.BackgroundImg)
 		if err != nil {
 			return nil, err
 		}
