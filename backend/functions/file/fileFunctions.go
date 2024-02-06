@@ -15,96 +15,97 @@ import (
 
 const MaxFileSize = 8 * 1024 * 1024 //MAX 8 MB
 
-func SaveFile(webId int, file models.FileModel) (*models.FileModel, error) {
-
-	if len(file.FileData) > MaxFileSize {
-		return nil, errors.NewError(errors.FileSizeTooBig)
-	}
-
-	err := checkFileValidity(file.Type, webId, file.CorrId)
+func SaveFile(webId int, file models.FileModel) (string, error) {
+	extension, err := file.Extension()
 	if err != nil {
-		return nil, err
+		return "", err
+	}
+	if len(file.FileData) > MaxFileSize {
+		return "", errors.NewError(errors.FileSizeTooBig)
 	}
 
-	ok := isImgFormat(file.Extension())
+	err = checkFileValidity(file.Type, webId, file.CorrId)
+	if err != nil {
+		return "", err
+	}
+
+	ok := isImgFormat(extension)
 	if !ok {
-		return nil, errors.NewError(errors.BadFileFormat)
+		return "", errors.NewError(errors.BadFileFormat)
 	}
-
 	err = removeFileIfExists(webId, file.Type, file.CorrId)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	path, err := nameFile(webId, file.Type, file.Extension(), file.CorrId)
+	accessUrl, err := nameFile(webId, file.Type, extension, file.CorrId)
+	path := filepath.Join("/app/files", strconv.Itoa(webId), accessUrl)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	if err := os.MkdirAll(filepath.Dir(*path), 0755); err != nil {
-		return nil, err
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		return "", err
 	}
+	//file.FileName = *path
 
-	file.FileName = *path
-	dst, err := os.Create(*path)
+	dst, err := os.Create(path)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	defer dst.Close()
 
 	// Write the file data to the server file
 	_, err = dst.Write(file.FileData)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	_, err = db.Context.Exec("INSERT INTO files (Type, Path, CorrId) values ($1, $2, $3) RETURNING Id", file.Type, path, file.CorrId)
+	_, err = db.Context.Exec("INSERT INTO files (Type, Path, AccessUrl, CorrId) values ($1, $2, $3, $4) RETURNING Id", file.Type, path, accessUrl, file.CorrId)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	// Optionally, save file metadata to the database
-	return &file, nil
+	return accessUrl, nil
 }
-func nameFile(webId int, fileType string, ext string, corId int) (*string, error) {
+func nameFile(webId int, fileType string, ext string, corId int) (string, error) {
 	if !ImageType.IsImageType(fileType) {
-		return nil, errors.NewError(errors.TypeDoesntExist)
+		return "", errors.NewError(errors.TypeDoesntExist)
 	}
 	filename := fmt.Sprintf("%d%s", corId, ext)
-	path := filepath.Join("/app/files", strconv.Itoa(webId), "images", fileType, filename)
-	return &path, nil
+	path := filepath.Join("images", fileType, filename)
+	return path, nil
 }
 
-func GetFile(webId int, Type string, corrId int) (*models.FileModel, error) {
+func GetFile(webId int, Type string, corrId int) (string, error) {
 
 	err := checkFileValidity(Type, webId, corrId)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	var result models.FileModel
-	row := db.Context.QueryRow("SELECT Path, CorrId, Type FROM files WHERE Type=$1 AND CorrId=$2", Type, corrId)
+	var result string
+	row := db.Context.QueryRow("SELECT AccessUrl FROM files WHERE Type=$1 AND CorrId=$2", Type, corrId)
 
 	err = row.Scan(
-		&result.FileName,
-		&result.CorrId,
-		&result.Type,
+		&result,
 	)
 
 	if err == sql.ErrNoRows {
-		return nil, nil
+		return "", nil
 	} else if err != nil {
-		return nil, err
+		return "", err
 	}
-	result.FileData, err = os.ReadFile(result.FileName)
+	//result.FileData, err = os.ReadFile(result.FileName)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return &result, nil
+	return result, nil
 }
 
-// returns nil if everything is ok
 func isImgFormat(extension string) bool {
-	alloweds := []string{".jpg", ".jpeg", ".png"}
+	alloweds := []string{"image/jpg", "image/jpeg", ".png"}
 	return slices.Contains(alloweds, extension)
 }
 
+// returns nil if everything is ok
 func checkFileValidity(fileType string, webId int, corrId int) error {
 	switch fileType {
 	case ImageType.LOGO, ImageType.BANNER, ImageType.WALLPAPER:

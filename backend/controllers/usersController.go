@@ -60,10 +60,11 @@ func Controller_Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	userId, err := RegisterUser(&register)
-	if err.Error() == errors.UsernameTaken {
-		JSON.SendJSON(w, err.Error(), "error")
-		return
-	} else if err != nil {
+	if err != nil {
+		if err.Error() == errors.UsernameTaken {
+			JSON.SendJSON(w, err.Error(), "error")
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

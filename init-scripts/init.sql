@@ -9,6 +9,7 @@ CREATE TABLE users (
 CREATE TABLE allowed_origins (
     Id SERIAL PRIMARY KEY,
     Record_Log TIMESTAMP DEFAULT NULL,
-    Origin varchar(255) NOT NULL
+    Origin varchar(255) NOT NULL,
+    WebId int NOT NULL
 );
 

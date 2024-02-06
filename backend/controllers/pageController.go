@@ -15,6 +15,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func Controller_Page_Get(w http.ResponseWriter, r *http.Request) {
+	var webId int
+	err := db.Context.QueryRow("SELECT WebId FROM allowed_origins WHERE Origin = $1", r.Header.Get("Origin")).Scan(&webId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fmt.Println(webId)
+	result, err := page.GetWebContent(webId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON.SendJSON(w, result)
+}
+
 func Controller_Page(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:

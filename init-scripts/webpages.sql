@@ -2,7 +2,7 @@
 CREATE TABLE webpages (
     Id SERIAL PRIMARY KEY,
     Record_Log TIMESTAMP DEFAULT NULL,
-    Name varchar(255) NOT NULL DEFAULT 'blank',
+    Name varchar(255) NOT NULL DEFAULT '',
     Owner_Id int NOT NULL,
     Template_Id int NOT NULL DEFAULT 0
 );
@@ -14,6 +14,7 @@ CREATE TABLE files (
     Record_Log TIMESTAMP DEFAULT NULL,
     Type varchar(255) NOT NULL,
     Path varchar(255) NOT NULL,
+    AccessUrl varchar(255) NOT NULL,
     CorrId int not null
 );
 

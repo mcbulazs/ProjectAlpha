@@ -18,13 +18,16 @@ func ControllerInit(r *mux.Router) {
 	r.HandleFunc("/testing", Controller_Test).Methods("GET", "OPTIONS")
 	r.HandleFunc("/auth", Controller_Auth).Methods("GET", "OPTIONS")
 
-	//webpage controllers
+	//outer webpage get
+	r.HandleFunc("/page", Controller_Page_Get)
 
+	//webpage controllers
 	pageRouter := r.PathPrefix("/page/{webId:[0-9]+}").Subrouter()
 	pageRouter.Use(middleware.CheckWebpageMiddleware)
 	pageRouter.HandleFunc("", Controller_Page).Methods("GET", "PATCH", "OPTIONS")
 
 	pageRouter.HandleFunc("/files", Controller_File_Save).Methods("POST", "OPTIONS")
+	pageRouter.PathPrefix("/files").HandlerFunc(Controller_File_Serve).Methods("GET")
 
 	pageRouter.HandleFunc("/articles", Controller_Page_Articles_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/articles/{Id:[0-9]+}", Controller_Page_Articles_Modify).Methods("PATCH", "DELETE", "OPTIONS")
