@@ -13,10 +13,6 @@
     <input type="file" id="banner-upload" accept="image/*" #bannerUpload (change)="changeBanner(bannerUpload.files)">
     <p>or choose from your <button mat-raised-button color="accent" (click)="openGallery(data, 'banner')">Gallery</button></p>
     <img [src]="data.banner" style="width: 100px;">
-    <!-- <mat-form-field>
-        <mat-label>Banner</mat-label>
-        <input matInput [(ngModel)]="data.banner.filedata" [ngModelOptions]="{standalone: true}">
-    </mat-form-field> -->
     <mat-form-field>
         <mat-label>Background color</mat-label>
         <input type="color" matInput [(ngModel)]="data.backgroundColor" [ngModelOptions]="{standalone: true}">
