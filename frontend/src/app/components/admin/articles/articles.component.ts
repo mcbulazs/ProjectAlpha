@@ -69,8 +69,6 @@ export class ArticlesComponent implements OnInit {
       data: id,
     });
     dialogRef.afterClosed().subscribe(() => {
-      console.log(this.pds.data.articles);
-      
       this.setDisplayedArticles();
     });
   }

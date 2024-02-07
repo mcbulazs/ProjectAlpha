@@ -20,6 +20,7 @@ export class DeleteArticleComponent {
   deleteArticle() {
     this.pds.deleteArticle(this.data).subscribe(x => {
       this.snackBar.open(`Article ${x ? 'deleted' : 'deletion failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+      this.dialogRef.close();
     })
   }
 }

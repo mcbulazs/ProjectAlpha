@@ -1,0 +1,9 @@
+<h2 *ngIf="empty">Your uploaded images will be displayed here.</h2>
+<mat-grid-list cols="4">
+    <mat-grid-tile *ngFor="let image of images">
+        <div class="tile" (click)="deleteImage(image)">
+            <mat-icon class="icon">delete</mat-icon>
+            <img [src]="image" [title]="image">
+        </div>
+    </mat-grid-tile>
+</mat-grid-list>

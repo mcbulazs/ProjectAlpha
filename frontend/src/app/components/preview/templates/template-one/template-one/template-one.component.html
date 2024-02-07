@@ -1,9 +1,9 @@
-<!-- Temporary mess -->
+<!--! Temporary mess -->
 <div style="width: 100%; min-height: 100%; display: flex; flex: 1; flex-direction: column; justify-content: space-between;" [style.background-color]="data.backgroundColor">
     <div class="page">
-        <header [style.background-image]="'url('+(usePlaceholders && data.banner.path === '' ? PLACEHOLDERS.banner.path : data.banner.path)+')'">
+        <header [style.background-image]="'url('+(usePlaceholders && data.banner === '' ? PLACEHOLDERS.banner : data.banner)+')'">
             <div class="titles">
-                <img [src]="usePlaceholders && data.logo.path === '' ? PLACEHOLDERS.logo.path : data.logo.path" class="logo {{usePlaceholders && data.logo.path === '' ? 'placeholder' : ''}}">
+                <img [src]="usePlaceholders && data.logo === '' ? PLACEHOLDERS.logo : data.logo" class="logo {{usePlaceholders && data.logo === '' ? 'placeholder' : ''}}">
                 <h1 class="title {{usePlaceholders && data.title === '' ? 'placeholder' : ''}}">{{usePlaceholders && data.title === '' ? PLACEHOLDERS.title : data.title}}</h1>
             </div>
         
@@ -28,15 +28,15 @@
                 </div>
             </article>
             <div class="sidebar">
-                <div class="tgf">
+                <div class="tgf" *ngIf="usePlaceholders || data.recruitment.length !== 0">
                     <h2 class="tgf-title">Recruiting</h2>
                     <div class="tgf-icons">
                         <img *ngFor="let item of usePlaceholders && data.recruitment.length === 0 ? PLACEHOLDERS.recruitment : data.recruitment" class="tgf-icon {{usePlaceholders && data.recruitment.length === 0 ? 'placeholder' : ''}}" [src]="'https://wow.zamimg.com/images/wow/icons/large/classicon_'+item.class+'.jpg'">
                     </div>
                 </div>
-                <div class="progresses">
+                <div class="progresses" *ngIf="usePlaceholders || data.progress.length !== 0">
                     <h2 class="progress-title">Progress</h2>
-                    <div *ngFor="let item of usePlaceholders && data.progress.length === 0 ? PLACEHOLDERS.progress : data.progress" class="raid {{usePlaceholders && data.progress.length === 0 ? 'placeholder' : ''}}">
+                    <div *ngFor="let item of usePlaceholders && data.progress.length === 0 ? PLACEHOLDERS.progress : data.progress" class="raid {{usePlaceholders && data.progress.length === 0 ? 'placeholder' : ''}}" [style.background-image]="'url('+item.background+')'">
                         <span>{{item.name}}</span>
                         <div *ngFor="let raid of item.raids">
                             <span>{{raid.difficulty}} {{raid.current}} / {{raid.max}}</span>

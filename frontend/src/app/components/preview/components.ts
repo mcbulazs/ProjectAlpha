@@ -6,19 +6,19 @@ import { TemplateTwoComponent } from "./templates/template-two/template-two/temp
 export const TEMPLATES: any = [
     {
         name: 'Template 1',
-        image: 'https://i.imgur.com/gBkiK5w.png',
+        image: 'https://via.placeholder.com/640x360',
         '': TemplateOneComponent,
         'about': TemplateOneAboutComponent,
     },
     {
         name: 'Template 2',
-        image: 'https://via.placeholder.com/1900x990',
+        image: 'https://via.placeholder.com/640x360',
         '': TemplateTwoComponent,
         'about': TemplateTwoComponent,
     },
     {
         name: 'Template 3',
-        image: 'https://via.placeholder.com/1900x990',
+        image: 'https://via.placeholder.com/640x360',
         '': TemplateTwoComponent,
         'about': TemplateTwoComponent,
     },

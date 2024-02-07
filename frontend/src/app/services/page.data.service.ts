@@ -21,6 +21,7 @@ export class PageDataService {
 
   webID!: number;
   data!: PageData;
+  images!: string[];
 
   placeholderHotline = new Subject<boolean>;
   templateHotline = new Subject<TemplateChanger>;
@@ -30,11 +31,11 @@ export class PageDataService {
   currentPreviewPath: string = '';
 
   getData(): Observable<boolean> {
-    return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`, {
+    return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`,
+    {
       withCredentials: true, observe: 'response',
     }).pipe(map(res => {
       if (res.status === 200 && res.body) {
-        res.body.navbar = PLACEHOLDER_DATA.navbar;
         this.data = res.body;
         this.data.backgroundColor = '#333333';
         console.log("Page data is ready!");
@@ -42,6 +43,34 @@ export class PageDataService {
       }
       return false;
     }))
+  }
+
+  getImages(): Observable<string[]> {
+    return this.httpClient.get<string[]>(`${environment.backendURL}/page/${this.webID}/files`,
+    {
+      withCredentials: true,
+    }).pipe(
+      catchError(() => []),
+      map(res => {
+        this.images = res.map(x => this.getImage(x));
+        return this.images;
+      })
+    );
+  }
+
+  deleteImage(image: string): Observable<boolean> {
+    return this.httpClient.delete<any>(image,
+    {
+      withCredentials: true,
+    }).pipe(
+      catchError(() => of(null)),
+      map(res => {
+        if (res === null) return false;
+        let deletedIndex = this.images.indexOf(image);
+        this.images.splice(deletedIndex, 1);
+        return true;
+      })
+    );
   }
 
   getPlaceholderHotline(): Subject<boolean> {
@@ -62,7 +91,8 @@ export class PageDataService {
   }
 
   createArticle(article: Article): Observable<Boolean> {
-    return this.httpClient.post<Article>(`${environment.backendURL}/page/${this.webID}/articles`, article, {
+    return this.httpClient.post<Article>(`${environment.backendURL}/page/${this.webID}/articles`, article,
+    {
       withCredentials: true, observe: 'response',
     }).pipe(
       catchError(() => of(false)),
@@ -74,7 +104,8 @@ export class PageDataService {
   }
 
   deleteArticle(id: number): Observable<boolean> {
-    return this.httpClient.delete<any>(`${environment.backendURL}/page/${this.webID}/articles/${id}`, {
+    return this.httpClient.delete<any>(`${environment.backendURL}/page/${this.webID}/articles/${id}`,
+    {
       withCredentials: true, observe: 'response'
     }).pipe(
       catchError(() => of(false)),
@@ -90,7 +121,8 @@ export class PageDataService {
   }
 
   updateArticle(article: Article): Observable<boolean> {
-    return this.httpClient.patch<Article>(`${environment.backendURL}/page/${this.webID}/articles/${article.id}`, article, {
+    return this.httpClient.patch<Article>(`${environment.backendURL}/page/${this.webID}/articles/${article.id}`, article,
+    {
       withCredentials: true, observe: 'response'
     }).pipe(
       catchError(() => of(false)),
@@ -103,17 +135,42 @@ export class PageDataService {
       }));
   }
 
-  updateBasics(pageBasics: PageBasics): Observable<boolean> {
-    return this.httpClient.patch<PageBasics>(`${environment.backendURL}/page/${this.webID}`, pageBasics, {
+  updateBasics(): Observable<boolean> {
+    const pageBasics: PageBasics = {
+      id: this.webID,
+      title: this.data.title,
+      templateid: this.data.templateid,
+      logo: this.data.logo,
+      banner: this.data.banner,
+    }
+    return this.httpClient.patch<PageBasics>(`${environment.backendURL}/page/${this.webID}`, pageBasics,
+    {
       withCredentials: true,
     }).pipe(
       catchError(() => of(false)),
       map(res => {
         if (typeof res === 'boolean') return false;
-        this.data.title = res.title;
-        this.data.templateid = res.templateid;
         return true;
       }),
+    );
+  }
+
+  getImage(imagePath: string): string {
+    return `${environment.backendURL}/page/${this.webID}/files/${imagePath}`;
+  }
+
+  uploadFile(file: File): Observable<string> {
+    return this.httpClient.post<any>(`${environment.backendURL}/page/${this.webID}/files`, file,
+    {
+      withCredentials: true,
+    }).pipe(
+      catchError(() => of(null)),
+      map(res => {
+        if (res === null) return '';
+        const imageURL = this.getImage(res.accessurl);
+        this.images.push(imageURL);
+        return imageURL;
+      })
     );
   }
 }

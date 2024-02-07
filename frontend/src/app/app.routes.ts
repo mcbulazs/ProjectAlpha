@@ -13,7 +13,7 @@ import { MediaComponent } from './components/admin/media/media.component';
 import { CalendarComponent } from './components/admin/calendar/calendar.component';
 import { DangerZoneComponent } from './components/admin/danger-zone/danger-zone.component';
 import { GuildRulesComponent } from './components/admin/guild-rules/guild-rules.component';
-import { HtmlEditorComponent } from './components/html-editor/html-editor.component';
+import { UploadsComponent } from './components/admin/uploads/uploads.component';
 
 export const PROJECT_TITLE = 'Project';
 
@@ -21,6 +21,7 @@ export const routes: Routes = [
     { path: '', component: HomeComponent, title: `${PROJECT_TITLE} | Home`, canActivate: [homeGuard], pathMatch: 'full' },
     { path: 'admin', component: AdminComponent, canActivate: [authGuard], title: `${PROJECT_TITLE} | Admin`, children: [
         { path: 'general', component: GeneralComponent, },
+        { path: 'uploads', component: UploadsComponent },
         { path: 'templates', component: TemplatesComponent, },
         { path: 'articles', component: ArticlesComponent },
         { path: 'rules', component: GuildRulesComponent },
@@ -29,7 +30,6 @@ export const routes: Routes = [
         { path: 'media', component: MediaComponent },
         { path: 'calendar', component: CalendarComponent },
         { path: 'settings', component: DangerZoneComponent },
-        { path: 'editor', component: HtmlEditorComponent },
         { path: '**', redirectTo: 'general' },
     ]},
     { path: 'rules', component: RulesComponent, title: `${PROJECT_TITLE} | Rules`},

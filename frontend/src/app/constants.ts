@@ -13,10 +13,8 @@ export const MAT_SNACKBAR_CONFIG: MatSnackBarConfig = {
 export const PLACEHOLDER_DATA: PageData = {
     backgroundColor: '#333333',
     title: "Site name",
-    logo: {
-        id: -1,
-        path: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtzLtm1ubtLwvLLvDmJOfu7pEjJAdPxKR_4j9ms4SplA&s",
-    },
+    
+    logo: 'https://via.placeholder.com/100x100',
     articles: [
         {
             title: "article2",
@@ -31,10 +29,7 @@ export const PLACEHOLDER_DATA: PageData = {
             id: -1
         }
     ],
-    banner: {
-        id: -1,
-        path: "https://images.squarespace-cdn.com/content/v1/55fc0004e4b069a519961e2d/1442580137999-2IE5WSQSTZASOG6EMYR0/logo.gif?format=1000w",
-    },
+    banner: 'https://via.placeholder.com/1905x400/222',
     calendar: [],
     navbar: [
         {
@@ -68,7 +63,8 @@ export const PLACEHOLDER_DATA: PageData = {
                     current: 10,
                     id: -1,
                 },
-            ]
+            ],
+            background: 'https://via.placeholder.com/100x200/0'
         },
         {
             id: -1,
@@ -86,7 +82,8 @@ export const PLACEHOLDER_DATA: PageData = {
                     current: 10,
                     id: -1,
                 },
-            ]
+            ],
+            background: 'https://via.placeholder.com/100x200/0'
         }
     ],
     recruitment: [

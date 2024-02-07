@@ -1,0 +1,23 @@
+img {
+    width: 100%;
+}
+
+.tile:hover {
+    position: relative;
+    cursor: pointer;
+}
+
+.tile:hover .icon {
+    display: flex;
+}
+
+.icon {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    font-size: 4em;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($color: #fff, $alpha: 0.5);
+}

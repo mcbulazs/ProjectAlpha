@@ -1,0 +1,12 @@
+<button mat-icon-button [mat-dialog-close]="undefined">
+    <mat-icon>close</mat-icon>
+</button>
+<p>Double click to select</p>
+<h2 *ngIf="empty">Your uploaded images will be displayed here.</h2>
+<mat-grid-list cols="4">
+    <mat-grid-tile *ngFor="let image of images; index as i">
+        <button mat-button (dblclick)="select(i)" class="btn-image {{i === selected ? 'selected' : ''}}">
+            <img [src]="image" [title]="image">
+        </button>
+    </mat-grid-tile>
+</mat-grid-list>

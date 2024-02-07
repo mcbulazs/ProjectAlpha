@@ -20,13 +20,22 @@ export class TemplatesComponent implements OnDestroy {
 
   constructor(private pds: PageDataService, private snackBar: MatSnackBar) { }
 
-  games = [
+  /* games = [
     'https://logos-world.net/wp-content/uploads/2021/03/World-of-Warcraft-Logo.png',
     'https://cdn2.steamgriddb.com/logo/941d5007e0a0bd420ca69db03ef54c4d.png',
     'https://i.imgur.com/YZMLxmj.png',
     'https://assets.stickpng.com/images/628c9d899f5557831305934e.png',
     'https://logos-world.net/wp-content/uploads/2021/03/Guild-Wars-Emblem.png',
-  ];
+  ]; */
+
+  games = [
+    'https://via.placeholder.com/640x360',
+    'https://via.placeholder.com/640x360',
+    'https://via.placeholder.com/640x360',
+    'https://via.placeholder.com/640x360',
+    'https://via.placeholder.com/640x360',
+  ]
+
   templates = TEMPLATES;
   currentGame = 0;
   selectedGame = 0;
@@ -54,18 +63,12 @@ export class TemplatesComponent implements OnDestroy {
   }
 
   switchTemplate() {
-    let basics: PageBasics = {
-      id: this.pds.webID,
-      templateid: this.selectedTemplate,
-      title: this.pds.data.title,
-    }
-    this.pds.updateBasics(basics).subscribe(
-      succeded => {
-        if (succeded) {
-          this.pds.data.templateid = this.selectedTemplate;
-          this.currentTemplate = this.selectedTemplate;
-        }
-        this.snackBar.open(`Template change${succeded ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+    this.pds.data.templateid = this.selectedTemplate;
+    this.pds.updateBasics().subscribe(
+      succeeded => {
+        if (succeeded) this.currentTemplate = this.selectedTemplate;
+        else this.pds.data.templateid = this.currentTemplate;
+        this.snackBar.open(`Template change${succeeded ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       }
     )
   }

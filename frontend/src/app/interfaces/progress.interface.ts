@@ -4,4 +4,5 @@ export interface Progress {
     id: number
     name: string
     raids: Raid[]
+    background: string
 }

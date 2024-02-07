@@ -1,16 +1,22 @@
 <form [formGroup]="general">
-    <h1>General page settings</h1>
+    <h2>General page settings</h2>
+    <mat-divider class="divider"></mat-divider>
     <mat-form-field>
         <mat-label>Title</mat-label>
         <input matInput [(ngModel)]="data.title" [ngModelOptions]="{standalone: true}" maxlength="20">
     </mat-form-field>
     <label for="logo-upload">Logo</label>
-    <input type="file" id="logo-upload" accept="image/*" (change)="changeLogo($event)">
-    <img [src]="data.logo.path" style="width: 200px;">
-    <mat-form-field>
+    <input type="file" id="logo-upload" accept="image/*" #logoUpload (change)="changeLogo(logoUpload.files)">
+    <p>or choose from your <button mat-raised-button color="accent" (click)="openGallery(data, 'logo')">Gallery</button></p>
+    <img [src]="data.logo" style="width: 100px;">
+    <label for="banner-upload">Banner</label>
+    <input type="file" id="banner-upload" accept="image/*" #bannerUpload (change)="changeBanner(bannerUpload.files)">
+    <p>or choose from your <button mat-raised-button color="accent" (click)="openGallery(data, 'banner')">Gallery</button></p>
+    <img [src]="data.banner" style="width: 100px;">
+    <!-- <mat-form-field>
         <mat-label>Banner</mat-label>
-        <input matInput [(ngModel)]="data.banner.path" [ngModelOptions]="{standalone: true}">
-    </mat-form-field>
+        <input matInput [(ngModel)]="data.banner.filedata" [ngModelOptions]="{standalone: true}">
+    </mat-form-field> -->
     <mat-form-field>
         <mat-label>Background color</mat-label>
         <input type="color" matInput [(ngModel)]="data.backgroundColor" [ngModelOptions]="{standalone: true}">

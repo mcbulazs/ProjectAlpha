@@ -16,5 +16,5 @@
             </button>
         </mat-list-item>
     </mat-list>
-    <mat-paginator #paginator [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [length]="length" (page)="pageEventHandler($event)" showFirstLastButtons="true"></mat-paginator>
+    <mat-paginator #paginator *ngIf="displayedArticles.length !== 0" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [length]="length" (page)="pageEventHandler($event)" showFirstLastButtons="true"></mat-paginator>
 </div>
