@@ -27,7 +27,7 @@ func ControllerInit(r *mux.Router) {
 	pageRouter.HandleFunc("", Controller_Page).Methods("GET", "PATCH", "OPTIONS")
 
 	pageRouter.HandleFunc("/files", Controller_File_Save).Methods("POST", "OPTIONS")
-	pageRouter.PathPrefix("/files").HandlerFunc(Controller_File_Serve).Methods("GET")
+	pageRouter.PathPrefix("/files").HandlerFunc(Controller_File_Serve).Methods("GET", "OPTIONS", "DELETE")
 
 	pageRouter.HandleFunc("/articles", Controller_Page_Articles_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/articles/{Id:[0-9]+}", Controller_Page_Articles_Modify).Methods("PATCH", "DELETE", "OPTIONS")

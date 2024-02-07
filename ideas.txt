@@ -9,5 +9,5 @@ Frontend:
 
 
 Backend:
-- file serve: content type jelenleg beégetetten image/png mindenen
-- delete method ugyanarra az url-re amin el lehet érni a képet
++ file serve: content type jelenleg beégetetten image/png mindenen
++ delete method ugyanarra az url-re amin el lehet érni a képet

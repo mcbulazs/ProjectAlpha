@@ -74,10 +74,19 @@ func Controller_File_Serve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	filePath := "/app/files/" + webID + r.URL.Path[len("/page/"+webID+"/files"):]
-	fmt.Printf("trying to serve: %s \n", filePath)
-	// Use http.ServeFile to serve the file
-	w.Header().Set("Content-Type", "image/png")
-	http.ServeFile(w, r, filePath)
+	switch r.Method {
+	case http.MethodGet:
+		contentType := http.DetectContentType([]byte(filePath))
+		w.Header().Set("Content-Type", contentType)
+		http.ServeFile(w, r, filePath)
+	case http.MethodDelete:
+		err := file.DeleteFile(filePath)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		JSON.SendJSON(w, "Deletion Successful", "message")
+	}
 
 }
 func Controller_Outer_File_Serve(w http.ResponseWriter, r *http.Request) {
@@ -99,8 +108,8 @@ func Controller_Outer_File_Serve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	filePath := filepath.Join("/app/files", strconv.Itoa(webId), r.URL.Path[len("/page/"+strconv.Itoa(webId)+"/files/"):])
-	fmt.Printf("trying to serve: %s \n", filePath)
 	// Use http.ServeFile to serve the file
-	w.Header().Set("Content-Type", "image/png")
+	contentType := http.DetectContentType([]byte(filePath))
+	w.Header().Set("Content-Type", contentType)
 	http.ServeFile(w, r, filePath)
 }

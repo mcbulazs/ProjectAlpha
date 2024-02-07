@@ -85,6 +85,23 @@ func GetFiles(webId int) ([]string, error) {
 	return result, nil
 }
 
+func DeleteFile(path string) error {
+	tx, commitOrRollback, err := db.BeginTransaction()
+	if err != nil {
+		return err
+	}
+	defer commitOrRollback(&err)
+	_, err = tx.Exec("DELETE FROM files WHERE path=$1", path)
+	if err != nil {
+		return err
+	}
+	err = os.Remove(path)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func getExtension(filedata []byte) (string, error) {
 	mimeType := http.DetectContentType(filedata)
 	exts, err := mime.ExtensionsByType(mimeType)
@@ -93,5 +110,8 @@ func getExtension(filedata []byte) (string, error) {
 	}
 	last := exts[len(exts)-1]
 	//return http.DetectContentType(file.FileData).Extension
+	if len(last) == 0 {
+		return "", fmt.Errorf("wrong extension on file")
+	}
 	return last[1:], nil
 }

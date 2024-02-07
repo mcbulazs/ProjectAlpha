@@ -20,6 +20,13 @@ import (
 )
 
 func Controller_Login(w http.ResponseWriter, r *http.Request) {
+	session, _ := sess.Store.Get(r, "session")
+	_, ok := session.Values["user_id"].(int)
+	if ok {
+		JSON.SendJSON(w, "User already logged in", "message")
+		return
+	}
+
 	var login models.LoginModel
 	err := json.NewDecoder(r.Body).Decode(&login)
 	if err != nil {
@@ -59,6 +66,13 @@ func Controller_Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func Controller_Register(w http.ResponseWriter, r *http.Request) {
+	session, _ := sess.Store.Get(r, "session")
+	_, ok := session.Values["user_id"].(int)
+	if ok {
+		JSON.SendJSON(w, "User already logged in", "message")
+		return
+	}
+
 	var register models.LoginModel
 	err := json.NewDecoder(r.Body).Decode(&register)
 	if err != nil {
