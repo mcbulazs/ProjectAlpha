@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -76,7 +77,12 @@ func Controller_File_Serve(w http.ResponseWriter, r *http.Request) {
 	filePath := "/app/files/" + webID + r.URL.Path[len("/page/"+webID+"/files"):]
 	switch r.Method {
 	case http.MethodGet:
-		contentType := http.DetectContentType([]byte(filePath))
+		file, err := os.ReadFile(filePath)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		contentType := http.DetectContentType(file)
 		w.Header().Set("Content-Type", contentType)
 		http.ServeFile(w, r, filePath)
 	case http.MethodDelete:
