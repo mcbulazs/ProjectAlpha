@@ -31,8 +31,6 @@ func SaveFile(webId int, file []byte) (string, error) {
 	dirpath := filepath.Join("/app/files", strconv.Itoa(webId))
 	_, err = os.Stat(dirpath)
 	if err == nil {
-		fmt.Printf("Directory %s does not exist.\n", dirpath)
-
 		size, err := getDirectorySize(dirpath)
 		if err != nil {
 			return "", err
