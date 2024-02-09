@@ -7,6 +7,7 @@ type Error struct {
 
 const (
 	FileSizeTooBig        = "FileSizeTooBig"
+	DirectorySizeTooBig   = "DirectorySizeTooBig"
 	NotMatchingIds        = "NotMatchingIds"
 	TypeDoesntExist       = "TypeDoesntExist"
 	InvalidPasswordFormat = "InvalidPasswordFormat"

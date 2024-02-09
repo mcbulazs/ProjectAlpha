@@ -38,6 +38,9 @@ func Controller_File_Save(w http.ResponseWriter, r *http.Request) {
 		if err.Error() == errors.FileSizeTooBig {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
+		} else if err.Error() == errors.DirectorySizeTooBig {
+			http.Error(w, err.Error(), http.StatusInsufficientStorage)
+			return
 		} else {
 
 			http.Error(w, err.Error(), http.StatusInternalServerError)

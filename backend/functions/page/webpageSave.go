@@ -32,7 +32,8 @@ func CreateWebpage(userId int) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	_, err = tx.Exec("INSERT INTO navbar (WebId, Name, Path, Ranking) VALUES ($1,'Home','',0), ($2,'About','About',0)", webId, webId)
+	query := "INSERT INTO navbar (WebId, Name, Path, Ranking) VALUES ($1,'Home','',0), ($2,'About','about',1), ($3,'Rules','rules',2), ($4,'Videos','videos',3), ($5,'Tactics','tactics',3)"
+	_, err = tx.Exec(query, webId, webId, webId, webId, webId)
 	if err != nil {
 		return 0, err
 	}

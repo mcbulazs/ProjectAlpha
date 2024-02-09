@@ -8,9 +8,11 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 )
 
 const MaxFileSize = 8 * 1024 * 1024 //MAX 8 MB
+const MaxStorageSize = MaxFileSize * 16
 
 func SaveFile(webId int, file []byte) (string, error) {
 	tx, commitOrRollback, err := db.BeginTransaction()
@@ -27,6 +29,13 @@ func SaveFile(webId int, file []byte) (string, error) {
 		return "", err
 	}
 	var accessUrl, path string
+	size, err := getDirectorySize(filepath.Join("/app/files", strconv.Itoa(webId)))
+	if err != nil {
+		return "", err
+	}
+	if size > MaxStorageSize {
+		return "", errors.NewError(errors.DirectorySizeTooBig)
+	}
 	row := tx.QueryRow("INSERT INTO files (WebId, Extension) values ($1, $2) RETURNING AccessUrl, Path", webId, ext)
 	err = row.Scan(
 		&accessUrl,
@@ -83,6 +92,28 @@ func GetFiles(webId int) ([]string, error) {
 		result = append(result, s)
 	}
 	return result, nil
+}
+
+func getDirectorySize(path string) (int64, error) {
+	var size int64
+
+	err := filepath.Walk(path, func(filePath string, fileInfo os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		// Skip directories for now
+		if fileInfo.IsDir() {
+			return nil
+		}
+		size += fileInfo.Size()
+		return nil
+	})
+
+	if err != nil {
+		return 0, err
+	}
+
+	return size, nil
 }
 
 func DeleteFile(path string) error {
