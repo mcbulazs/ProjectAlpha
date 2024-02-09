@@ -28,14 +28,20 @@ func SaveFile(webId int, file []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	dirpath := filepath.Join("/app/files", strconv.Itoa(webId))
+	_, err = os.Stat(dirpath)
+	if err == nil {
+		fmt.Printf("Directory %s does not exist.\n", dirpath)
+
+		size, err := getDirectorySize(dirpath)
+		if err != nil {
+			return "", err
+		}
+		if size > MaxStorageSize {
+			return "", errors.NewError(errors.DirectorySizeTooBig)
+		}
+	}
 	var accessUrl, path string
-	size, err := getDirectorySize(filepath.Join("/app/files", strconv.Itoa(webId)))
-	if err != nil {
-		return "", err
-	}
-	if size > MaxStorageSize {
-		return "", errors.NewError(errors.DirectorySizeTooBig)
-	}
 	row := tx.QueryRow("INSERT INTO files (WebId, Extension) values ($1, $2) RETURNING AccessUrl, Path", webId, ext)
 	err = row.Scan(
 		&accessUrl,
