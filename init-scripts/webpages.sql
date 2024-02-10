@@ -17,14 +17,15 @@ CREATE TABLE files (
     Path varchar(255) NOT NULL,
     AccessUrl varchar(255) NOT NULL, 
     WebId int NOT NULL,
-    Extension varchar(255)
+    Extension varchar(255),
+    Type varchar(255) DEFAULT null
 );
 
 CREATE OR REPLACE FUNCTION set_default_values()
 RETURNS TRIGGER AS $$
 BEGIN
-    NEW.Path := '/app/files/' || NEW.WebId::TEXT || '/images/' || NEW.Id::TEXT  || COALESCE('.' || NEW.Extension, '');
-    NEW.AccessUrl := 'images/' || NEW.Id::TEXT || COALESCE('.' || NEW.Extension, '');
+    NEW.Path := '/app/files/' || NEW.WebId::TEXT || '/images/' || COALESCE(NEW.Type || '/', '') || NEW.Id::TEXT  || COALESCE('.' || NEW.Extension, '');
+    NEW.AccessUrl := 'images/' || COALESCE(NEW.Type || '/', '') || NEW.Id::TEXT   || COALESCE('.' || NEW.Extension, '');
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

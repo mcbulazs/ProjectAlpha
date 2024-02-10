@@ -3,6 +3,8 @@ package file
 import (
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/enums/errors"
+	ImageType "ProjectAlpha/enums/imageTypeEmum.go"
+	"database/sql"
 	"fmt"
 	"mime"
 	"net/http"
@@ -14,7 +16,7 @@ import (
 const MaxFileSize = 8 * 1024 * 1024 //MAX 8 MB
 const MaxStorageSize = MaxFileSize * 16
 
-func SaveFile(webId int, file []byte) (string, error) {
+func SaveFile(webId int, file []byte, Type string) (string, error) {
 	tx, commitOrRollback, err := db.BeginTransaction()
 	if err != nil {
 		return "", err
@@ -40,7 +42,12 @@ func SaveFile(webId int, file []byte) (string, error) {
 		}
 	}
 	var accessUrl, path string
-	row := tx.QueryRow("INSERT INTO files (WebId, Extension) values ($1, $2) RETURNING AccessUrl, Path", webId, ext)
+	var row *sql.Row
+	if Type == ImageType.ARTICLE {
+		row = tx.QueryRow("INSERT INTO files (WebId, Extension, Type) values ($1, $2, $3) RETURNING AccessUrl, Path", webId, ext, ImageType.ARTICLE)
+	} else {
+		row = tx.QueryRow("INSERT INTO files (WebId, Extension) values ($1, $2) RETURNING AccessUrl, Path", webId, ext)
+	}
 	err = row.Scan(
 		&accessUrl,
 		&path,
@@ -81,7 +88,7 @@ func SaveFile(webId int, file []byte) (string, error) {
 
 func GetFiles(webId int) ([]string, error) {
 	var result []string = make([]string, 0)
-	rows, err := db.Context.Query("SELECT AccessUrl FROM files where WebId=$1", webId)
+	rows, err := db.Context.Query("SELECT AccessUrl FROM files where WebId=$1 AND Type is null", webId)
 	if err != nil {
 		return nil, err
 	}

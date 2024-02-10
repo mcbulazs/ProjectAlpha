@@ -3,6 +3,7 @@ package controllers
 import (
 	"ProjectAlpha/JSON"
 	"ProjectAlpha/enums/errors"
+	ImageType "ProjectAlpha/enums/imageTypeEmum.go"
 	"ProjectAlpha/functions"
 	"ProjectAlpha/functions/file"
 	"ProjectAlpha/functions/page"
@@ -33,7 +34,39 @@ func Controller_File_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	file, err := file.SaveFile(web_id, img)
+	file, err := file.SaveFile(web_id, img, ImageType.DEFAULT)
+	if err != nil {
+		if err.Error() == errors.FileSizeTooBig {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		} else if err.Error() == errors.DirectorySizeTooBig {
+			http.Error(w, err.Error(), http.StatusInsufficientStorage)
+			return
+		} else {
+
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	JSON.SendJSON(w, file, "accessurl")
+}
+
+func Controller_Article_File_Save(w http.ResponseWriter, r *http.Request) {
+	web_id, err := functions.GetWebId(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if !strings.Contains(r.Header.Get("Content-Type"), "image") {
+		http.Error(w, "not image type", http.StatusBadRequest)
+		return
+	}
+	img, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	file, err := file.SaveFile(web_id, img, ImageType.ARTICLE)
 	if err != nil {
 		if err.Error() == errors.FileSizeTooBig {
 			http.Error(w, err.Error(), http.StatusBadRequest)
