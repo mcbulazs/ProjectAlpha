@@ -65,10 +65,10 @@ export class TemplatesComponent implements OnDestroy {
   switchTemplate() {
     this.pds.data.templateid = this.selectedTemplate;
     this.pds.updateBasics().subscribe(
-      succeeded => {
-        if (succeeded) this.currentTemplate = this.selectedTemplate;
+      success => {
+        if (success) this.currentTemplate = this.selectedTemplate;
         else this.pds.data.templateid = this.currentTemplate;
-        this.snackBar.open(`Template change${succeeded ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+        this.snackBar.open(`Template change${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       }
     )
   }

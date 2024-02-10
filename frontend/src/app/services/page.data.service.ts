@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment.development';
 import { Article } from '../interfaces/article.interface';
 import { PLACEHOLDER_DATA } from '../constants';
 import { PageBasics } from '../interfaces/page.basics.interface';
+import { NavItem } from '../interfaces/navitem.interface';
 
 export interface TemplateChanger {
   templateID: number,
@@ -25,6 +26,7 @@ export class PageDataService {
 
   placeholderHotline = new Subject<boolean>;
   templateHotline = new Subject<TemplateChanger>;
+  navbarUpdateHotline = new Subject<boolean>;
 
   usePlaceholders: boolean = true;
 
@@ -38,45 +40,47 @@ export class PageDataService {
 
   getData(): Observable<boolean> {
     return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`,
-    {
-      withCredentials: true, observe: 'response',
-    }).pipe(map(res => {
-      if (res.status === 200 && res.body) {
-        this.data = res.body;
-        this.data.backgroundColor = '#333333';
-        console.log("Page data is ready!");
-        return true;
-      }
-      return false;
-    }))
+      {
+        withCredentials: true, observe: 'response',
+      }).pipe(map(res => {
+        if (res.status === 200 && res.body) {
+          let homeNav = res.body.navbar.find(x => x.path === '')!;
+          homeNav.enabled = true;
+          this.data = res.body;
+          this.data.backgroundColor = '#333333';
+          console.log("Page data is ready!");
+          return true;
+        }
+        return false;
+      }))
   }
 
   getImages(): Observable<string[]> {
     return this.httpClient.get<string[]>(`${environment.backendURL}/page/${this.webID}/files`,
-    {
-      withCredentials: true,
-    }).pipe(
-      catchError(() => []),
-      map(res => {
-        this.images = res.map(x => this.getImage(x));
-        return this.images;
-      })
-    );
+      {
+        withCredentials: true,
+      }).pipe(
+        catchError(() => []),
+        map(res => {
+          this.images = res.map(x => this.getImage(x));
+          return this.images;
+        })
+      );
   }
 
   deleteImage(image: string): Observable<boolean> {
     return this.httpClient.delete<any>(image,
-    {
-      withCredentials: true,
-    }).pipe(
-      catchError(() => of(null)),
-      map(res => {
-        if (res === null) return false;
-        let deletedIndex = this.images.indexOf(image);
-        this.images.splice(deletedIndex, 1);
-        return true;
-      })
-    );
+      {
+        withCredentials: true,
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => {
+          if (res === null) return false;
+          let deletedIndex = this.images.indexOf(image);
+          this.images.splice(deletedIndex, 1);
+          return true;
+        })
+      );
   }
 
   getPlaceholderHotline(): Subject<boolean> {
@@ -85,6 +89,10 @@ export class PageDataService {
 
   getTemplateHotline(): Subject<TemplateChanger> {
     return this.templateHotline;
+  }
+
+  getNavbarUpdateHotline(): Subject<boolean> {
+    return this.navbarUpdateHotline;
   }
 
   changeTemplate(templateID: number, path: string) {
@@ -96,49 +104,53 @@ export class PageDataService {
     this.placeholderHotline.next(this.usePlaceholders);
   }
 
+  sendNavbarUpdate() {
+    this.navbarUpdateHotline.next(true);
+  }
+
   createArticle(article: Article): Observable<Boolean> {
     return this.httpClient.post<Article>(`${environment.backendURL}/page/${this.webID}/articles`, article,
-    {
-      withCredentials: true, observe: 'response',
-    }).pipe(
-      catchError(() => of(false)),
-      map(res => {
-        if (typeof res === 'boolean' || res.body === null) return false;
-        this.data.articles.unshift(res.body);
-        return true;
-      }));
+      {
+        withCredentials: true, observe: 'response',
+      }).pipe(
+        catchError(() => of(false)),
+        map(res => {
+          if (typeof res === 'boolean' || res.body === null) return false;
+          this.data.articles.unshift(res.body);
+          return true;
+        }));
   }
 
   deleteArticle(id: number): Observable<boolean> {
     return this.httpClient.delete<any>(`${environment.backendURL}/page/${this.webID}/articles/${id}`,
-    {
-      withCredentials: true, observe: 'response'
-    }).pipe(
-      catchError(() => of(false)),
-      map(res => {
-        if (res) {
-          let deletedIndex = this.data.articles.findIndex(x => x.id === id)
-          this.data.articles.splice(deletedIndex, 1);
-          return true;
-        }
-        return false;
-      })
-    );
+      {
+        withCredentials: true, observe: 'response'
+      }).pipe(
+        catchError(() => of(false)),
+        map(res => {
+          if (res) {
+            let deletedIndex = this.data.articles.findIndex(x => x.id === id)
+            this.data.articles.splice(deletedIndex, 1);
+            return true;
+          }
+          return false;
+        })
+      );
   }
 
   updateArticle(article: Article): Observable<boolean> {
     return this.httpClient.patch<Article>(`${environment.backendURL}/page/${this.webID}/articles/${article.id}`, article,
-    {
-      withCredentials: true, observe: 'response'
-    }).pipe(
-      catchError(() => of(false)),
-      map(res => {
-        if (typeof res === 'boolean' || res.body === null) return false;
-        let oldArticle = this.data.articles.find(x => x.id === res.body?.id);
-        if (!oldArticle) return false;
-        Object.assign(oldArticle, res.body);
-        return true;
-      }));
+      {
+        withCredentials: true, observe: 'response'
+      }).pipe(
+        catchError(() => of(false)),
+        map(res => {
+          if (typeof res === 'boolean' || res.body === null) return false;
+          let oldArticle = this.data.articles.find(x => x.id === res.body?.id);
+          if (!oldArticle) return false;
+          Object.assign(oldArticle, res.body);
+          return true;
+        }));
   }
 
   updateBasics(): Observable<boolean> {
@@ -150,15 +162,15 @@ export class PageDataService {
       banner: this.data.banner,
     }
     return this.httpClient.patch<PageBasics>(`${environment.backendURL}/page/${this.webID}`, pageBasics,
-    {
-      withCredentials: true,
-    }).pipe(
-      catchError(() => of(false)),
-      map(res => {
-        if (typeof res === 'boolean') return false;
-        return true;
-      }),
-    );
+      {
+        withCredentials: true,
+      }).pipe(
+        catchError(() => of(false)),
+        map(res => {
+          if (typeof res === 'boolean') return false;
+          return true;
+        }),
+      );
   }
 
   getImage(imagePath: string): string {
@@ -167,16 +179,30 @@ export class PageDataService {
 
   uploadFile(file: File): Observable<string> {
     return this.httpClient.post<any>(`${environment.backendURL}/page/${this.webID}/files`, file,
-    {
-      withCredentials: true,
-    }).pipe(
-      catchError(() => of(null)),
-      map(res => {
-        if (res === null) return '';
-        const imageURL = this.getImage(res.accessurl);
-        this.images.push(imageURL);
-        return imageURL;
-      })
-    );
+      {
+        withCredentials: true,
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => {
+          if (res === null) return '';
+          const imageURL = this.getImage(res.accessurl);
+          this.images.push(imageURL);
+          return imageURL;
+        })
+      );
+  }
+
+  saveNavbar(): Observable<boolean> {
+    return this.httpClient.patch<NavItem[]>(`${environment.backendURL}/page/${this.webID}/navbar`, this.data.navbar,
+      {
+        withCredentials: true,
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => {
+          if (res === null) return false;
+          this.data.navbar = res;
+          return true;
+        }),
+      );
   }
 }

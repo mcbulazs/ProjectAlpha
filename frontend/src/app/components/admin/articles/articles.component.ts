@@ -8,8 +8,10 @@ import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { Article } from '../../../interfaces/article.interface';
 import { MatList, MatListItem, MatListItemIcon, MatListItemLine, MatListItemMeta, MatListItemTitle } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
-import { DeleteArticleComponent } from './delete-article/delete-article.component';
+import { DeleteModalComponent } from '../../delete-modal/delete-modal.component';
 import { EditArticleComponent } from './edit-article/edit-article.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MAT_SNACKBAR_CONFIG } from '../../../constants';
 
 @Component({
   selector: 'app-articles',
@@ -20,7 +22,7 @@ import { EditArticleComponent } from './edit-article/edit-article.component';
 })
 export class ArticlesComponent implements OnInit {
 
-  constructor(private dialog: MatDialog, private pds: PageDataService) { }
+  constructor(private dialog: MatDialog, private pds: PageDataService, private snackBar: MatSnackBar) { }
 
   pageSizeOptions = [5, 10, 20, 30];
   pageSize = 5;
@@ -64,12 +66,16 @@ export class ArticlesComponent implements OnInit {
   }
 
   deleteArticle(id: number) {
-    const dialogRef = this.dialog.open(DeleteArticleComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       width: '200px',
-      data: id,
     });
-    dialogRef.afterClosed().subscribe(() => {
-      this.setDisplayedArticles();
+    dialogRef.afterClosed().subscribe(deleted => {
+      if (deleted) {
+        this.pds.deleteArticle(id).subscribe(success => {
+          this.setDisplayedArticles();
+          this.snackBar.open(`Article ${success ? 'deleted' : 'deletion failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+        })
+      }
     });
   }
 }

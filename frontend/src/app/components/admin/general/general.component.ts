@@ -6,7 +6,7 @@ import { PageDataService } from '../../../services/page.data.service';
 import { CommonModule } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import { CdkDropList, CdkDrag, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NavItem } from '../../../interfaces/navbar.interface';
+import { NavItem } from '../../../interfaces/navitem.interface';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MAT_SNACKBAR_CONFIG } from '../../../constants';
@@ -14,11 +14,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDivider } from '@angular/material/divider';
 import { MatDialog } from '@angular/material/dialog';
 import { GalleryDialogComponent } from '../uploads/gallery-dialog/gallery-dialog.component';
+import { EditNavigationComponent } from './edit-navigation/edit-navigation.component';
 
 @Component({
   selector: 'app-general',
   standalone: true,
-  imports: [ReactiveFormsModule, MatFormField, MatLabel, FormsModule, MatInput, CdkDropList, CdkDrag, CommonModule, MatIcon, MatIconButton, MatButton, MatDivider, MatButton],
+  imports: [ReactiveFormsModule, MatFormField, MatLabel, FormsModule, MatInput, CdkDropList, CdkDrag, CommonModule, MatIcon, MatIconButton, MatButton, MatButton],
   templateUrl: './general.component.html',
   styleUrl: './general.component.scss'
 })
@@ -54,11 +55,11 @@ export class GeneralComponent implements OnInit, OnDestroy {
     this.pds.uploadFile(files[0]).subscribe(res => {
       this.data.logo = res;
       if (res === '') return;
-      this.pds.updateBasics().subscribe(succeded => {
-        if (succeded) {
+      this.pds.updateBasics().subscribe(success => {
+        if (success) {
           this.initState.logo = this.data.logo;
         } else this.data.logo = this.initState.logo;
-        this.snackBar.open(`Logo change${succeded ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+        this.snackBar.open(`Logo change${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       })
     });
   }
@@ -69,11 +70,11 @@ export class GeneralComponent implements OnInit, OnDestroy {
     this.pds.uploadFile(files[0]).subscribe(res => {
       this.data.banner = res;
       if (res === '') return;
-      this.pds.updateBasics().subscribe(succeded => {
-        if (succeded) {
+      this.pds.updateBasics().subscribe(success => {
+        if (success) {
           this.initState.logo = this.data.logo;
         } else this.data.logo = this.initState.logo;
-        this.snackBar.open(`Banner change${succeded ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+        this.snackBar.open(`Banner change${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       })
     });
   }
@@ -93,6 +94,7 @@ export class GeneralComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.data.navbar.length; i++) {
         this.data.navbar[i] = this.initState.navigation[i];
       }
+      this.pds.sendNavbarUpdate();
     }
     if (this.initState.title !== this.data.title) this.data.title = this.initState.title;
     if (this.initState.logo.path !== this.data.logo) this.data.logo = this.initState.logo;
@@ -100,12 +102,15 @@ export class GeneralComponent implements OnInit, OnDestroy {
 
   drop(event: CdkDragDrop<NavItem[]>) {
     moveItemInArray(this.data.navbar, event.previousIndex, event.currentIndex);
+    this.pds.sendNavbarUpdate();
     this.checkOrder();
   }
 
-  // TODO: send to backend
   save() {
-    this.navOrderChanged = false;
+    this.pds.saveNavbar().subscribe(success => {
+      if (success) this.navOrderChanged = false;
+      this.snackBar.open(`Navigation ${success ? 'reordered' : 'reorder failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+    })
   }
 
   openGallery(outputObject: any, key: string) {
@@ -114,15 +119,32 @@ export class GeneralComponent implements OnInit, OnDestroy {
       height: '800px'
     });
     dialogRef.afterClosed().subscribe(selected => {
-      
       if (selected === undefined) return;
       outputObject[key] = this.pds.images[selected];
-      this.pds.updateBasics().subscribe(succeded => {
-        if (succeded) {
+      this.pds.updateBasics().subscribe(success => {
+        if (success) {
           this.initState[key] = outputObject[key];
         } else outputObject[key] = this.initState[key];
-        this.snackBar.open(`${key.charAt(0).toUpperCase() + key.slice(1)} change${succeded ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+        this.snackBar.open(`${key.charAt(0).toUpperCase() + key.slice(1)} change${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       })
     });
+  }
+
+  editNavigation(id: number) {
+    let navitem = this.data.navbar.find(x => x.id === id);
+    if (!navitem) return;
+    const preserveTitle: string = navitem.name;
+    const preserveEnabled: boolean = navitem.enabled;
+    const dialogRef = this.dialog.open(EditNavigationComponent, {
+      data: navitem,
+    });
+    dialogRef.afterClosed().subscribe(changed => {
+      if (!changed) {
+        if (!navitem) return;
+        navitem.name = preserveTitle;
+        navitem.enabled = preserveEnabled;
+        this.pds.sendNavbarUpdate();
+      }
+    })
   }
 }

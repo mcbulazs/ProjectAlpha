@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Edit navigation</h1>
+<div mat-dialog-content class="dialog-content">
+    <p>Navigation path: {{'/' + data.path}}</p>
+    <mat-form-field>
+        <mat-label>Page title</mat-label>
+        <input matInput [(ngModel)]="navitem.name">
+    </mat-form-field>
+    <mat-checkbox [(ngModel)]="navitem.enabled" (change)="togglePage()" [disabled]="navitem.path === ''" color="primary" id="acceptRules">Toggle page</mat-checkbox>
+</div>
+<div mat-dialog-actions class="buttons">
+    <button mat-raised-button color="primary" (click)="save()">Save</button>
+    <button mat-dialog-close mat-raised-button color="warn">Cancel</button>
+</div>

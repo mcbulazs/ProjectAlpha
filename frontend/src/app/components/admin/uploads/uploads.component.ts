@@ -31,9 +31,9 @@ export class UploadsComponent implements OnInit {
       this.snackBar.open(`Images in use can not be deleted.`, undefined, MAT_SNACKBAR_CONFIG);
       return;
     }
-    this.pds.deleteImage(image).subscribe(succeeded => {
+    this.pds.deleteImage(image).subscribe(success => {
       this.empty = this.images.length === 0;
-      this.snackBar.open(`Image delet${succeeded ? 'ed' : 'ion failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+      this.snackBar.open(`Image delet${success ? 'ed' : 'ion failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
     })
   }
 }

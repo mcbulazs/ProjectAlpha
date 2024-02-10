@@ -1,6 +1,5 @@
 <form [formGroup]="general">
     <h2>General page settings</h2>
-    <mat-divider class="divider"></mat-divider>
     <mat-form-field>
         <mat-label>Title</mat-label>
         <input matInput [(ngModel)]="data.title" [ngModelOptions]="{standalone: true}" maxlength="20">
@@ -19,17 +18,15 @@
     </mat-form-field>
 </form>
 <h1>Pages & Navigation</h1>
+<p>Toggle pages, change page titles, reorder navigation bar</p>
 <div cdkDropList class="navitem-list" (cdkDropListDropped)="drop($event)">
     <button mat-raised-button color="warn" class="btn-save" *ngIf="navOrderChanged" (click)="save()">Save</button>
     <div cdkDrag class="navitem" *ngFor="let navitem of data.navbar">
         <div class="nav-content">
             <mat-icon>drag_indicator</mat-icon>
-            <div class="nav-line">
-                <span class="nav-name">{{navitem.name}}</span>
-                <span class="nav-path">/{{navitem.path}}</span>
-            </div>
+            <span class="nav-name">{{navitem.name}}</span>
         </div>
-        <button mat-icon-button>
+        <button mat-icon-button (click)="editNavigation(navitem.id)">
             <mat-icon>edit</mat-icon>
         </button>
     </div>

@@ -31,6 +31,9 @@ export abstract class TemplateComponent implements OnInit, OnDestroy {
     this.subs.add(this.pds.getPlaceholderHotline().subscribe(command => {
       this.usePlaceholders = command;
     }));
+    this.subs.add(this.pds.getNavbarUpdateHotline().subscribe(() => {
+      this.data.navbar = [...this.pds.data.navbar];
+    }))
   }
 
   changeTemplate(path: string) {

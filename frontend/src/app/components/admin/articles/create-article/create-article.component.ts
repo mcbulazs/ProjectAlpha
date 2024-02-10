@@ -42,7 +42,7 @@ export class CreateArticleComponent {
 
   editorConfig: EditorConfig = {
     toolbar: [
-      'heading', '|', 'bold', 'italic', 'underline'
+      'heading', '|', 'bold', 'italic'
     ],
     image: {
       insert: {

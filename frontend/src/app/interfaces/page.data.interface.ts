@@ -1,7 +1,7 @@
 import { Article } from "./article.interface"
 import { Calendar } from "./calendar.interface"
 import { Channel } from "./channel.interface"
-import { NavItem } from "./navbar.interface"
+import { NavItem } from "./navitem.interface"
 import { Progress } from "./progress.interface"
 import { Recruitment } from "./recruitment.interface"
 
