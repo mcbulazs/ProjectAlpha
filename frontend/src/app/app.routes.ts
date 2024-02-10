@@ -14,7 +14,6 @@ import { CalendarComponent } from './components/admin/calendar/calendar.componen
 import { DangerZoneComponent } from './components/admin/danger-zone/danger-zone.component';
 import { GuildRulesComponent } from './components/admin/guild-rules/guild-rules.component';
 import { UploadsComponent } from './components/admin/uploads/uploads.component';
-import { EditorComponent } from './components/admin/editor/editor.component';
 
 export const PROJECT_TITLE = 'Project';
 
@@ -31,7 +30,6 @@ export const routes: Routes = [
         { path: 'media', component: MediaComponent },
         { path: 'calendar', component: CalendarComponent },
         { path: 'settings', component: DangerZoneComponent },
-        { path: 'editor', component: EditorComponent }, //! DEFER REMOVE
         { path: '**', redirectTo: 'general' },
     ]},
     { path: 'rules', component: RulesComponent, title: `${PROJECT_TITLE} | Rules`},
