@@ -11,12 +11,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ARTICLE_CONTENT_MAX_LENGTH, ARTICLE_TITLE_MAX_LENGTH, MAT_SNACKBAR_CONFIG } from '../../../../constants';
 import { PageDataService } from '../../../../services/page.data.service';
 import { ArticlesComponent } from '../articles.component';
-import { QuillModule } from 'ngx-quill';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-edit-article',
   standalone: true,
-  imports: [CommonModule, QuillModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, CdkTextareaAutosize, MatDialogTitle, MatDialogActions, MatDialogClose],
+  imports: [CommonModule, CKEditorModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, CdkTextareaAutosize, MatDialogTitle, MatDialogActions, MatDialogClose],
   templateUrl: './edit-article.component.html',
   styleUrl: './edit-article.component.scss'
 })
@@ -28,6 +29,8 @@ export class EditArticleComponent {
   titleMaxLength = ARTICLE_TITLE_MAX_LENGTH;
 
   article: Article = { ...this.data };
+
+  contentEditor = ClassicEditor;
 
   update() {
     if (this.article.title === this.data.title && this.article.content === this.data.content) return;

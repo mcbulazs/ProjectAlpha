@@ -30,6 +30,12 @@ export class PageDataService {
 
   currentPreviewPath: string = '';
 
+  imageInUse(image: string): boolean {
+    let subject = JSON.stringify(this.data);
+    let pattern = JSON.stringify(image);
+    return subject.includes(pattern);
+  }
+
   getData(): Observable<boolean> {
     return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`,
     {

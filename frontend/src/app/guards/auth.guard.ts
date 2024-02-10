@@ -13,8 +13,11 @@ export const authGuard: CanActivateFn = () => {
     switchMap(isAuthenticated => {
       if (isAuthenticated) {
         pds.webID = auth.webID;
-        pds.getImages().subscribe();
-        return pds.getData();
+        return pds.getImages().pipe(
+          switchMap(() => {
+            return pds.getData();
+          })
+        );
       }
       router.navigate(['/']);
       return of(false);

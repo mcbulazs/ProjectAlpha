@@ -10,12 +10,17 @@ import { Article } from '../../../../interfaces/article.interface';
 import { PageDataService } from '../../../../services/page.data.service';
 import { AdminComponent } from '../../admin.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { QuillModule } from 'ngx-quill';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { EditorConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { Image } from '@ckeditor/ckeditor5-image';
+import { Underline } from '@ckeditor/ckeditor5-basic-styles';
 
 @Component({
   selector: 'app-create-article',
   standalone: true,
-  imports: [CommonModule, QuillModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, CdkTextareaAutosize, MatDialogTitle, MatDialogActions, MatDialogClose],
+  imports: [CommonModule, CKEditorModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, CdkTextareaAutosize, MatDialogTitle, MatDialogActions, MatDialogClose],
   templateUrl: './create-article.component.html',
   styleUrl: './create-article.component.scss'
 })
@@ -26,6 +31,8 @@ export class CreateArticleComponent {
   contentMaxLength = ARTICLE_CONTENT_MAX_LENGTH;
   titleMaxLength = ARTICLE_TITLE_MAX_LENGTH;
 
+  contentEditor = ClassicEditor;
+
   article: Article = {
     id: -1,
     content: '',
@@ -33,8 +40,25 @@ export class CreateArticleComponent {
     title: '',
   };
 
+  editorConfig: EditorConfig = {
+    toolbar: [
+      'heading', '|', 'bold', 'italic', 'underline'
+    ],
+    image: {
+      insert: {
+        integrations: ['upload', 'url'],
+        type: 'block',
+      },
+      toolbar: [
+        'imageStyle:inline'
+      ],
+    },
+  }
+
   // TODO: validation for input length AND remove date setting when it is done at backend
   create() {
+    console.log(ClassicEditor.builtinPlugins.map( plugin => plugin.pluginName ));
+    
     if (this.article.content === '' || this.article.title === '') return;
     //if (this.article.content.length > ARTICLE_CONTENT_MAX_LENGTH || this.article.title.length > ARTICLE_TITLE_MAX_LENGTH) return;
     let date = new Date();

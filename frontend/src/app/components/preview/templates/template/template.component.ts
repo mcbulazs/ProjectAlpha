@@ -4,12 +4,11 @@ import { PageData } from '../../../../interfaces/page.data.interface';
 import { PageDataService } from '../../../../services/page.data.service';
 import { PREVIEW_MODE } from '../../../../../main';
 import { PLACEHOLDER_DATA } from '../../../../constants';
-import { QuillModule } from 'ngx-quill';
 
 @Component({
   selector: 'app-template',
   standalone: true,
-  imports: [QuillModule],
+  imports: [],
   template: '',
   styles: '',
   encapsulation: ViewEncapsulation.ShadowDom,

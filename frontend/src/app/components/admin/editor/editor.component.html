@@ -1,0 +1,16 @@
+<div class="toolbar">
+    <button mat-icon-button (click)="addFormat('strong', editor)">
+        <mat-icon>format_bold</mat-icon>
+    </button>
+    <button mat-icon-button (click)="test(editor)">
+        <mat-icon>format_italic</mat-icon>
+    </button>
+    <button mat-icon-button (click)="addFormat('u', editor)">
+        <mat-icon>format_underline</mat-icon>
+    </button>
+</div>
+<div class="editor" autofocus contenteditable="true" [innerHTML]="initValue" #editor (input)="model.content = editor.innerHTML"></div>
+
+<div class="display" [innerHTML]="editor.innerHTML"></div>
+
+{{model.content}}

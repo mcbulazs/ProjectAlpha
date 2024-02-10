@@ -22,7 +22,7 @@
                         <span class="article-date">Posted on {{article.date | date:'yyyy.MM.dd, H:mm'}}</span>
                     </div>
                     <div class="article-body">
-                        <quill-view [content]="article.content"></quill-view>
+                        <div [innerHtml]="article.content"></div>
                         <!-- <p class="article-content" [innerHTML]="article.content"></p> -->
                     </div>
                 </div>

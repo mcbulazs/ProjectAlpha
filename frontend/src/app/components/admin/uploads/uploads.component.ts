@@ -27,6 +27,10 @@ export class UploadsComponent implements OnInit {
 
   // TODO: Confirmation dialog
   deleteImage(image: string) {
+    if (this.pds.imageInUse(image)) {
+      this.snackBar.open(`Images in use can not be deleted.`, undefined, MAT_SNACKBAR_CONFIG);
+      return;
+    }
     this.pds.deleteImage(image).subscribe(succeeded => {
       this.empty = this.images.length === 0;
       this.snackBar.open(`Image delet${succeeded ? 'ed' : 'ion failed'}!`, undefined, MAT_SNACKBAR_CONFIG);

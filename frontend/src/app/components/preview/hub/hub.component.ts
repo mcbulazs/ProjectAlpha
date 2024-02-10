@@ -1,5 +1,5 @@
 import { Component, ComponentRef, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { TEMPLATES } from '../components';
+import { TEMPLATES, Template } from '../components';
 import { PageData } from '../../../interfaces/page.data.interface';
 import { PageDataService } from '../../../services/page.data.service';
 import { Subscription } from 'rxjs';
@@ -36,6 +36,6 @@ export class HubComponent implements OnInit, OnDestroy {
       const index = this.vcr.indexOf(this.component.hostView);
       if (index != -1) this.vcr.remove(index);
     }
-    this.component = this.vcr.createComponent<any>(TEMPLATES[n][page]);
+    this.component = this.vcr.createComponent<any>(TEMPLATES[n][page as keyof Template]);
   }
 }
