@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>Edit article</h1>
-<mat-form-field class="full-width">
+<mat-form-field class="w-100">
     <mat-label>Title</mat-label>
     <input matInput type="text" [(ngModel)]="article.title" [maxlength]="titleMaxLength">
     <mat-hint align="end">{{article.title.length}} / {{titleMaxLength}}</mat-hint>

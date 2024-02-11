@@ -1,28 +1,29 @@
-<form [formGroup]="general">
+<form [formGroup]="general" (submit)="saveBasics()">
+    <div class="sticky-container">
+        <button type="submit" mat-raised-button color="warn" class="btn-save" *ngIf="changed">Save changes</button>
+    </div>
     <h2>General page settings</h2>
-    <mat-form-field>
-        <mat-label>Title</mat-label>
-        <input matInput [(ngModel)]="data.title" [ngModelOptions]="{standalone: true}" maxlength="20">
-    </mat-form-field>
-    <label for="logo-upload">Logo</label>
-    <input type="file" id="logo-upload" accept="image/*" #logoUpload (change)="changeLogo(logoUpload.files)">
-    <p>or choose from your <button mat-raised-button color="accent" (click)="openGallery(data, 'logo')">Gallery</button></p>
-    <img [src]="data.logo" style="width: 100px;">
-    <label for="banner-upload">Banner</label>
-    <input type="file" id="banner-upload" accept="image/*" #bannerUpload (change)="changeBanner(bannerUpload.files)">
-    <p>or choose from your <button mat-raised-button color="accent" (click)="openGallery(data, 'banner')">Gallery</button></p>
-    <img [src]="data.banner" style="width: 100px;">
+    <div class="title-settings">
+        <mat-form-field subscriptSizing="dynamic">
+            <mat-label>Title</mat-label>
+            <input matInput [(ngModel)]="data.title" [ngModelOptions]="{standalone: true}" maxlength="20" (input)="changed = (initState.title !== data.title)">
+        </mat-form-field>
+    </div>
+    <h3>Logo</h3>
+    <file-drag-and-drop [data]="data" [key]="'logo'" [changeFn]="changeLogo" [initState]="initState"></file-drag-and-drop>
+    <h3>Banner</h3>
+    <file-drag-and-drop [data]="data" [key]="'banner'" [changeFn]="changeBanner" [initState]="initState"></file-drag-and-drop>
     <mat-form-field>
         <mat-label>Background color</mat-label>
         <input type="color" matInput [(ngModel)]="data.backgroundColor" [ngModelOptions]="{standalone: true}">
     </mat-form-field>
 </form>
-<h1>Pages & Navigation</h1>
+<h2>Pages & Navigation</h2>
 <p>Toggle pages, change page titles, reorder navigation bar</p>
 <div cdkDropList class="navitem-list" (cdkDropListDropped)="drop($event)">
-    <button mat-raised-button color="warn" class="btn-save" *ngIf="navOrderChanged" (click)="save()">Save</button>
+    <button mat-raised-button color="warn" class="btn-save-navbar" *ngIf="navOrderChanged" (click)="save()">Save</button>
     <div cdkDrag class="navitem" *ngFor="let navitem of data.navbar">
-        <div class="nav-content">
+        <div class="nav-content {{navitem.enabled ? '' : 'disabled'}}">
             <mat-icon>drag_indicator</mat-icon>
             <span class="nav-name">{{navitem.name}}</span>
         </div>

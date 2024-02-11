@@ -15,11 +15,13 @@ import { MatDivider } from '@angular/material/divider';
 import { MatDialog } from '@angular/material/dialog';
 import { GalleryDialogComponent } from '../uploads/gallery-dialog/gallery-dialog.component';
 import { EditNavigationComponent } from './edit-navigation/edit-navigation.component';
+import { FileDragAndDropComponent } from '../../file-drag-and-drop/file-drag-and-drop.component';
+import { PageBasics } from '../../../interfaces/page.basics.interface';
 
 @Component({
   selector: 'app-general',
   standalone: true,
-  imports: [ReactiveFormsModule, MatFormField, MatLabel, FormsModule, MatInput, CdkDropList, CdkDrag, CommonModule, MatIcon, MatIconButton, MatButton, MatButton],
+  imports: [ReactiveFormsModule, FileDragAndDropComponent, MatFormField, MatLabel, FormsModule, MatInput, CdkDropList, CdkDrag, CommonModule, MatIcon, MatIconButton, MatButton, MatButton],
   templateUrl: './general.component.html',
   styleUrl: './general.component.scss'
 })
@@ -34,18 +36,22 @@ export class GeneralComponent implements OnInit, OnDestroy {
 
   navOrderChanged = false;
 
-  initState: any = {};
+  initState!: PageBasics;
+  navigation: NavItem[] = [];
+
+  changed: boolean = false;
 
   ngOnInit(): void {
     this.data = this.pds.data;
     this.initState = {
+      id: -1,
+      templateid: -1,
       title: this.data.title,
       logo: this.data.logo,
       banner: this.data.banner,
-      navigation: [],
     }
     for (const navItem of this.data.navbar) {
-      this.initState.navigation.push({ ...navItem });
+      this.navigation.push({ ...navItem });
     }
   }
 
@@ -79,9 +85,19 @@ export class GeneralComponent implements OnInit, OnDestroy {
     });
   }
 
+  saveBasics() {
+    this.pds.updateBasics().subscribe(success => {
+      if (success) {
+        this.changed = false;
+        this.initState.title = this.data.title;
+      } else this.data.title = this.initState.title;
+      this.snackBar.open(`General settings update${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+    });
+  }
+
   checkOrder() {
-    for (let i = 0; i < this.initState.navigation.length; i++) {
-      if (this.initState.navigation[i].id !== this.data.navbar[i].id) {
+    for (let i = 0; i < this.navigation.length; i++) {
+      if (this.navigation[i].id !== this.data.navbar[i].id) {
         this.navOrderChanged = true;
         return;
       }
@@ -92,12 +108,12 @@ export class GeneralComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.navOrderChanged) {
       for (let i = 0; i < this.data.navbar.length; i++) {
-        this.data.navbar[i] = this.initState.navigation[i];
+        this.data.navbar[i] = this.navigation[i];
       }
       this.pds.sendNavbarUpdate();
     }
     if (this.initState.title !== this.data.title) this.data.title = this.initState.title;
-    if (this.initState.logo.path !== this.data.logo) this.data.logo = this.initState.logo;
+    //if (this.initState.logo !== this.data.logo) this.data.logo = this.initState.logo;
   }
 
   drop(event: CdkDragDrop<NavItem[]>) {
@@ -111,23 +127,6 @@ export class GeneralComponent implements OnInit, OnDestroy {
       if (success) this.navOrderChanged = false;
       this.snackBar.open(`Navigation ${success ? 'reordered' : 'reorder failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
     })
-  }
-
-  openGallery(outputObject: any, key: string) {
-    const dialogRef = this.dialog.open(GalleryDialogComponent, {
-      width: '800px',
-      height: '800px'
-    });
-    dialogRef.afterClosed().subscribe(selected => {
-      if (selected === undefined) return;
-      outputObject[key] = this.pds.images[selected];
-      this.pds.updateBasics().subscribe(success => {
-        if (success) {
-          this.initState[key] = outputObject[key];
-        } else outputObject[key] = this.initState[key];
-        this.snackBar.open(`${key.charAt(0).toUpperCase() + key.slice(1)} change${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
-      })
-    });
   }
 
   editNavigation(id: number) {

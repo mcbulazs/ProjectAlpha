@@ -5,6 +5,7 @@
         <mat-label>Page title</mat-label>
         <input matInput [(ngModel)]="navitem.name">
     </mat-form-field>
+    <p *ngIf="navitem.path === ''">Home page can't be disabled</p>
     <mat-checkbox [(ngModel)]="navitem.enabled" (change)="togglePage()" [disabled]="navitem.path === ''" color="primary" id="acceptRules">Toggle page</mat-checkbox>
 </div>
 <div mat-dialog-actions class="buttons">

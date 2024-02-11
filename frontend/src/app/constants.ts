@@ -29,7 +29,7 @@ export const PLACEHOLDER_DATA: PageData = {
             id: -1
         }
     ],
-    banner: 'https://via.placeholder.com/1905x400/222',
+    banner: 'https://via.placeholder.com/1900x400/222',
     calendar: [],
     navbar: [
         {

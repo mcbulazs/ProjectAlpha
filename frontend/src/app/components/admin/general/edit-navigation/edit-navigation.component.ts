@@ -9,11 +9,12 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_SNACKBAR_CONFIG } from '../../../../constants';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-edit-navigation',
   standalone: true,
-  imports: [FormsModule, MatDialogTitle, MatDialogClose, MatDialogActions, MatButton, MatDialogContent, MatInput, MatFormField, MatLabel, MatCheckbox],
+  imports: [CommonModule, FormsModule, MatDialogTitle, MatDialogClose, MatDialogActions, MatButton, MatDialogContent, MatInput, MatFormField, MatLabel, MatCheckbox],
   templateUrl: './edit-navigation.component.html',
   styleUrl: './edit-navigation.component.scss'
 })
