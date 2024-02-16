@@ -10,6 +10,12 @@ export const MAT_SNACKBAR_CONFIG: MatSnackBarConfig = {
     verticalPosition: 'bottom',
 };
 
+export const CKEDITOR_CONFIG = {
+    toolbar: {
+      shouldNotGroupWhenFull: true
+    }
+  }
+
 export const PLACEHOLDER_DATA: PageData = {
     backgroundColor: '#333333',
     title: "Site name",

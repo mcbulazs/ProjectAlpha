@@ -8,11 +8,11 @@ import { MatFormField, MatLabel, MatHint } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { Article } from '../../../../interfaces/article.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ARTICLE_CONTENT_MAX_LENGTH, ARTICLE_TITLE_MAX_LENGTH, MAT_SNACKBAR_CONFIG } from '../../../../constants';
+import { ARTICLE_CONTENT_MAX_LENGTH, ARTICLE_TITLE_MAX_LENGTH, CKEDITOR_CONFIG, MAT_SNACKBAR_CONFIG } from '../../../../constants';
 import { PageDataService } from '../../../../services/page.data.service';
 import { ArticlesComponent } from '../articles.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import Editor from 'ckeditor5-custom-build';
 
 @Component({
   selector: 'app-edit-article',
@@ -30,7 +30,8 @@ export class EditArticleComponent {
 
   article: Article = { ...this.data };
 
-  contentEditor = ClassicEditor;
+  public Editor = Editor;
+  editorConfig = CKEDITOR_CONFIG;
 
   update() {
     //if (this.article.title === this.data.title && this.article.content === this.data.content) return;

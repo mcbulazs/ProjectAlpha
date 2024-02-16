@@ -26,3 +26,7 @@ body { margin: 0; font-family: Arial, "Helvetica Neue", sans-serif; }
 .full-height {
     height: 100%;
 }
+
+.ck-editor__editable_inline {
+    min-height: 200px;
+}

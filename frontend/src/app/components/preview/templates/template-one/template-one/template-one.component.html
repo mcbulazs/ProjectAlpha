@@ -22,7 +22,7 @@
                         <span class="article-date">Posted on {{article.date | date:'yyyy.MM.dd, H:mm'}}</span>
                     </div>
                     <div class="article-body">
-                        <div [innerHtml]="article.content"></div>
+                        <div [innerHtml]="article.content | safeHtml"></div>
                         <!-- <p class="article-content" [innerHTML]="article.content"></p> -->
                     </div>
                 </div>

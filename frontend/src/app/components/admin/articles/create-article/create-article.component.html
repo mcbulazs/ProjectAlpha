@@ -4,7 +4,7 @@
     <input matInput type="text" [(ngModel)]="article.title" [maxlength]="titleMaxLength">
     <mat-hint align="end">{{article.title.length}} / {{titleMaxLength}}</mat-hint>
 </mat-form-field>
-<ckeditor [editor]="contentEditor" [(ngModel)]="article.content" [config]="editorConfig"></ckeditor>
+<ckeditor [(ngModel)]="article.content" [editor]="Editor" [config]="editorConfig"></ckeditor>
 <div mat-dialog-actions class="buttons">
     <button mat-raised-button (click)="create()" color="primary">Create</button>
     <button mat-dialog-close mat-raised-button color="warn">Close</button>
