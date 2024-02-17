@@ -1,6 +1,8 @@
-<h1 mat-dialog-title>Delete</h1>
-<div mat-dialog-content>Are you sure?</div>
-<div class="buttons">
-    <button mat-raised-button color="primary" (click)="confirmDelete()">Delete</button>
-    <button mat-dialog-close mat-raised-button>Cancel</button>
-</div>
+<form class="dialog" (submit)="dialogRef.close(true)">
+    <h1 mat-dialog-title>Delete</h1>
+    <span mat-dialog-content>Are you sure?</span>
+    <div class="buttons">
+        <button type="button" mat-raised-button color="primary" (click)="dialogRef.close(true)">Delete</button>
+        <button type="button" mat-dialog-close mat-raised-button>Cancel</button>
+    </div>
+</form>

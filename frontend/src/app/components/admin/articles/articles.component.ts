@@ -55,21 +55,25 @@ export class ArticlesComponent implements OnInit {
     });
   }
 
-  editArticle(article: Article) {
+  editArticle(article: Article, editBtn: MatIconButton) {
+    editBtn.disabled = true;
     const dialogRef = this.dialog.open(EditArticleComponent, {
       width: '500px',
       data: article,
     });
     dialogRef.afterClosed().subscribe(() => {
+      editBtn.disabled = false;
       this.setDisplayedArticles();
     });
   }
 
-  deleteArticle(id: number) {
+  deleteArticle(id: number, deleteBtn: MatIconButton) {
+    deleteBtn.disabled = true;
     const dialogRef = this.dialog.open(DeleteModalComponent, {
       width: '200px',
     });
     dialogRef.afterClosed().subscribe(deleted => {
+      deleteBtn.disabled = false;
       if (deleted) {
         this.pds.deleteArticle(id).subscribe(success => {
           this.setDisplayedArticles();

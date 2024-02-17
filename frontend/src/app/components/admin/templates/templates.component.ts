@@ -64,7 +64,7 @@ export class TemplatesComponent implements OnDestroy {
 
   switchTemplate() {
     this.pds.data.templateid = this.selectedTemplate;
-    this.pds.updateBasics().subscribe(
+    this.pds.patchBasics().subscribe(
       success => {
         if (success) this.currentTemplate = this.selectedTemplate;
         else this.pds.data.templateid = this.currentTemplate;

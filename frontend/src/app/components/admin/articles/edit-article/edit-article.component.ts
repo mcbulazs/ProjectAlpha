@@ -35,7 +35,7 @@ export class EditArticleComponent {
 
   update() {
     //if (this.article.title === this.data.title && this.article.content === this.data.content) return;
-    this.pds.updateArticle(this.article).subscribe(success => {
+    this.pds.patchArticle(this.article).subscribe(success => {
       this.snackBar.open(`Article ${success ? 'updated' : 'update failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       this.dialogRef.close();
     });

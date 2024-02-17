@@ -43,8 +43,8 @@ export class CreateArticleComponent {
     //if (this.article.content.length > ARTICLE_CONTENT_MAX_LENGTH || this.article.title.length > ARTICLE_TITLE_MAX_LENGTH) return;
     let date = new Date();
     this.article.date = date.toISOString();
-    this.pds.createArticle(this.article).subscribe(x => {
-      this.snackBar.open(`Article ${x ? 'created' : 'creation failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+    this.pds.postArticle(this.article).subscribe(success => {
+      this.snackBar.open(`Article ${success ? 'created' : 'creation failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       this.dialogRef.close();
     });
   }

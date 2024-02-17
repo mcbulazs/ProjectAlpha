@@ -4,13 +4,17 @@ import { PageData } from '../interfaces/page.data.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { Article } from '../interfaces/article.interface';
-import { PLACEHOLDER_DATA } from '../constants';
 import { PageBasics } from '../interfaces/page.basics.interface';
 import { NavItem } from '../interfaces/navitem.interface';
+import { Channel } from '../interfaces/channel.interface';
 
 export interface TemplateChanger {
   templateID: number,
   path: string
+}
+
+export enum ChannelType {
+  TWITCH, YOUTUBE
 }
 
 @Injectable({
@@ -108,14 +112,14 @@ export class PageDataService {
     this.navbarUpdateHotline.next(true);
   }
 
-  createArticle(article: Article): Observable<Boolean> {
+  postArticle(article: Article): Observable<Boolean> {
     return this.httpClient.post<Article>(`${environment.backendURL}/page/${this.webID}/articles`, article,
       {
         withCredentials: true, observe: 'response',
       }).pipe(
-        catchError(() => of(false)),
+        catchError(() => of(null)),
         map(res => {
-          if (typeof res === 'boolean' || res.body === null) return false;
+          if (res === null || res.body === null) return false;
           this.data.articles.unshift(res.body);
           return true;
         }));
@@ -126,7 +130,7 @@ export class PageDataService {
       {
         withCredentials: true, observe: 'response'
       }).pipe(
-        catchError(() => of(false)),
+        catchError(() => of(null)),
         map(res => {
           if (res) {
             let deletedIndex = this.data.articles.findIndex(x => x.id === id)
@@ -138,14 +142,14 @@ export class PageDataService {
       );
   }
 
-  updateArticle(article: Article): Observable<boolean> {
+  patchArticle(article: Article): Observable<boolean> {
     return this.httpClient.patch<Article>(`${environment.backendURL}/page/${this.webID}/articles/${article.id}`, article,
       {
         withCredentials: true, observe: 'response'
       }).pipe(
-        catchError(() => of(false)),
+        catchError(() => of(null)),
         map(res => {
-          if (typeof res === 'boolean' || res.body === null) return false;
+          if (res === null || res.body === null) return false;
           let oldArticle = this.data.articles.find(x => x.id === res.body?.id);
           if (!oldArticle) return false;
           Object.assign(oldArticle, res.body);
@@ -153,7 +157,7 @@ export class PageDataService {
         }));
   }
 
-  updateBasics(): Observable<boolean> {
+  patchBasics(): Observable<boolean> {
     const pageBasics: PageBasics = {
       id: this.webID,
       title: this.data.title,
@@ -165,9 +169,9 @@ export class PageDataService {
       {
         withCredentials: true,
       }).pipe(
-        catchError(() => of(false)),
+        catchError(() => of(null)),
         map(res => {
-          if (typeof res === 'boolean') return false;
+          if (res === null) return false;
           return true;
         }),
       );
@@ -192,7 +196,7 @@ export class PageDataService {
       );
   }
 
-  saveNavbar(): Observable<boolean> {
+  patchNavbar(): Observable<boolean> {
     return this.httpClient.patch<NavItem[]>(`${environment.backendURL}/page/${this.webID}/navbar`, this.data.navbar,
       {
         withCredentials: true,
@@ -203,6 +207,75 @@ export class PageDataService {
           this.data.navbar = res;
           return true;
         }),
+      );
+  }
+
+  // TODO: Decide how to create and whether the list could be reordered or not
+  //! TEMPORARY solution: wrap new channel in a list
+  postChannel(channel: Channel, type: ChannelType): Observable<boolean> {
+    return this.httpClient.post<Channel[]>(`${environment.backendURL}/page/${this.webID}/${ChannelType[type].toLowerCase()}`, [channel],
+      {
+        withCredentials: true,
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => {
+          if (res === null) return false;
+          if (type === ChannelType.TWITCH) {
+            let createdChannel = res.find(x => !this.data.twitch.find(y => y.id === x.id));
+            if (!createdChannel) return false;
+            this.data.twitch.push(createdChannel);
+          }
+          if (type === ChannelType.YOUTUBE) {
+            let createdChannel = res.find(x => !this.data.youtube.find(y => y.id === x.id));
+            if (!createdChannel) return false;
+            this.data.youtube.push(createdChannel);
+          }
+          return true;
+        })
+      );
+  }
+
+  patchChannel(channel: Channel, type: ChannelType): Observable<boolean> {
+    return this.httpClient.patch<Channel>(`${environment.backendURL}/page/${this.webID}/${ChannelType[type].toLowerCase()}/${channel.id}`, channel,
+      {
+        withCredentials: true,
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => {
+          if (res === null) return false;
+          if (type === ChannelType.TWITCH) {
+            let index = this.data.twitch.findIndex(x => x.id === res.id);
+            this.data.twitch[index] = res; 
+          }
+          if (type === ChannelType.YOUTUBE) {
+            let index = this.data.youtube.findIndex(x => x.id === res.id);
+            this.data.youtube[index] = res; 
+          }
+          return true;
+        })
+      );
+  }
+
+  deleteChannel(id: number, type: ChannelType): Observable<boolean> {
+    return this.httpClient.delete<any>(`${environment.backendURL}/page/${this.webID}/${ChannelType[type].toLowerCase()}/${id}`,
+      {
+        withCredentials: true, observe: 'response'
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => {
+          if (res) {
+            if (type === ChannelType.TWITCH) {
+              let deletedIndex = this.data.twitch.findIndex(x => x.id === id)
+              this.data.twitch.splice(deletedIndex, 1);
+            }
+            if (type === ChannelType.YOUTUBE) {
+              let deletedIndex = this.data.youtube.findIndex(x => x.id === id)
+              this.data.youtube.splice(deletedIndex, 1);
+            }
+            return true;
+          }
+          return false;
+        })
       );
   }
 }

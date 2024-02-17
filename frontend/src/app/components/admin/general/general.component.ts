@@ -59,7 +59,7 @@ export class GeneralComponent implements OnInit {
     this.pds.uploadFile(files[0]).subscribe(res => {
       this.data.logo = res;
       if (res === '') return;
-      this.pds.updateBasics().subscribe(success => {
+      this.pds.patchBasics().subscribe(success => {
         if (success) {
           this.initState.logo = this.data.logo;
         } else this.data.logo = this.initState.logo;
@@ -74,7 +74,7 @@ export class GeneralComponent implements OnInit {
     this.pds.uploadFile(files[0]).subscribe(res => {
       this.data.banner = res;
       if (res === '') return;
-      this.pds.updateBasics().subscribe(success => {
+      this.pds.patchBasics().subscribe(success => {
         if (success) {
           this.initState.logo = this.data.logo;
         } else this.data.logo = this.initState.logo;
@@ -84,7 +84,7 @@ export class GeneralComponent implements OnInit {
   }
 
   saveBasics() {
-    this.pds.updateBasics().subscribe(success => {
+    this.pds.patchBasics().subscribe(success => {
       if (success) {
         this.changed = false;
         this.initState.title = this.data.title;
@@ -121,7 +121,7 @@ export class GeneralComponent implements OnInit {
   }
 
   save() {
-    this.pds.saveNavbar().subscribe(success => {
+    this.pds.patchNavbar().subscribe(success => {
       if (success) this.navOrderChanged = false;
       this.snackBar.open(`Navigation ${success ? 'reordered' : 'reorder failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
     })

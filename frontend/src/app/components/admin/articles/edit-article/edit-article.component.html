@@ -1,11 +1,13 @@
-<h1 mat-dialog-title>Edit article</h1>
-<mat-form-field class="w-100">
-    <mat-label>Title</mat-label>
-    <input matInput type="text" [(ngModel)]="article.title" [maxlength]="titleMaxLength">
-    <mat-hint align="end">{{article.title.length}} / {{titleMaxLength}}</mat-hint>
-</mat-form-field>
-<ckeditor [(ngModel)]="article.content" [editor]="Editor" [config]="editorConfig"></ckeditor>
-<div mat-dialog-actions class="buttons">
-    <button mat-raised-button (click)="update()" color="primary">Update</button>
-    <button mat-dialog-close mat-raised-button>Close</button>
-</div>
+<form class="dialog">
+    <h1 mat-dialog-title>Edit article</h1>
+    <mat-form-field class="w-100">
+        <mat-label>Title</mat-label>
+        <input matInput type="text" name="title" [(ngModel)]="article.title" [maxlength]="titleMaxLength">
+        <mat-hint align="end">{{article.title.length}} / {{titleMaxLength}}</mat-hint>
+    </mat-form-field>
+    <ckeditor [(ngModel)]="article.content" name="content" [editor]="Editor" [config]="editorConfig"></ckeditor>
+    <div mat-dialog-actions class="buttons">
+        <button type="submit" mat-raised-button (click)="update()" color="primary">Update</button>
+        <button type="button" mat-dialog-close mat-raised-button>Close</button>
+    </div>
+</form>

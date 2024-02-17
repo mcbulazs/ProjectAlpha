@@ -33,7 +33,7 @@ export class FileDragAndDropComponent {
     dialogRef.afterClosed().subscribe(selected => {
       if (selected === undefined) return;
       this.data[this.key] = this.pds.images[selected];
-      this.pds.updateBasics().subscribe(success => {
+      this.pds.patchBasics().subscribe(success => {
         if (success) {
           this.initState[this.key] = this.data[this.key];
         } else this.data[this.key] = this.initState[this.key];
@@ -51,7 +51,7 @@ export class FileDragAndDropComponent {
   deleteImage() {
     const preserveImage = this.data[this.key];
     this.data[this.key] = '';
-    this.pds.updateBasics().subscribe(success => {
+    this.pds.patchBasics().subscribe(success => {
       if (!success) this.data[this.key] = preserveImage
       this.snackBar.open(`${this.key.charAt(0).toUpperCase() + this.key.slice(1)} ${success ? 'deleted' : 'deletion failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
     });

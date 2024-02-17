@@ -12,8 +12,4 @@ import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDi
 export class DeleteModalComponent {
 
   constructor(public dialogRef: MatDialogRef<any>) { }
-
-  confirmDelete() {
-    this.dialogRef.close(true);
-  }
 }

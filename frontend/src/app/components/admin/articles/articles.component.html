@@ -8,10 +8,10 @@
                 <span class="article-title">{{article.title}}</span>
                 <span>{{article.date | date:'yyyy.MM.dd H:mm'}}</span>
             </div>
-            <button mat-icon-button matListItemMeta (click)="editArticle(article)">
+            <button mat-icon-button matListItemMeta #editBtn (click)="editArticle(article, editBtn)">
                 <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button matListItemMeta (click)="deleteArticle(article.id)">
+            <button mat-icon-button matListItemMeta #deleteBtn (click)="deleteArticle(article.id, deleteBtn)">
                 <mat-icon>delete</mat-icon>
             </button>
         </mat-list-item>

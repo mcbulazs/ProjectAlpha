@@ -4,6 +4,11 @@ import { PageData } from "./interfaces/page.data.interface";
 export const ARTICLE_CONTENT_MAX_LENGTH = 500;
 export const ARTICLE_TITLE_MAX_LENGTH = 150;
 
+export const CHANNEL_NAME_MAX_LENGTH = 50;
+export const CHANNEL_LINK_MAX_LENGTH = 150;
+
+
+
 export const MAT_SNACKBAR_CONFIG: MatSnackBarConfig = {
     duration: 2000,
     horizontalPosition: 'start',
