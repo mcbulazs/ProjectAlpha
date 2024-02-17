@@ -1,6 +1,6 @@
 <form [formGroup]="general" (submit)="saveBasics()">
     <div class="sticky-container">
-        <button type="submit" mat-raised-button color="warn" class="btn-save" *ngIf="changed">Save changes</button>
+        <button type="submit" mat-raised-button color="primary" class="btn-save" *ngIf="changed">Save changes</button>
     </div>
     <h2>General page settings</h2>
     <div class="title-settings">
@@ -21,7 +21,7 @@
 <h2>Pages & Navigation</h2>
 <p>Toggle pages, change page titles, reorder navigation bar</p>
 <div cdkDropList class="navitem-list" (cdkDropListDropped)="drop($event)">
-    <button mat-raised-button color="warn" class="btn-save-navbar" *ngIf="navOrderChanged" (click)="save()">Save</button>
+    <button mat-raised-button color="primary" class="btn-save-navbar" *ngIf="navOrderChanged" (click)="save()">Save</button>
     <div cdkDrag class="navitem" *ngFor="let navitem of data.navbar">
         <div class="nav-content {{navitem.enabled ? '' : 'disabled'}}">
             <mat-icon>drag_indicator</mat-icon>

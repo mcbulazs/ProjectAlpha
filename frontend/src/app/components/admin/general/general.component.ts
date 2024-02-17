@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PageData } from '../../../interfaces/page.data.interface';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -11,9 +11,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MAT_SNACKBAR_CONFIG } from '../../../constants';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDivider } from '@angular/material/divider';
 import { MatDialog } from '@angular/material/dialog';
-import { GalleryDialogComponent } from '../uploads/gallery-dialog/gallery-dialog.component';
 import { EditNavigationComponent } from './edit-navigation/edit-navigation.component';
 import { FileDragAndDropComponent } from '../../file-drag-and-drop/file-drag-and-drop.component';
 import { PageBasics } from '../../../interfaces/page.basics.interface';
@@ -25,7 +23,7 @@ import { PageBasics } from '../../../interfaces/page.basics.interface';
   templateUrl: './general.component.html',
   styleUrl: './general.component.scss'
 })
-export class GeneralComponent implements OnInit, OnDestroy {
+export class GeneralComponent implements OnInit {
 
   constructor(private pds: PageDataService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
@@ -105,7 +103,7 @@ export class GeneralComponent implements OnInit, OnDestroy {
     this.navOrderChanged = false;
   }
 
-  ngOnDestroy(): void {
+  discardChanges(): void {
     if (this.navOrderChanged) {
       for (let i = 0; i < this.data.navbar.length; i++) {
         this.data.navbar[i] = this.navigation[i];
