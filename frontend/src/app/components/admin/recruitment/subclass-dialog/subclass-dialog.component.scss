@@ -1,0 +1,31 @@
+img {
+    width: 36px;
+    cursor: pointer;
+    display: block;
+}
+
+.selected {
+    background-color: rgba($color: royalblue, $alpha: 0.5);
+}
+
+.btn-image {
+    height: 100%;
+    user-select: none;
+}
+
+.btn-close {
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 999;
+}
+
+.btn-select-all {
+    margin-bottom: 10px;
+    align-self: flex-start;
+}
+
+.subclasses {
+    padding-bottom: 20px;
+    padding-top: 10px;
+}

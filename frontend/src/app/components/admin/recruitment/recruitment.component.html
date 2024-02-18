@@ -1,1 +1,9 @@
-<p>recruitment works!</p>
+<h2>Recruitment management</h2>
+<span>Current preset for recruitment: {{preset.name}}</span>
+<mat-grid-list cols="8">
+    <mat-grid-tile *ngFor="let class of preset.classes; index as i">
+        <button mat-button (click)="select(i)" class="btn-class-image" [class.selected]="recruitment[i].subclasses.length > 0">
+            <img [src]="class.class" [title]="class.class">
+        </button>
+    </mat-grid-tile>
+</mat-grid-list>

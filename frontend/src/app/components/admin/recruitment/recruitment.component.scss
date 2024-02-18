@@ -1,0 +1,18 @@
+img {
+    width: 100%!important;
+    cursor: pointer;
+    border: 2px solid black;
+}
+
+.selected {
+    background-color: rgba($color: royalblue, $alpha: 0.5);
+}
+
+.btn-class-image {
+    height: 100%;
+    width: 100%;
+}
+
+mat-grid-list {
+    margin-top: 10px;
+}

@@ -1,0 +1,14 @@
+:host {
+    position: relative;
+}
+
+.btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 999;
+}
+
+.ck-editor__editable_inline {
+    height: 500px!important;
+}

@@ -28,10 +28,15 @@
                 </div>
             </article>
             <div class="sidebar">
-                <div class="tgf" *ngIf="usePlaceholders || data.recruitment.length !== 0">
+                <div class="tgf" *ngIf="usePlaceholders || !recruitmentEmpty">
                     <h2 class="tgf-title">Recruiting</h2>
                     <div class="tgf-icons">
-                        <img *ngFor="let item of usePlaceholders && data.recruitment.length === 0 ? PLACEHOLDERS.recruitment : data.recruitment" class="tgf-icon {{usePlaceholders && data.recruitment.length === 0 ? 'placeholder' : ''}}" [src]="'https://wow.zamimg.com/images/wow/icons/large/classicon_'+item.class+'.jpg'">
+                        <div *ngFor="let item of usePlaceholders && recruitmentEmpty ? preset.classes : data.recruitment" [class.d-none]="item.subclasses.length === 0">
+                            <img class="tgf-icon {{usePlaceholders && recruitmentEmpty ? 'placeholder' : ''}}" [src]="item.class" *ngIf="item.subclasses.length > 0">
+                            <div class="subclasses">
+                                <img class="tgf-icon {{usePlaceholders && recruitmentEmpty ? 'placeholder' : ''}}" [src]="subclass" *ngFor="let subclass of item.subclasses">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="progresses" *ngIf="usePlaceholders || data.progress.length !== 0">
@@ -53,7 +58,7 @@
                 <div class="channels" *ngIf="usePlaceholders || data.youtube.length !== 0">
                     <h2 class="channels-title">Youtube Channels</h2>
                     <a [href]="item.link" target="_blank" *ngFor="let item of usePlaceholders && data.youtube.length === 0 ? PLACEHOLDERS.youtube : data.youtube" class="channel {{usePlaceholders && data.youtube.length === 0 ? 'placeholder' : ''}}" style="background-color: rgb(255, 75, 75);">
-                        <img src="https://cdn.freebiesupply.com/logos/large/2x/youtube-icon-logo-png-transparent.png" style="width: 25px;">
+                        <img src="https://i.imgur.com/YUcM086.png" style="width: 25px;">
                         {{item.name}}
                     </a>
                 </div>

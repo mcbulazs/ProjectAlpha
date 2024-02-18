@@ -147,11 +147,9 @@ img {
 
 .tgf-icons {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
     max-width: 100%;
-    flex-flow: wrap;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .tgf-icon {
@@ -215,4 +213,20 @@ footer {
     font-weight: bold;
     padding: 10px;
     border-radius: 5px;
+}
+
+.classes {
+    display: flex;
+    flex-direction: column;
+}
+
+.subclasses {
+    display: flex;
+    gap: 5px;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.d-none {
+    display: none;
 }

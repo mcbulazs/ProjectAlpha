@@ -8,6 +8,7 @@ import { PageBasics } from '../interfaces/page.basics.interface';
 import { NavItem } from '../interfaces/navitem.interface';
 import { Channel } from '../interfaces/channel.interface';
 import { PLACEHOLDER_DATA } from '../constants';
+import { PRESETS } from '../components/preview/components';
 
 export interface TemplateChanger {
   templateID: number,
@@ -16,6 +17,15 @@ export interface TemplateChanger {
 
 export enum ChannelType {
   TWITCH, YOUTUBE
+}
+
+export interface HotlineMessage {
+  type: HotlineMessageType
+  message: any
+}
+
+export enum HotlineMessageType {
+  TOGGLE, RECRUITMENT_CHECK,
 }
 
 @Injectable({
@@ -30,7 +40,7 @@ export class PageDataService {
   preset: number = 0;
   images!: string[];
 
-  placeholderHotline = new Subject<boolean>;
+  placeholderHotline = new Subject<HotlineMessage>;
   templateHotline = new Subject<TemplateChanger>;
   navbarUpdateHotline = new Subject<boolean>;
 
@@ -51,16 +61,29 @@ export class PageDataService {
       }).pipe(map(res => {
         if (res.status === 200 && res.body) {
           let homeNav = res.body.navbar.find(x => x.path === '')!;
-          res.body.progress = PLACEHOLDER_DATA.progress; //! DEFER REMOVE 
-          res.body.youtube = PLACEHOLDER_DATA.youtube; //! DEFER REMOVE
+          /* res.body.progress = PLACEHOLDER_DATA.progress; //! DEFER REMOVE 
+          res.body.youtube = PLACEHOLDER_DATA.youtube; //! DEFER REMOVE */
           homeNav.enabled = true;
           this.data = res.body;
+          if (this.data.recruitment.length === 0) {
+            this.setRecruitment();
+          }
           this.data.backgroundColor = '#333333';
           console.log("Page data is ready!");
           return true;
         }
         return false;
       }))
+  }
+
+  setRecruitment() {
+    PRESETS[this.preset].classes.map(c => {
+      this.data.recruitment.push({
+        id: -1,
+        class: c.class,
+        subclasses: [],
+      });
+    });
   }
 
   getImages(): Observable<string[]> {
@@ -91,7 +114,7 @@ export class PageDataService {
       );
   }
 
-  getPlaceholderHotline(): Subject<boolean> {
+  getPlaceholderHotline(): Subject<HotlineMessage> {
     return this.placeholderHotline;
   }
 
@@ -109,7 +132,17 @@ export class PageDataService {
 
   togglePlaceholders() {
     this.usePlaceholders = !this.usePlaceholders;
-    this.placeholderHotline.next(this.usePlaceholders);
+    this.placeholderHotline.next({
+      type: HotlineMessageType.TOGGLE,
+      message: this.usePlaceholders,
+    });
+  }
+
+  sendRecruitmentCheck() {
+    this.placeholderHotline.next({
+      type: HotlineMessageType.RECRUITMENT_CHECK,
+      message: null,
+    });
   }
 
   sendNavbarUpdate() {

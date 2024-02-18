@@ -52,6 +52,9 @@ export class TemplatesComponent implements OnDestroy {
   switchPreset() {
     this.pds.preset = this.selectedPreset;
     this.currentPreset = this.selectedPreset;
+    this.pds.data.recruitment.splice(0, this.pds.data.recruitment.length);
+    this.pds.setRecruitment();
+    this.pds.sendRecruitmentCheck();
     this.snackBar.open(`Preset change${true ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
   }
 
