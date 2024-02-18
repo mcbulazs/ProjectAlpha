@@ -15,24 +15,26 @@ export const MAT_SNACKBAR_CONFIG: MatSnackBarConfig = {
 
 export const CKEDITOR_CONFIG = {
     toolbar: {
-      shouldNotGroupWhenFull: true
+        shouldNotGroupWhenFull: true
     }
-  }
+}
+
+export const STATIC_IMAGES_PATH = '/assets/images';
 
 export const PLACEHOLDER_DATA: PageData = {
     backgroundColor: '#333333',
     title: "Site name",
-    
+
     logo: 'https://via.placeholder.com/100x100',
     articles: [
         {
-            title: "article2",
+            title: "Article2",
             content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
             date: Date.now().toString(),
             id: -1
         },
         {
-            title: "article1",
+            title: "Article1",
             content: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
             date: (Date.now() - 8.64e+7).toString(),
             id: -1

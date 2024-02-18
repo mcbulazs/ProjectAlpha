@@ -31,9 +31,9 @@
                 <div class="tgf" *ngIf="usePlaceholders || !recruitmentEmpty">
                     <h2 class="tgf-title">Recruiting</h2>
                     <div class="tgf-icons">
-                        <div *ngFor="let item of usePlaceholders && recruitmentEmpty ? preset.classes : data.recruitment" [class.d-none]="item.subclasses.length === 0">
+                        <div class="class" *ngFor="let item of usePlaceholders && recruitmentEmpty ? preset.classes : data.recruitment" [class.d-none]="item.subclasses.length === 0">
                             <img class="tgf-icon {{usePlaceholders && recruitmentEmpty ? 'placeholder' : ''}}" [src]="item.class" *ngIf="item.subclasses.length > 0">
-                            <div class="subclasses">
+                            <div class="subclass">
                                 <img class="tgf-icon {{usePlaceholders && recruitmentEmpty ? 'placeholder' : ''}}" [src]="subclass" *ngFor="let subclass of item.subclasses">
                             </div>
                         </div>

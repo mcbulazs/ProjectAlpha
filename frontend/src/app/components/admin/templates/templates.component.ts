@@ -30,7 +30,6 @@ export class TemplatesComponent implements OnInit, OnDestroy {
     template: this.pds.data.templateid,
     preset: this.pds.preset,
   }
-  currentPreset = this.pds.preset;
   selectedPreset = this.pds.preset;
 
   ngOnInit(): void {
@@ -38,17 +37,18 @@ export class TemplatesComponent implements OnInit, OnDestroy {
   }
 
   selectPreset(id: number) {
+    if (id === this.selectedPreset) return;
     this.selectedPreset = id;
   }
 
   selectTemplate(id: number) {
+    if (id === this.data.templateid) return;
     this.data.templateid = id;
     this.pds.changeTemplate(id, this.pds.currentPreviewPath);
   }
 
   ngOnDestroy(): void {
     this.reset();
-    //this.pds.changeTemplate(this.currentTemplate, this.pds.currentPreviewPath);
     /* if (this.currentTemplate !== this.selectedTemplate) {
       this.pds.changeTemplate(this.currentTemplate, this.pds.currentPreviewPath);
     } */
@@ -56,13 +56,13 @@ export class TemplatesComponent implements OnInit, OnDestroy {
 
   switch() {
     if (this.data.templateid !== this.initState.template) this.switchTemplate();
-    if (this.currentPreset !== this.selectedPreset) this.switchPreset();
+    if (this.selectedPreset !== this.initState.preset) this.switchPreset();
   }
 
   switchPreset() {
     this.pds.preset = this.selectedPreset;
-    this.currentPreset = this.selectedPreset;
-    this.pds.data.recruitment.splice(0, this.pds.data.recruitment.length);
+    this.initState.preset = this.selectedPreset; //* when hard-saved
+    this.data.recruitment.splice(0, this.pds.data.recruitment.length);
     this.pds.setRecruitment();
     this.pds.sendRecruitmentCheck();
     this.snackBar.open(`Preset change${true ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
@@ -72,7 +72,6 @@ export class TemplatesComponent implements OnInit, OnDestroy {
     this.pds.patchBasics().subscribe(
       success => {
         if (success) this.initState.template = this.data.templateid;
-        else this.data.templateid = this.initState.template;
         this.snackBar.open(`Template change${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       }
     )
@@ -80,6 +79,9 @@ export class TemplatesComponent implements OnInit, OnDestroy {
 
   reset() {
     this.pds.preset = this.initState.preset;
-    this.pds.data.templateid = this.initState.template;
+    if (this.data.templateid !== this.initState.template) {
+      this.data.templateid = this.initState.template;
+      this.pds.changeTemplate(this.initState.template, this.pds.currentPreviewPath);
+    }
   }
 }

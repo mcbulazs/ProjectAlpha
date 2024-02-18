@@ -150,11 +150,14 @@ img {
     max-width: 100%;
     flex-direction: column;
     gap: 15px;
+    align-items: center;
+    justify-content: center;
 }
 
 .tgf-icon {
     width: 30px;
     border: 2px solid black;
+    display: flex;
 }
 
 footer {
@@ -215,16 +218,25 @@ footer {
     border-radius: 5px;
 }
 
-.classes {
+.class {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: start;
+    justify-content: space-between;
+    width: 100%;
 }
 
-.subclasses {
+.subclass {
     display: flex;
     gap: 5px;
     flex-direction: row;
+    justify-content: end;
     flex-wrap: wrap;
+}
+
+.tgf-spacer {
+    display: flex;
+    max-width: 100%;
 }
 
 .d-none {

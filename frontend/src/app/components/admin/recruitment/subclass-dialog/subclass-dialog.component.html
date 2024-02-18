@@ -1,6 +1,6 @@
 <div class="dialog">
     <h2>Select subclasses</h2>
-<button mat-raised-button color="primary" class="btn-select-all" (click)="selectAll()">Select all</button>
+<button mat-raised-button color="primary" class="btn-select-all" (click)="selectAll()">{{selectAllToggle ? 'Des' : 'S'}}elect all</button>
 <div class="subclasses">
     <mat-grid-list cols="4" class="subclasses">
         <mat-grid-tile *ngFor="let subclass of data.preset.subclasses">
