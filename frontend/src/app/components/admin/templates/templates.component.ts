@@ -44,6 +44,11 @@ export class TemplatesComponent implements OnDestroy {
     }
   }
 
+  switch() {
+    if (this.currentTemplate !== this.selectedTemplate) this.switchTemplate();
+    if (this.currentPreset !== this.selectedPreset) this.switchPreset();
+  }
+
   switchPreset() {
     this.pds.preset = this.selectedPreset;
     this.currentPreset = this.selectedPreset;
