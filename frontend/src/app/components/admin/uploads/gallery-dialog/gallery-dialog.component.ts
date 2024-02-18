@@ -6,6 +6,7 @@ import { MatDialogClose, MatDialogRef } from '@angular/material/dialog';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { GeneralComponent } from '../../general/general.component';
 import { MatIcon } from '@angular/material/icon';
+import { PRESETS, Preset } from '../../../preview/components';
 
 @Component({
   selector: 'app-gallery-dialog',
@@ -21,15 +22,18 @@ export class GalleryDialogComponent implements OnInit {
   images: string[] = [];
   empty: boolean = false;
 
-  selected: number | null = null;
+  selected: string = '';
+
+  preset!: Preset;
 
   ngOnInit(): void {
     this.images = this.pds.images;
     this.empty = this.images.length === 0;
+    this.preset = PRESETS[this.pds.preset];
   }
 
-  select(index: number) {
-    this.selected = index;
-    this.dialogRef.close(index);
+  select(image: string) {
+    this.selected = image;
+    this.dialogRef.close(image);
   }
 }

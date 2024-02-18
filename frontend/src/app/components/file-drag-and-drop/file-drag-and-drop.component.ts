@@ -32,7 +32,7 @@ export class FileDragAndDropComponent {
     });
     dialogRef.afterClosed().subscribe(selected => {
       if (selected === undefined) return;
-      this.data[this.key] = this.pds.images[selected];
+      this.data[this.key] = selected;
       this.pds.patchBasics().subscribe(success => {
         if (success) {
           this.initState[this.key] = this.data[this.key];

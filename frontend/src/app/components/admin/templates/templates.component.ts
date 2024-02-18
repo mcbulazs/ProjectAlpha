@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
-import { TEMPLATES } from '../../preview/components';
+import { PRESETS, TEMPLATES } from '../../preview/components';
 import { PageDataService } from '../../../services/page.data.service';
 import { MatButton } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -20,31 +20,17 @@ export class TemplatesComponent implements OnDestroy {
 
   constructor(private pds: PageDataService, private snackBar: MatSnackBar) { }
 
-  /* games = [
-    'https://logos-world.net/wp-content/uploads/2021/03/World-of-Warcraft-Logo.png',
-    'https://cdn2.steamgriddb.com/logo/941d5007e0a0bd420ca69db03ef54c4d.png',
-    'https://i.imgur.com/YZMLxmj.png',
-    'https://assets.stickpng.com/images/628c9d899f5557831305934e.png',
-    'https://logos-world.net/wp-content/uploads/2021/03/Guild-Wars-Emblem.png',
-  ]; */
-
-  games = [
-    'https://via.placeholder.com/640x360',
-    'https://via.placeholder.com/640x360',
-    'https://via.placeholder.com/640x360',
-    'https://via.placeholder.com/640x360',
-    'https://via.placeholder.com/640x360',
-  ]
+  presets = PRESETS;
 
   templates = TEMPLATES;
-  currentGame = 0;
-  selectedGame = 0;
+  currentPreset = this.pds.preset;
+  selectedPreset = this.pds.preset;
   currentTemplate = this.pds.data.templateid;
   selectedTemplate = this.pds.data.templateid;
 
 
-  selectGame(id: number) {
-    this.selectedGame = id;
+  selectPreset(id: number) {
+    this.selectedPreset = id;
   }
 
   selectTemplate(id: number) {
@@ -58,8 +44,10 @@ export class TemplatesComponent implements OnDestroy {
     }
   }
 
-  switchGame() {
-
+  switchPreset() {
+    this.pds.preset = this.selectedPreset;
+    this.currentPreset = this.selectedPreset;
+    this.snackBar.open(`Preset change${true ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
   }
 
   switchTemplate() {

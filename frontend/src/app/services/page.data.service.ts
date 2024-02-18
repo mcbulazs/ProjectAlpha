@@ -7,6 +7,7 @@ import { Article } from '../interfaces/article.interface';
 import { PageBasics } from '../interfaces/page.basics.interface';
 import { NavItem } from '../interfaces/navitem.interface';
 import { Channel } from '../interfaces/channel.interface';
+import { PLACEHOLDER_DATA } from '../constants';
 
 export interface TemplateChanger {
   templateID: number,
@@ -26,6 +27,7 @@ export class PageDataService {
 
   webID!: number;
   data!: PageData;
+  preset: number = 0;
   images!: string[];
 
   placeholderHotline = new Subject<boolean>;
@@ -49,6 +51,8 @@ export class PageDataService {
       }).pipe(map(res => {
         if (res.status === 200 && res.body) {
           let homeNav = res.body.navbar.find(x => x.path === '')!;
+          res.body.progress = PLACEHOLDER_DATA.progress; //! DEFER REMOVE 
+          res.body.youtube = PLACEHOLDER_DATA.youtube; //! DEFER REMOVE
           homeNav.enabled = true;
           this.data = res.body;
           this.data.backgroundColor = '#333333';

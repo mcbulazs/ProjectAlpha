@@ -1,1 +1,60 @@
-<p>progress works!</p>
+<h2>Progress management</h2>
+<button mat-raised-button color="primary" (click)="createProgress()">Add</button>
+<!-- <mat-list>
+    <mat-list-item *ngFor="let progress of data.progress">
+        <mat-icon matListItemIcon>article</mat-icon>
+        <span>{{progress.name}}</span>
+        <button mat-icon-button matListItemMeta #editBtn (click)="updateProgress(progress, editBtn)">
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button matListItemMeta #deleteBtn (click)="deleteProgress(progress.id, deleteBtn)">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </mat-list-item>
+</mat-list> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
+    <!-- This is the tree node template for leaf nodes -->
+    <!-- There is inline padding applied to this node using styles.
+      This padding value depends on the mat-icon-button width. -->
+    <mat-tree-node *matTreeNodeDef="let node" class="raid-node">
+        <div class="difficulty-row">
+            <mat-icon class="material-symbols-outlined">swords</mat-icon>
+            <span>{{node.difficulty}} {{node.current}} / {{node.max}}</span>
+        </div>
+        <div class="buttons">
+            <button mat-icon-button>
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button>
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+    </mat-tree-node>
+    <!-- This is the tree node template for expandable nodes -->
+    <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+        <div class="mat-tree-node">
+            <div class="progress-name">
+                <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+                    <mat-icon class="mat-icon-rtl-mirror">
+                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                </button>
+                <span>{{node.name}}</span>
+            </div>
+            <div class="buttons">
+                <button mat-icon-button>
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button>
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </div>
+        <!-- There is inline padding applied to this div using styles.
+            This padding value depends on the mat-icon-button width.  -->
+        <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
+            <ng-container matTreeNodeOutlet></ng-container>
+        </div>
+    </mat-nested-tree-node>
+</mat-tree>

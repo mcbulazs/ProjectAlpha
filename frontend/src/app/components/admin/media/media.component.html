@@ -1,38 +1,34 @@
 <h2>Twitch channels</h2>
 <button mat-raised-button color="primary" (click)="createChannel(channelType.TWITCH)">Add</button>
-<div class="channel-list">
-    <mat-list>
-        <mat-list-item *ngFor="let channel of data.twitch">
-            <mat-icon matListItemIcon>article</mat-icon>
-            <div matListItemTitle class="channel-line">
-                <span class="channel-title">{{channel.name}}</span>
-                <a [href]="channel.link">{{channel.link}}</a>
-            </div>
-            <button mat-icon-button matListItemMeta #editTwitchBtn (click)="patchChannel(channel, channelType.TWITCH, editTwitchBtn)">
-                <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button matListItemMeta #twitchDeleteBtn (click)="deleteChannel(channel.id, channelType.TWITCH, twitchDeleteBtn)">
-                <mat-icon>delete</mat-icon>
-            </button>
-        </mat-list-item>
-    </mat-list>
-</div>
+<mat-list>
+    <mat-list-item *ngFor="let channel of data.twitch">
+        <mat-icon matListItemIcon>article</mat-icon>
+        <div matListItemTitle class="channel-line">
+            <span class="channel-title">{{channel.name}}</span>
+            <a [href]="channel.link">{{channel.link}}</a>
+        </div>
+        <button mat-icon-button matListItemMeta #editTwitchBtn (click)="updateChannel(channel, channelType.TWITCH, editTwitchBtn)">
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button matListItemMeta #twitchDeleteBtn (click)="deleteChannel(channel.id, channelType.TWITCH, twitchDeleteBtn)">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </mat-list-item>
+</mat-list>
 <h2>Youtube channels</h2>
 <button mat-raised-button color="primary" (click)="createChannel(channelType.YOUTUBE)">Add</button>
-<div class="channel-list">
-    <mat-list>
-        <mat-list-item *ngFor="let channel of data.youtube">
-            <mat-icon matListItemIcon>article</mat-icon>
-            <div matListItemTitle class="channel-line">
-                <span class="channel-title">{{channel.name}}</span>
-                <a [href]="channel.link">{{channel.link}}</a>
-            </div>
-            <button mat-icon-button matListItemMeta #editYoutubeBtn (click)="patchChannel(channel, channelType.YOUTUBE, editYoutubeBtn)">
-                <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button matListItemMeta #youtubeDeleteBtn (click)="deleteChannel(channel.id, channelType.YOUTUBE, youtubeDeleteBtn)">
-                <mat-icon>delete</mat-icon>
-            </button>
-        </mat-list-item>
-    </mat-list>
-</div>
+<mat-list>
+    <mat-list-item *ngFor="let channel of data.youtube">
+        <mat-icon matListItemIcon>article</mat-icon>
+        <div matListItemTitle class="channel-line">
+            <span class="channel-title">{{channel.name}}</span>
+            <a [href]="channel.link">{{channel.link}}</a>
+        </div>
+        <button mat-icon-button matListItemMeta #editYoutubeBtn (click)="updateChannel(channel, channelType.YOUTUBE, editYoutubeBtn)">
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button matListItemMeta #youtubeDeleteBtn (click)="deleteChannel(channel.id, channelType.YOUTUBE, youtubeDeleteBtn)">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </mat-list-item>
+</mat-list>

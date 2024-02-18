@@ -36,12 +36,26 @@
                 </div>
                 <div class="progresses" *ngIf="usePlaceholders || data.progress.length !== 0">
                     <h2 class="progress-title">Progress</h2>
-                    <div *ngFor="let item of usePlaceholders && data.progress.length === 0 ? PLACEHOLDERS.progress : data.progress" class="raid {{usePlaceholders && data.progress.length === 0 ? 'placeholder' : ''}}" [style.background-image]="'url('+item.background+')'">
+                    <div *ngFor="let item of usePlaceholders && data.progress.length === 0 ? PLACEHOLDERS.progress : data.progress" class="progress {{usePlaceholders && data.progress.length === 0 ? 'placeholder' : ''}}" [style.background-image]="'url('+item.background+')'">
                         <span>{{item.name}}</span>
-                        <div *ngFor="let raid of item.raids">
+                        <div *ngFor="let raid of item.raids" class="raid">
                             <span>{{raid.difficulty}} {{raid.current}} / {{raid.max}}</span>
                         </div>
                     </div>
+                </div>
+                <div class="channels" *ngIf="usePlaceholders || data.twitch.length !== 0">
+                    <h2 class="channels-title">Twitch Channels</h2>
+                    <a [href]="item.link" target="_blank" *ngFor="let item of usePlaceholders && data.twitch.length === 0 ? PLACEHOLDERS.twitch : data.twitch" class="channel {{usePlaceholders && data.twitch.length === 0 ? 'placeholder' : ''}}" style="background-color: plum;">
+                        <img src="https://static-00.iconduck.com/assets.00/twitch-icon-489x512-jqw4vk2h.png" style="width: 25px;">
+                        {{item.name}}
+                    </a>
+                </div>
+                <div class="channels" *ngIf="usePlaceholders || data.youtube.length !== 0">
+                    <h2 class="channels-title">Youtube Channels</h2>
+                    <a [href]="item.link" target="_blank" *ngFor="let item of usePlaceholders && data.youtube.length === 0 ? PLACEHOLDERS.youtube : data.youtube" class="channel {{usePlaceholders && data.youtube.length === 0 ? 'placeholder' : ''}}" style="background-color: rgb(255, 75, 75);">
+                        <img src="https://cdn.freebiesupply.com/logos/large/2x/youtube-icon-logo-png-transparent.png" style="width: 25px;">
+                        {{item.name}}
+                    </a>
                 </div>
             </div>
         </div>

@@ -60,16 +60,16 @@ export const PLACEHOLDER_DATA: PageData = {
     progress: [
         {
             id: -1,
-            name: "Aberrus",
+            name: "Progress1",
             raids: [
                 {
-                    difficulty: "Mythic",
+                    difficulty: "Difficulty1",
                     max: 10,
                     current: 7,
                     id: -1,
                 },
                 {
-                    difficulty: "Heroic",
+                    difficulty: "Difficulty2",
                     max: 10,
                     current: 10,
                     id: -1,
@@ -79,16 +79,16 @@ export const PLACEHOLDER_DATA: PageData = {
         },
         {
             id: -1,
-            name: "Castle Nathria",
+            name: "Progress2",
             raids: [
                 {
-                    difficulty: "Heroic",
+                    difficulty: "Difficulty1",
                     max: 10,
                     current: 9,
                     id: -1,
                 },
                 {
-                    difficulty: "Normal",
+                    difficulty: "Difficulty2",
                     max: 10,
                     current: 10,
                     id: -1,
@@ -112,20 +112,25 @@ export const PLACEHOLDER_DATA: PageData = {
     twitch: [
         {
             id: -1,
-            name: "Asmongold",
-            link: "twitch.tv/asmongold",
+            name: "Example1",
+            link: "",
         },
         {
             id: -1,
-            name: "TheVR",
-            link: "twitch.tv/thevr",
+            name: "Example2",
+            link: "",
         }
     ],
     youtube: [
         {
             id: -1,
-            name: "TheVR",
-            link: "youtube.com/thevr"
+            name: "Example1",
+            link: ""
+        },
+        {
+            id: -1,
+            name: "Example2",
+            link: ""
         }
     ]
 }

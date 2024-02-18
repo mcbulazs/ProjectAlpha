@@ -3,9 +3,26 @@
 </button>
 <p>Double click to select</p>
 <h2 *ngIf="empty">Your uploaded images will be displayed here.</h2>
+<h3>Logo presets</h3>
+<mat-grid-list cols="4">
+    <mat-grid-tile *ngFor="let image of preset.logoImages; index as i">
+        <button mat-button (dblclick)="select(image)" class="btn-image {{image === selected ? 'selected' : ''}}">
+            <img [src]="image" [title]="image">
+        </button>
+    </mat-grid-tile>
+</mat-grid-list>
+<h3>Background presets</h3>
+<mat-grid-list cols="4">
+    <mat-grid-tile *ngFor="let image of preset.backgroundImages; index as i">
+        <button mat-button (dblclick)="select(image)" class="btn-image {{image === selected ? 'selected' : ''}}">
+            <img [src]="image" [title]="image">
+        </button>
+    </mat-grid-tile>
+</mat-grid-list>
+<h3>Your uploads</h3>
 <mat-grid-list cols="4">
     <mat-grid-tile *ngFor="let image of images; index as i">
-        <button mat-button (dblclick)="select(i)" class="btn-image {{i === selected ? 'selected' : ''}}">
+        <button mat-button (dblclick)="select(image)" class="btn-image {{image === selected ? 'selected' : ''}}">
             <img [src]="image" [title]="image">
         </button>
     </mat-grid-tile>

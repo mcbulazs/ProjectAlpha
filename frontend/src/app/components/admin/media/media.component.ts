@@ -37,7 +37,7 @@ export class MediaComponent implements OnInit {
     });
   }
 
-  patchChannel(channel: Channel, type: ChannelType, editBtn: MatIconButton) {
+  updateChannel(channel: Channel, type: ChannelType, editBtn: MatIconButton) {
     editBtn.disabled = true;
     const dialogRef = this.dialog.open(EditChannelDialogComponent, {
       data: {
