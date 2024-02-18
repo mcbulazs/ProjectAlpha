@@ -61,8 +61,8 @@ export class PageDataService {
       }).pipe(map(res => {
         if (res.status === 200 && res.body) {
           let homeNav = res.body.navbar.find(x => x.path === '')!;
-          /* res.body.progress = PLACEHOLDER_DATA.progress; //! DEFER REMOVE 
-          res.body.youtube = PLACEHOLDER_DATA.youtube; //! DEFER REMOVE */
+          res.body.progress = PLACEHOLDER_DATA.progress; //! DEFER REMOVE 
+          res.body.youtube = PLACEHOLDER_DATA.youtube; //! DEFER REMOVE
           homeNav.enabled = true;
           this.data = res.body;
           if (this.data.recruitment.length === 0) {

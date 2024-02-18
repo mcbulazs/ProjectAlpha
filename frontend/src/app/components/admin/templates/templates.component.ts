@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PRESETS, TEMPLATES } from '../../preview/components';
 import { PageDataService } from '../../../services/page.data.service';
 import { MatButton } from '@angular/material/button';
@@ -8,6 +8,7 @@ import { MAT_SNACKBAR_CONFIG } from '../../../constants';
 import { TemplateOneComponent } from '../../preview/templates/template-one/template-one/template-one.component';
 import { PageBasics } from '../../../interfaces/page.basics.interface';
 import { map } from 'rxjs';
+import { PageData } from '../../../interfaces/page.data.interface';
 
 @Component({
   selector: 'app-templates',
@@ -16,36 +17,45 @@ import { map } from 'rxjs';
   templateUrl: './templates.component.html',
   styleUrl: './templates.component.scss'
 })
-export class TemplatesComponent implements OnDestroy {
+export class TemplatesComponent implements OnInit, OnDestroy {
 
   constructor(private pds: PageDataService, private snackBar: MatSnackBar) { }
 
+
+  data!: PageData;
   presets = PRESETS;
 
   templates = TEMPLATES;
+  initState = {
+    template: this.pds.data.templateid,
+    preset: this.pds.preset,
+  }
   currentPreset = this.pds.preset;
   selectedPreset = this.pds.preset;
-  currentTemplate = this.pds.data.templateid;
-  selectedTemplate = this.pds.data.templateid;
 
+  ngOnInit(): void {
+    this.data = this.pds.data;
+  }
 
   selectPreset(id: number) {
     this.selectedPreset = id;
   }
 
   selectTemplate(id: number) {
-    this.selectedTemplate = id;
+    this.data.templateid = id;
     this.pds.changeTemplate(id, this.pds.currentPreviewPath);
   }
 
   ngOnDestroy(): void {
-    if (this.currentTemplate !== this.selectedTemplate) {
+    this.reset();
+    //this.pds.changeTemplate(this.currentTemplate, this.pds.currentPreviewPath);
+    /* if (this.currentTemplate !== this.selectedTemplate) {
       this.pds.changeTemplate(this.currentTemplate, this.pds.currentPreviewPath);
-    }
+    } */
   }
 
   switch() {
-    if (this.currentTemplate !== this.selectedTemplate) this.switchTemplate();
+    if (this.data.templateid !== this.initState.template) this.switchTemplate();
     if (this.currentPreset !== this.selectedPreset) this.switchPreset();
   }
 
@@ -59,13 +69,17 @@ export class TemplatesComponent implements OnDestroy {
   }
 
   switchTemplate() {
-    this.pds.data.templateid = this.selectedTemplate;
     this.pds.patchBasics().subscribe(
       success => {
-        if (success) this.currentTemplate = this.selectedTemplate;
-        else this.pds.data.templateid = this.currentTemplate;
+        if (success) this.initState.template = this.data.templateid;
+        else this.data.templateid = this.initState.template;
         this.snackBar.open(`Template change${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       }
     )
+  }
+
+  reset() {
+    this.pds.preset = this.initState.preset;
+    this.pds.data.templateid = this.initState.template;
   }
 }
