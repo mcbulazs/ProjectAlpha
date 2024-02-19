@@ -22,6 +22,13 @@ func SessionMiddleware(next http.Handler) http.Handler {
 				http.Error(w, "User not authenticated", http.StatusUnauthorized)
 				return
 			}
+			//renew session
+			session.Options.MaxAge = 3600
+			err := session.Save(r, w)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 		next.ServeHTTP(w, r)
 	})

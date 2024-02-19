@@ -451,7 +451,7 @@ func Controller_Page_Calendar_Modify(w http.ResponseWriter, r *http.Request) {
 }
 
 func Controller_Page_Rules_Save(w http.ResponseWriter, r *http.Request) {
-	var rules []models.RulesModel
+	var rules string
 	err := json.NewDecoder(r.Body).Decode(&rules)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -467,7 +467,7 @@ func Controller_Page_Rules_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	JSON.SendJSON(w, rulesObject)
+	JSON.SendJSON(w, *rulesObject)
 }
 
 func Controller_Page_Rules_Modify(w http.ResponseWriter, r *http.Request) {

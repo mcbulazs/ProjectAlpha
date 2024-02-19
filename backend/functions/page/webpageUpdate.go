@@ -12,18 +12,22 @@ import (
 func UpdateWebpage(model models.WebpageBasicsModel) (*models.WebpageBasicsModel, error) {
 	var updatedWebpage models.WebpageBasicsModel
 	err := db.Context.QueryRow(
-		"UPDATE webpages SET Name=$1, Template_Id=$2, Logo_AccessUrl=$3, Banner_AccessUrl=$4 WHERE Id=$5 RETURNING Id, Name, Template_Id, Logo_AccessUrl, Banner_AccessUrl",
+		"UPDATE webpages SET Name=$1, Template_Id=$2, Preset_Id=$3 , Logo_AccessUrl=$4, Banner_AccessUrl=$5, Custom_Css=$7 WHERE Id=$6 RETURNING Id, Name, Template_Id, Preset_Id, Logo_AccessUrl, Banner_AccessUrl, Custom_Css",
 		model.Title,
 		model.TemplateId,
+		model.PresetId,
 		model.Logo,
 		model.Banner,
-		model.Id).Scan(
+		model.Id,
+		model.CustomCss).Scan(
 
 		&updatedWebpage.Id,
 		&updatedWebpage.Title,
 		&updatedWebpage.TemplateId,
+		&updatedWebpage.PresetId,
 		&updatedWebpage.Logo,
 		&updatedWebpage.Banner,
+		&updatedWebpage.CustomCss,
 	)
 	if err != nil {
 		return nil, err

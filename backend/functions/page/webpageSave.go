@@ -175,29 +175,17 @@ func SaveCalendar(webId int, calendar []models.CalendarModel) ([]models.Calendar
 	return calendarObject, nil
 }
 
-func SaveRules(webId int, rules []models.RulesModel) ([]models.RulesModel, error) {
-
-	if len(rules) == 0 {
-		return nil, nil
-	}
-	numberOfData := 2
-	values := getValueString(len(rules), numberOfData)
-	params := make([]interface{}, 0, len(rules)*numberOfData)
-
-	for _, item := range rules {
-		params = append(params, webId, item.Rule)
-	}
-
-	query := "INSERT INTO rules (WebId, Rule) VALUES " + values
-	_, err := db.Context.Exec(query, params...)
+func SaveRules(webId int, rules string) (*models.RulesModel, error) {
+	var result models.RulesModel
+	query := "INSERT INTO rules (WebId, Rule) VALUES ($1,$2) RETURNING Id, Rule"
+	err := db.Context.QueryRow(query, webId, rules).Scan(
+		&result.Id,
+		&result.Rule,
+	)
 	if err != nil {
 		return nil, err
 	}
-	rulesObject, err := getRules(webId)
-	if err != nil {
-		return nil, err
-	}
-	return rulesObject, nil
+	return &result, nil
 }
 
 func getValueString(numberOfRows int, numberOfData int) string {

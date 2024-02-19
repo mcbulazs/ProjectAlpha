@@ -5,6 +5,8 @@ CREATE TABLE webpages (
     Name varchar(255) NOT NULL DEFAULT '',
     Owner_Id int NOT NULL,
     Template_Id int NOT NULL DEFAULT 0,
+    Preset_Id int NOT NULL DEFAULT 0,
+    Custom_Css varchar not null DEFAULT '',
     Logo_AccessUrl varchar(255) NOT NULL DEFAULT '',
     Banner_AccessUrl varchar(255) NOT NULL DEFAULT ''
 );

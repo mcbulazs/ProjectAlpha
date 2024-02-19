@@ -22,12 +22,14 @@ func GetWebContent(webId int) (*models.WebPageModel, error) {
 	fmt.Println(webId)
 	result := models.WebPageModel{}
 	//Title and Preset Id
-	row := db.Context.QueryRow("SELECT Name, Template_Id, Logo_AccessUrl, Banner_AccessUrl FROM webpages WHERE id=$1", webId)
+	row := db.Context.QueryRow("SELECT Name, Template_Id, Preset_Id, Logo_AccessUrl, Banner_AccessUrl, Custom_Css FROM webpages WHERE id=$1", webId)
 	err := row.Scan(
 		&result.Title,
 		&result.TemplateId,
+		&result.PresetId,
 		&result.Logo,
 		&result.Banner,
+		&result.CustomCss,
 	)
 
 	if err != nil {
