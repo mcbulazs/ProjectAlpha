@@ -124,6 +124,34 @@ func modifyModel[T any](w http.ResponseWriter, r *http.Request, updateFunc func(
 	}
 }
 
+func modifyBaseModel(w http.ResponseWriter, r *http.Request, columnName string) {
+	web_id, err := functions.GetWebId(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	var value string
+	err = json.NewDecoder(r.Body).Decode(&value)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	result, err := page.UpdateWebpageProp(columnName, value, web_id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON.SendJSON(w, result)
+}
+
+func Controller_Page_CustomCss(w http.ResponseWriter, r *http.Request) {
+	modifyBaseModel(w, r, "Custom_Css")
+}
+
+func Controller_Page_Rules(w http.ResponseWriter, r *http.Request) {
+	modifyBaseModel(w, r, "Rules")
+}
+
 func Controller_Page_Articles_Save(w http.ResponseWriter, r *http.Request) {
 	saveModel[models.ArticleModel](w, r, page.SaveArticle)
 }

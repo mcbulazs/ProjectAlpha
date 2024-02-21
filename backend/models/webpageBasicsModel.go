@@ -8,4 +8,5 @@ type WebpageBasicsModel struct {
 	Logo       string `json:"logo"`
 	Banner     string `json:"banner"`
 	CustomCss  string `json:"customcss"`
+	Rules      string `json:"rules"`
 }

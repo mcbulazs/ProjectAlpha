@@ -19,8 +19,8 @@ func UpdateWebpage(model models.WebpageBasicsModel) (*models.WebpageBasicsModel,
 		model.Logo,
 		model.Banner,
 		model.Id,
-		model.CustomCss).Scan(
-
+		model.CustomCss,
+	).Scan(
 		&updatedWebpage.Id,
 		&updatedWebpage.Title,
 		&updatedWebpage.TemplateId,
@@ -35,9 +35,28 @@ func UpdateWebpage(model models.WebpageBasicsModel) (*models.WebpageBasicsModel,
 	return &updatedWebpage, nil
 }
 
+func UpdateWebpageProp(columnName string, value string, webId int) (*string, error) {
+	var result string
+	query := fmt.Sprintf("UPDATE webpages SET %s=$1 WHERE Id=$2 RETURNING %s", columnName, columnName)
+	err := db.Context.QueryRow(query,
+		value,
+		webId,
+	).Scan(
+		&result,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 func UpdateArticle(model models.ArticleModel, Id int) (*models.ArticleModel, error) {
 	var updatedArticle models.ArticleModel
-	err := db.Context.QueryRow("UPDATE articles SET Title=$1, Content=$2 WHERE Id=$3 RETURNING Id, Title, Date, Content", model.Title, model.Content, Id).Scan(
+	err := db.Context.QueryRow("UPDATE articles SET Title=$1, Content=$2 WHERE Id=$3 RETURNING Id, Title, Date, Content",
+		model.Title,
+		model.Content,
+		Id,
+	).Scan(
 		&updatedArticle.Id,
 		&updatedArticle.Title,
 		&updatedArticle.Date,
@@ -53,7 +72,11 @@ func UpdateRecruitment(model models.RecruitmentModel, Id int) (*models.Recruitme
 	var updatedRecruitment models.RecruitmentModel
 
 	var subclasses pq.StringArray
-	err := db.Context.QueryRow("UPDATE recruitment SET Class=$1, Subclass=$2 WHERE Id=$3 RETURNING Id, Class, Subclass", model.Class, pq.Array(model.Subclasses), Id).Scan(
+	err := db.Context.QueryRow("UPDATE recruitment SET Class=$1, Subclass=$2 WHERE Id=$3 RETURNING Id, Class, Subclass",
+		model.Class,
+		pq.Array(model.Subclasses),
+		Id,
+	).Scan(
 		&updatedRecruitment.Id,
 		&updatedRecruitment.Class,
 		&subclasses,
@@ -77,8 +100,14 @@ func UpdateNavbar(model []models.NavItem, webId int) ([]models.NavItem, error) {
 	var updatedNavbar []models.NavItem
 	for i, item := range model {
 		var updatedNavitem models.NavItem
-		row := tx.QueryRow("UPDATE navbar SET Name=$1, Path=$2, Ranking=$3, Enabled=$4 WHERE Id=$5 AND WebID=$6 RETURNING Id, Name, Path, Enabled", item.Name, item.Path, i, item.IsEnabled, item.Id, webId)
-		err = row.Scan(
+		err := tx.QueryRow("UPDATE navbar SET Name=$1, Path=$2, Ranking=$3, Enabled=$4 WHERE Id=$5 AND WebID=$6 RETURNING Id, Name, Path, Enabled",
+			item.Name,
+			item.Path,
+			i,
+			item.IsEnabled,
+			item.Id,
+			webId,
+		).Scan(
 			&updatedNavitem.Id,
 			&updatedNavitem.Name,
 			&updatedNavitem.Path,
@@ -95,7 +124,12 @@ func UpdateNavbar(model []models.NavItem, webId int) ([]models.NavItem, error) {
 
 func UpdateChannel(model models.ChannelModel, Id int) (*models.ChannelModel, error) {
 	var updateChannel models.ChannelModel
-	err := db.Context.QueryRow("UPDATE channels SET Site=$1, Name=$2, Link=$3 WHERE Id=$4 RETURNING Id, Site, Name, Link", model.Site, model.Name, model.Link, Id).Scan(
+	err := db.Context.QueryRow("UPDATE channels SET Site=$1, Name=$2, Link=$3 WHERE Id=$4 RETURNING Id, Site, Name, Link",
+		model.Site,
+		model.Name,
+		model.Link,
+		Id,
+	).Scan(
 		&updateChannel.Id,
 		&updateChannel.Site,
 		&updateChannel.Name,
@@ -115,7 +149,12 @@ func UpdateProgress(model models.ProgressModel, Id int) (*models.ProgressModel, 
 	if err != nil {
 		return nil, err
 	}
-	err = db.Context.QueryRow("UPDATE progress SET Name=$1, Background_AccessUrl=$2, Raids=$3 WHERE Id=$4 RETURNING Id, Name, Background_AccessUrl, Raids", model.Name, model.BackgroundImg, raidsJSON, Id).Scan(
+	err = db.Context.QueryRow("UPDATE progress SET Name=$1, Background_AccessUrl=$2, Raids=$3 WHERE Id=$4 RETURNING Id, Name, Background_AccessUrl, Raids",
+		model.Name,
+		model.BackgroundImg,
+		raidsJSON,
+		Id,
+	).Scan(
 		&updatedProgress.Id,
 		&updatedProgress.Name,
 		&updatedProgress.BackgroundImg,
@@ -133,7 +172,12 @@ func UpdateProgress(model models.ProgressModel, Id int) (*models.ProgressModel, 
 
 func UpdateCalendar(model models.CalendarModel, Id int) (*models.CalendarModel, error) {
 	var updatedCalendar models.CalendarModel
-	err := db.Context.QueryRow("UPDATE calendar SET Name=$1, Date=$2, Type=$3 WHERE Id=$4 RETURNING Id, Name, Date, Type", model.Name, model.Date, model.Type, Id).Scan(
+	err := db.Context.QueryRow("UPDATE calendar SET Name=$1, Date=$2, Type=$3 WHERE Id=$4 RETURNING Id, Name, Date, Type",
+		model.Name,
+		model.Date,
+		model.Type,
+		Id,
+	).Scan(
 		&updatedCalendar.Id,
 		&updatedCalendar.Name,
 		&updatedCalendar.Date,
@@ -142,6 +186,5 @@ func UpdateCalendar(model models.CalendarModel, Id int) (*models.CalendarModel, 
 	if err != nil {
 		return nil, err
 	}
-
 	return &updatedCalendar, nil
 }

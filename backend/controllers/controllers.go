@@ -30,6 +30,10 @@ func ControllerInit(r *mux.Router) {
 	pageRouter.HandleFunc("/files/articles", Controller_Article_File_Save).Methods("POST", "OPTIONS")
 	pageRouter.PathPrefix("/files").HandlerFunc(Controller_File_Serve).Methods("GET", "OPTIONS", "DELETE")
 
+	//baseprops
+	pageRouter.HandleFunc("/customcss", Controller_Page_CustomCss).Methods("Patch", "OPTIONS")
+	pageRouter.HandleFunc("/rules", Controller_Page_Rules).Methods("Patch", "OPTIONS")
+
 	pageRouter.HandleFunc("/articles", Controller_Page_Articles_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/articles/{Id:[0-9]+}", Controller_Page_Articles_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
@@ -46,7 +50,4 @@ func ControllerInit(r *mux.Router) {
 
 	pageRouter.HandleFunc("/calendar", Controller_Page_Calendar_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/calendar/{Id:[0-9]+}", Controller_Page_Calendar_Modify).Methods("PATCH", "DELETE", "OPTIONS")
-
-	//pageRouter.HandleFunc("/rules", Controller_Page_Rules).Methods("POST", "PATCH", "DELETE", "OPTIONS")
-
 }
