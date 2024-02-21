@@ -4,6 +4,7 @@ import (
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/JSON"
 	ChannelType "ProjectAlpha/enums/channelEnum"
+	"ProjectAlpha/enums/errors"
 	"ProjectAlpha/functions"
 	"ProjectAlpha/functions/page"
 	"ProjectAlpha/models"
@@ -463,46 +464,54 @@ func Controller_Page_Rules_Save(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rulesObject, err := page.SaveRules(web_id, rules)
-	if err != nil {
+	if err == errors.AssetAlreadyExists {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	JSON.SendJSON(w, *rulesObject)
+	JSON.SendJSON(w, rulesObject)
 }
 
-func Controller_Page_Rules_Modify(w http.ResponseWriter, r *http.Request) {
-	//check if the webid and records webid are the same
-	id, err := strconv.Atoi(mux.Vars(r)["Id"])
+func Controller_Page_Rules(w http.ResponseWriter, r *http.Request) {
+	web_id, err := functions.GetWebId(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	ok, err := validateId(r, id, "rules")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if !ok {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 	switch r.Method {
+	case http.MethodPost:
+		var rules string
+		err := json.NewDecoder(r.Body).Decode(&rules)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		rulesObject, err := page.SaveRules(web_id, rules)
+		if err == errors.AssetAlreadyExists {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		} else if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		JSON.SendJSON(w, rulesObject)
 	case http.MethodDelete:
-		err = page.DeleteRecord(id, "rules")
+		err = page.DeleteRecordByWebId(web_id, "rules")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 	case http.MethodPatch:
-		var rule models.RulesModel
+		var rule string
 		err := json.NewDecoder(r.Body).Decode(&rule)
 		fmt.Println(rule)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		rule.Id = id
-		updatedRule, err := page.UpdateRule(rule)
+		updatedRule, err := page.UpdateRule(web_id, rule)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

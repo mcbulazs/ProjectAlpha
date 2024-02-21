@@ -180,16 +180,12 @@ func UpdateCalendar(model models.CalendarModel) (*models.CalendarModel, error) {
 	return &updatedCalendar, nil
 }
 
-func UpdateRule(model models.RulesModel) (*models.RulesModel, error) {
-	fmt.Println(model)
-	var updatedRule models.RulesModel
-	err := db.Context.QueryRow("UPDATE rules SET Rule=$1 WHERE Id=$2 RETURNING Id, Rule", model.Rule, model.Id).Scan(
-		&updatedRule.Id,
-		&updatedRule.Rule,
-	)
+func UpdateRule(webId int, rule string) (string, error) {
+	var updatedRule string
+	err := db.Context.QueryRow("UPDATE rules SET Rule=$1 WHERE webId=$2 RETURNING Rule", rule, webId).Scan(&updatedRule)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return &updatedRule, nil
+	return updatedRule, nil
 }

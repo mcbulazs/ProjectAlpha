@@ -1,26 +1,16 @@
 package errors
 
-// CustomError is a custom error type.
-type Error struct {
-	err string
-}
-
-const (
-	FileSizeTooBig        = "FileSizeTooBig"
-	DirectorySizeTooBig   = "DirectorySizeTooBig"
-	NotMatchingIds        = "NotMatchingIds"
-	TypeDoesntExist       = "TypeDoesntExist"
-	InvalidPasswordFormat = "InvalidPasswordFormat"
-	UsernameTaken         = "UsernameTaken"
-	BadFileFormat         = "BadFileFormat"
+import (
+	"errors"
 )
 
-// Error implements the error interface for CustomError.
-func (e Error) Error() string {
-	return e.err
-}
-
-// NewCustomError creates a new instance of CustomError with the given message.
-func NewError(err string) error {
-	return Error{err: err}
-}
+var (
+	FileSizeTooBig        error = errors.New("size of the file exceeds limit")
+	DirectorySizeTooBig   error = errors.New("size of the directory exceeds limit")
+	NotMatchingIds        error = errors.New("ids not matching")
+	TypeDoesntExist       error = errors.New("the type doesn't exist")
+	InvalidPasswordFormat error = errors.New("invalid password format")
+	UsernameTaken         error = errors.New("username taken")
+	BadFileFormat         error = errors.New("bad file format")
+	AssetAlreadyExists    error = errors.New("asset already exists")
+)

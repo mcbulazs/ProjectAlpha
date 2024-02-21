@@ -24,7 +24,7 @@ func SaveFile(webId int, file []byte, Type string) (string, error) {
 	defer commitOrRollback(&err)
 
 	if len(file) > MaxFileSize {
-		return "", errors.NewError(errors.FileSizeTooBig)
+		return "", errors.FileSizeTooBig
 	}
 	ext, err := getExtension(file)
 	if err != nil {
@@ -38,7 +38,7 @@ func SaveFile(webId int, file []byte, Type string) (string, error) {
 			return "", err
 		}
 		if size > MaxStorageSize {
-			return "", errors.NewError(errors.DirectorySizeTooBig)
+			return "", errors.DirectorySizeTooBig
 		}
 	}
 	var accessUrl, path string

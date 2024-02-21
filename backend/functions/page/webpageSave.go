@@ -3,6 +3,7 @@ package page
 import (
 	db "ProjectAlpha/DB"
 	ChannelType "ProjectAlpha/enums/channelEnum"
+	"ProjectAlpha/enums/errors"
 	"ProjectAlpha/models"
 	"database/sql"
 	"fmt"
@@ -175,17 +176,27 @@ func SaveCalendar(webId int, calendar []models.CalendarModel) ([]models.Calendar
 	return calendarObject, nil
 }
 
-func SaveRules(webId int, rules string) (*models.RulesModel, error) {
-	var result models.RulesModel
-	query := "INSERT INTO rules (WebId, Rule) VALUES ($1,$2) RETURNING Id, Rule"
-	err := db.Context.QueryRow(query, webId, rules).Scan(
-		&result.Id,
-		&result.Rule,
-	)
-	if err != nil {
-		return nil, err
+func SaveRules(webId int, rules string) (string, error) {
+	//check if it already exists
+
+	var DbwebId int
+	row := db.Context.QueryRow("SELECT Id FROM rules WHERE WebId=$1", webId)
+
+	err := row.Scan(&DbwebId)
+	if err == nil {
+		return "", errors.AssetAlreadyExists
+	} else if err != sql.ErrNoRows {
+		return "", err
 	}
-	return &result, nil
+
+	var result string
+	query := "INSERT INTO rules (WebId, Rule) VALUES ($1,$2) RETURNING Rule"
+	err = db.Context.QueryRow(query, webId, rules).Scan(&result)
+
+	if err != nil {
+		return "", err
+	}
+	return result, nil
 }
 
 func getValueString(numberOfRows int, numberOfData int) string {

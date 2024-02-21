@@ -50,7 +50,6 @@ func ControllerInit(r *mux.Router) {
 	pageRouter.HandleFunc("/calendar", Controller_Page_Calendar_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/calendar/{Id:[0-9]+}", Controller_Page_Calendar_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
-	pageRouter.HandleFunc("/rules", Controller_Page_Rules_Save).Methods("POST", "OPTIONS")
-	pageRouter.HandleFunc("/rules/{Id:[0-9]+}", Controller_Page_Rules_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+	pageRouter.HandleFunc("/rules", Controller_Page_Rules).Methods("POST", "PATCH", "DELETE", "OPTIONS")
 
 }

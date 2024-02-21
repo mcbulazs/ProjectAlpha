@@ -36,10 +36,10 @@ func Controller_File_Save(w http.ResponseWriter, r *http.Request) {
 	}
 	file, err := file.SaveFile(web_id, img, ImageType.DEFAULT)
 	if err != nil {
-		if err.Error() == errors.FileSizeTooBig {
+		if err == errors.FileSizeTooBig {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
-		} else if err.Error() == errors.DirectorySizeTooBig {
+		} else if err == errors.DirectorySizeTooBig {
 			http.Error(w, err.Error(), http.StatusInsufficientStorage)
 			return
 		} else {
@@ -68,10 +68,10 @@ func Controller_Article_File_Save(w http.ResponseWriter, r *http.Request) {
 	}
 	file, err := file.SaveFile(web_id, img, ImageType.ARTICLE)
 	if err != nil {
-		if err.Error() == errors.FileSizeTooBig {
+		if err == errors.FileSizeTooBig {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
-		} else if err.Error() == errors.DirectorySizeTooBig {
+		} else if err == errors.DirectorySizeTooBig {
 			http.Error(w, err.Error(), http.StatusInsufficientStorage)
 			return
 		} else {

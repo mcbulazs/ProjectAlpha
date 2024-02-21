@@ -14,5 +14,5 @@ type WebPageModel struct {
 	Youtube     []ChannelModel     `json:"youtube"`     //[{"link": "twitch.tv/asd", "name": "cs.ttv"}]
 	Progress    []ProgressModel    `json:"progress"`    //[{"raidname":"asd","raids":[{"difficulty":"hc","max":9,"current":5}]}]
 	Calendar    []CalendarModel    `json:"calendar"`    //[{"date": "2000-10-31T01:30:00.000Z", "description": "Lorem ipsum dolor sit amet.", "name": "event", "type": "raid"}]
-	Rules       []RulesModel       `json:"rules"`       //[{"id":2,"rule":"asdasdsa"},{"id":3,"rule":"ascacs"}]
+	Rules       string             `json:"rules"`       //[{"id":2,"rule":"asdasdsa"},{"id":3,"rule":"ascacs"}]
 }

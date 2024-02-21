@@ -218,19 +218,12 @@ func getCalendar(webId int) ([]models.CalendarModel, error) {
 	return result, nil
 }
 
-func getRules(webId int) ([]models.RulesModel, error) {
-	var result []models.RulesModel = make([]models.RulesModel, 0)
-	rows, err := db.Context.Query("SELECT Id, Rule FROM rules WHERE WebId=$1", webId)
+func getRules(webId int) (string, error) {
+	var result string
+	rows := db.Context.QueryRow("SELECT Rule FROM rules WHERE WebId=$1", webId)
+	err := rows.Scan(&result)
 	if err != nil {
-		return nil, err
-	}
-	for rows.Next() {
-		var rule models.RulesModel
-		err = rows.Scan(&rule.Id, &rule.Rule)
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, rule)
+		return "", err
 	}
 	return result, nil
 }

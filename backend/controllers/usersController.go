@@ -81,7 +81,7 @@ func Controller_Register(w http.ResponseWriter, r *http.Request) {
 	}
 	userId, err := RegisterUser(&register)
 	if err != nil {
-		if err.Error() == errors.UsernameTaken {
+		if err == errors.UsernameTaken {
 			JSON.SendJSON(w, err.Error(), "error")
 			return
 		}
@@ -119,7 +119,7 @@ func checkRegisterValidity(register *models.LoginModel) error {
 		return err
 	}
 	if len(register.Password) < 8 {
-		return errors.NewError(errors.InvalidPasswordFormat)
+		return errors.InvalidPasswordFormat
 	}
 	return nil
 }
@@ -135,7 +135,7 @@ func RegisterUser(register *models.LoginModel) (int, error) {
 	var temp int
 	err = row.Scan(&temp)
 	if err == nil {
-		return 0, errors.NewError(errors.UsernameTaken)
+		return 0, errors.UsernameTaken
 	} else if err != sql.ErrNoRows {
 		return 0, err
 	}
