@@ -38,18 +38,15 @@ func ControllerInit(r *mux.Router) {
 
 	pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Modify).Methods("PATCH", "OPTIONS")
 
-	pageRouter.HandleFunc("/youtube", Controller_Page_Youtube_Save).Methods("POST", "OPTIONS")
-	pageRouter.HandleFunc("/youtube/{Id:[0-9]+}", Controller_Page_Youtube_Modify).Methods("PATCH", "DELETE", "OPTIONS")
-
-	pageRouter.HandleFunc("/twitch", Controller_Page_Twitch_Save).Methods("POST", "OPTIONS")
-	pageRouter.HandleFunc("/twitch/{Id:[0-9]+}", Controller_Page_Twitch_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+	pageRouter.HandleFunc("/channels", Controller_Page_Channel_Save).Methods("POST", "OPTIONS")
+	pageRouter.HandleFunc("/channels/{Id:[0-9]+}", Controller_Page_Channel_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
 	pageRouter.HandleFunc("/progress", Controller_Page_Progress_Save).Methods("POST", "OPTIONS")
-	pageRouter.HandleFunc("/progress/{Id:[0-9]+}", Controller_Page_Twitch_Modify).Methods("PATCH", "DELETE", "OPTIONS")
+	pageRouter.HandleFunc("/progress/{Id:[0-9]+}", Controller_Page_Progress_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
 	pageRouter.HandleFunc("/calendar", Controller_Page_Calendar_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/calendar/{Id:[0-9]+}", Controller_Page_Calendar_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
-	pageRouter.HandleFunc("/rules", Controller_Page_Rules).Methods("POST", "PATCH", "DELETE", "OPTIONS")
+	//pageRouter.HandleFunc("/rules", Controller_Page_Rules).Methods("POST", "PATCH", "DELETE", "OPTIONS")
 
 }

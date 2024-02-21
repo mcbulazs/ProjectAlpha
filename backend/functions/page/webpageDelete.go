@@ -21,22 +21,3 @@ func DeleteRecordByWebId(webId int, tableName string) error {
 	}
 	return nil
 }
-
-func DeleteProgress(id int) error {
-	_, err := db.Context.Exec("DELETE FROM raids WHERE ProgressId=$1", id)
-	if err != nil {
-		return err
-	}
-	_, err = db.Context.Exec("DELETE FROM progess WHERE Id=$1", id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-func DeleteRaid(id int) error {
-	_, err := db.Context.Exec("DELETE FROM raids WHERE id=$1", id)
-	if err != nil {
-		return err
-	}
-	return nil
-}

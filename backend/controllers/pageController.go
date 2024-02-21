@@ -3,8 +3,6 @@ package controllers
 import (
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/JSON"
-	ChannelType "ProjectAlpha/enums/channelEnum"
-	"ProjectAlpha/enums/errors"
 	"ProjectAlpha/functions"
 	"ProjectAlpha/functions/page"
 	"ProjectAlpha/models"
@@ -67,9 +65,10 @@ func Controller_Page(w http.ResponseWriter, r *http.Request) {
 		JSON.SendJSON(w, updatedWebpage)
 	}
 }
-func Controller_Page_Articles_Save(w http.ResponseWriter, r *http.Request) {
-	var article models.ArticleModel
-	err := json.NewDecoder(r.Body).Decode(&article)
+
+func saveModel[T any](w http.ResponseWriter, r *http.Request, saveFunc func(int, T) (*T, error)) {
+	var object T
+	err := json.NewDecoder(r.Body).Decode(&object)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -79,23 +78,21 @@ func Controller_Page_Articles_Save(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	articleObject, err := page.SaveArticle(web_id, article)
+	returnObject, err := saveFunc(web_id, object)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	JSON.SendJSON(w, articleObject)
-
+	JSON.SendJSON(w, returnObject)
 }
 
-func Controller_Page_Articles_Modify(w http.ResponseWriter, r *http.Request) {
-	//check if the webid and records webid are the same
+func modifyModel[T any](w http.ResponseWriter, r *http.Request, updateFunc func(T, int) (*T, error), tableName string) {
 	id, err := strconv.Atoi(mux.Vars(r)["Id"])
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	ok, err := validateId(r, id, "articles")
+	ok, err := validateId(r, id, tableName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -106,20 +103,19 @@ func Controller_Page_Articles_Modify(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodDelete:
-		err = page.DeleteRecord(id, "articles")
+		err = page.DeleteRecord(id, tableName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 	case http.MethodPatch:
-		var article models.ArticleModel
-		err := json.NewDecoder(r.Body).Decode(&article)
+		var object T
+		err := json.NewDecoder(r.Body).Decode(&object)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		article.Id = id
-		updatedArticle, err := page.UpdateArticle(article)
+		updatedArticle, err := updateFunc(object, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -128,124 +124,28 @@ func Controller_Page_Articles_Modify(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func Controller_Page_Articles_Save(w http.ResponseWriter, r *http.Request) {
+	saveModel[models.ArticleModel](w, r, page.SaveArticle)
+}
+
+func Controller_Page_Articles_Modify(w http.ResponseWriter, r *http.Request) {
+	modifyModel[models.ArticleModel](w, r, page.UpdateArticle, "articles")
+}
+
 func Controller_Page_Recruitment_Save(w http.ResponseWriter, r *http.Request) {
-	var recruitment []models.RecruitmentModel
-	err := json.NewDecoder(r.Body).Decode(&recruitment)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	web_id, err := functions.GetWebId(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	recruitObject, err := page.SaveRecruitment(web_id, recruitment)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	JSON.SendJSON(w, recruitObject)
+	saveModel[models.RecruitmentModel](w, r, page.SaveRecruitment)
 }
 
 func Controller_Page_Recruitment_Modify(w http.ResponseWriter, r *http.Request) {
-	//check if the webid and records webid are the same
-	id, err := strconv.Atoi(mux.Vars(r)["Id"])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	ok, err := validateId(r, id, "recruitment")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if !ok {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
-		return
-	}
-	switch r.Method {
-	case http.MethodDelete:
-		err = page.DeleteRecord(id, "recruitment")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	case http.MethodPatch:
-		var recruitment models.RecruitmentModel
-		err := json.NewDecoder(r.Body).Decode(&recruitment)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		recruitment.Id = id
-		updatedRecruitment, err := page.UpdateRecruitment(recruitment)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		JSON.SendJSON(w, updatedRecruitment)
-	}
+	modifyModel[models.RecruitmentModel](w, r, page.UpdateRecruitment, "recruitment")
 }
 
 func Controller_Page_Progress_Save(w http.ResponseWriter, r *http.Request) {
-	var progress []models.ProgressModel
-	err := json.NewDecoder(r.Body).Decode(&progress)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	web_id, err := functions.GetWebId(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	progressObject, err := page.SaveProgress(web_id, progress)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	JSON.SendJSON(w, progressObject)
+	saveModel[models.ProgressModel](w, r, page.SaveProgress)
 }
 
 func Controller_Page_Progress_Modify(w http.ResponseWriter, r *http.Request) {
-	//check if the webid and records webid are the same
-	id, err := strconv.Atoi(mux.Vars(r)["Id"])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	ok, err := validateId(r, id, "progress")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if !ok {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
-		return
-	}
-	switch r.Method {
-	case http.MethodDelete:
-		err = page.DeleteRecord(id, "progress")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	case http.MethodPatch:
-		var progress models.ProgressModel
-		err := json.NewDecoder(r.Body).Decode(&progress)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		progress.Id = id
-		updatedProgress, err := page.UpdateProgress(progress)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		JSON.SendJSON(w, updatedProgress)
-	}
+	modifyModel[models.ProgressModel](w, r, page.UpdateProgress, "progress")
 }
 
 func Controller_Page_Navbar_Modify(w http.ResponseWriter, r *http.Request) {
@@ -270,254 +170,20 @@ func Controller_Page_Navbar_Modify(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Controller_Page_Youtube_Save(w http.ResponseWriter, r *http.Request) {
-	var youtube []models.ChannelModel
-	err := json.NewDecoder(r.Body).Decode(&youtube)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	web_id, err := functions.GetWebId(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	channelObject, err := page.SaveChannels(web_id, youtube, ChannelType.YOUTUBE)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	JSON.SendJSON(w, channelObject)
+func Controller_Page_Channel_Save(w http.ResponseWriter, r *http.Request) {
+	saveModel[models.ChannelModel](w, r, page.SaveChannels)
 }
 
-func Controller_Page_Twitch_Save(w http.ResponseWriter, r *http.Request) {
-	var twitch []models.ChannelModel
-	err := json.NewDecoder(r.Body).Decode(&twitch)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	web_id, err := functions.GetWebId(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	channelObject, err := page.SaveChannels(web_id, twitch, ChannelType.TWITCH)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	JSON.SendJSON(w, channelObject)
-
-}
-
-func Controller_Page_Youtube_Modify(w http.ResponseWriter, r *http.Request) {
-	//check if the webid and records webid are the same
-	id, err := strconv.Atoi(mux.Vars(r)["Id"])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	ok, err := validateId(r, id, "channels")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if !ok {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
-		return
-	}
-	switch r.Method {
-	case http.MethodDelete:
-		err = page.DeleteRecord(id, "channels")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	case http.MethodPatch:
-		var channel models.ChannelModel
-		err := json.NewDecoder(r.Body).Decode(&channel)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		channel.Id = id
-		updatedYoutube, err := page.UpdateChannel(ChannelType.YOUTUBE, channel)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		JSON.SendJSON(w, updatedYoutube)
-	}
-}
-
-func Controller_Page_Twitch_Modify(w http.ResponseWriter, r *http.Request) {
-	//check if the webid and records webid are the same
-	id, err := strconv.Atoi(mux.Vars(r)["Id"])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	ok, err := validateId(r, id, "channels")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if !ok {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
-		return
-	}
-	switch r.Method {
-	case http.MethodDelete:
-		err = page.DeleteRecord(id, "channels")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	case http.MethodPatch:
-		var channel models.ChannelModel
-		err := json.NewDecoder(r.Body).Decode(&channel)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		channel.Id = id
-		updatedTwitch, err := page.UpdateChannel(ChannelType.TWITCH, channel)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		JSON.SendJSON(w, updatedTwitch)
-	}
+func Controller_Page_Channel_Modify(w http.ResponseWriter, r *http.Request) {
+	modifyModel[models.ChannelModel](w, r, page.UpdateChannel, "channels")
 }
 
 func Controller_Page_Calendar_Save(w http.ResponseWriter, r *http.Request) {
-	var calendar []models.CalendarModel
-	err := json.NewDecoder(r.Body).Decode(&calendar)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	web_id, err := functions.GetWebId(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	calendarObject, err := page.SaveCalendar(web_id, calendar)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	JSON.SendJSON(w, calendarObject)
+	saveModel[models.CalendarModel](w, r, page.SaveCalendar)
 }
 
 func Controller_Page_Calendar_Modify(w http.ResponseWriter, r *http.Request) {
-	//check if the webid and records webid are the same
-	id, err := strconv.Atoi(mux.Vars(r)["Id"])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	ok, err := validateId(r, id, "calendar")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if !ok {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
-		return
-	}
-	switch r.Method {
-	case http.MethodDelete:
-		err = page.DeleteRecord(id, "calendar")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	case http.MethodPatch:
-		var calendar models.CalendarModel
-		err := json.NewDecoder(r.Body).Decode(&calendar)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		calendar.Id = id
-		updatedCalendar, err := page.UpdateCalendar(calendar)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		JSON.SendJSON(w, updatedCalendar)
-	}
-}
-
-func Controller_Page_Rules_Save(w http.ResponseWriter, r *http.Request) {
-	var rules string
-	err := json.NewDecoder(r.Body).Decode(&rules)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	web_id, err := functions.GetWebId(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	rulesObject, err := page.SaveRules(web_id, rules)
-	if err == errors.AssetAlreadyExists {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	} else if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	JSON.SendJSON(w, rulesObject)
-}
-
-func Controller_Page_Rules(w http.ResponseWriter, r *http.Request) {
-	web_id, err := functions.GetWebId(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	switch r.Method {
-	case http.MethodPost:
-		var rules string
-		err := json.NewDecoder(r.Body).Decode(&rules)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		rulesObject, err := page.SaveRules(web_id, rules)
-		if err == errors.AssetAlreadyExists {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		} else if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		JSON.SendJSON(w, rulesObject)
-	case http.MethodDelete:
-		err = page.DeleteRecordByWebId(web_id, "rules")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	case http.MethodPatch:
-		var rule string
-		err := json.NewDecoder(r.Body).Decode(&rule)
-		fmt.Println(rule)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		updatedRule, err := page.UpdateRule(web_id, rule)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		JSON.SendJSON(w, updatedRule)
-	}
+	modifyModel[models.CalendarModel](w, r, page.UpdateCalendar, "calendar")
 }
 
 func validateId(r *http.Request, Id int, tableName string) (bool, error) {

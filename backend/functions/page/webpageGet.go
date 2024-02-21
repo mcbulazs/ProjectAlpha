@@ -2,8 +2,8 @@ package page
 
 import (
 	db "ProjectAlpha/DB"
-	ChannelType "ProjectAlpha/enums/channelEnum"
 	"ProjectAlpha/models"
+	"encoding/json"
 	"fmt"
 
 	"github.com/lib/pq"
@@ -22,7 +22,7 @@ func GetWebContent(webId int) (*models.WebPageModel, error) {
 	fmt.Println(webId)
 	result := models.WebPageModel{}
 	//Title and Preset Id
-	row := db.Context.QueryRow("SELECT Name, Template_Id, Preset_Id, Logo_AccessUrl, Banner_AccessUrl, Custom_Css FROM webpages WHERE id=$1", webId)
+	row := db.Context.QueryRow("SELECT Name, Template_Id, Preset_Id, Logo_AccessUrl, Banner_AccessUrl, Custom_Css, Rules FROM webpages WHERE id=$1", webId)
 	err := row.Scan(
 		&result.Title,
 		&result.TemplateId,
@@ -30,6 +30,7 @@ func GetWebContent(webId int) (*models.WebPageModel, error) {
 		&result.Logo,
 		&result.Banner,
 		&result.CustomCss,
+		&result.Rules,
 	)
 
 	if err != nil {
@@ -58,12 +59,19 @@ func GetWebContent(webId int) (*models.WebPageModel, error) {
 	result.Navbar = navbar
 
 	//twitch / youtube
-	youtube, twitch, err := getChannels(webId)
+	/*youtube, twitch, err := getChannels(webId)
 	if err != nil {
 		fmt.Println("Channels get: " + err.Error())
 	}
 	result.Youtube = youtube
-	result.Twitch = twitch
+	result.Twitch = twitch*/
+
+	//channels
+	channels, err := getChannels(webId)
+	if err != nil {
+		fmt.Println("Progress get: " + err.Error())
+	}
+	result.Channels = channels
 
 	//progress
 	progess, err := getProgress(webId)
@@ -78,13 +86,6 @@ func GetWebContent(webId int) (*models.WebPageModel, error) {
 		fmt.Println("Calendar get: " + err.Error())
 	}
 	result.Calendar = calendar
-
-	//rules
-	rules, err := getRules(webId)
-	if err != nil {
-		fmt.Println("Rules get: " + err.Error())
-	}
-	result.Rules = rules
 	return &result, nil
 }
 
@@ -124,6 +125,7 @@ func getRecruitment(webId int) ([]models.RecruitmentModel, error) {
 		r.Subclasses = []string(subclasses)
 		result = append(result, r)
 	}
+	fmt.Println(result)
 	return result, nil
 }
 
@@ -144,33 +146,26 @@ func getNavbar(webId int) ([]models.NavItem, error) {
 	}
 	return result, nil
 }
-func getChannels(webId int) ([]models.ChannelModel, []models.ChannelModel, error) { //return: youtube, twitch, error
-	var youtube []models.ChannelModel = make([]models.ChannelModel, 0)
-	var twitch []models.ChannelModel = make([]models.ChannelModel, 0)
-	rows, err := db.Context.Query("SELECT Id, Type, Name, Link FROM channels WHERE WebId=$1", webId)
+func getChannels(webId int) ([]models.ChannelModel, error) { //return: youtube, twitch, error
+	var channels []models.ChannelModel = make([]models.ChannelModel, 0)
+	rows, err := db.Context.Query("SELECT Id, Site, Name, Link FROM channels WHERE WebId=$1 ORDER BY Site", webId)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var ctype string
 		var channel models.ChannelModel
-		err = rows.Scan(&channel.Id, &ctype, &channel.Name, &channel.Link)
+		err = rows.Scan(&channel.Id, &channel.Site, &channel.Name, &channel.Link)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
-		if ctype == ChannelType.YOUTUBE {
-			youtube = append(youtube, channel)
-		} else if ctype == ChannelType.TWITCH {
-			twitch = append(twitch, channel)
-		}
-
+		channels = append(channels, channel)
 	}
-	return youtube, twitch, nil
+	return channels, nil
 }
 func getProgress(webId int) ([]models.ProgressModel, error) {
 	var result []models.ProgressModel = make([]models.ProgressModel, 0)
-	rows, err := db.Context.Query("SELECT Id, Name, Background_AccessUrl FROM progress WHERE WebId=$1", webId)
+	rows, err := db.Context.Query("SELECT Id, Name, Background_AccessUrl, Raids FROM progress WHERE WebId=$1", webId)
 	if err != nil {
 		return nil, err
 	}
@@ -178,23 +173,14 @@ func getProgress(webId int) ([]models.ProgressModel, error) {
 
 	for rows.Next() {
 		var progress models.ProgressModel
-		progress.Raids = make([]models.RaidModel, 0)
-		err = rows.Scan(&progress.Id, &progress.Name, &progress.BackgroundImg)
+		var raidsJSONB []byte
+		err = rows.Scan(&progress.Id, &progress.Name, &progress.BackgroundImg, &raidsJSONB)
 		if err != nil {
 			return nil, err
 		}
-		raids, err := db.Context.Query("SELECT Id, Difficulty, Max, Current FROM raids WHERE Progress_Id=$1", progress.Id)
+		err = json.Unmarshal(raidsJSONB, &progress.Raids)
 		if err != nil {
 			return nil, err
-		}
-		defer raids.Close()
-		for raids.Next() {
-			var raid models.RaidModel
-			err = raids.Scan(&raid.Id, &raid.Difficulty, &raid.Max, &raid.Current)
-			if err != nil {
-				return nil, err
-			}
-			progress.Raids = append(progress.Raids, raid)
 		}
 		result = append(result, progress)
 	}
@@ -214,16 +200,6 @@ func getCalendar(webId int) ([]models.CalendarModel, error) {
 			return nil, err
 		}
 		result = append(result, calendar)
-	}
-	return result, nil
-}
-
-func getRules(webId int) (string, error) {
-	var result string
-	rows := db.Context.QueryRow("SELECT Rule FROM rules WHERE WebId=$1", webId)
-	err := rows.Scan(&result)
-	if err != nil {
-		return "", err
 	}
 	return result, nil
 }

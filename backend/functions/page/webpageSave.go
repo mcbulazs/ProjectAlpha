@@ -2,12 +2,10 @@ package page
 
 import (
 	db "ProjectAlpha/DB"
-	ChannelType "ProjectAlpha/enums/channelEnum"
 	"ProjectAlpha/enums/errors"
 	"ProjectAlpha/models"
 	"database/sql"
-	"fmt"
-	"strconv"
+	"encoding/json"
 	"time"
 
 	"github.com/lib/pq"
@@ -42,141 +40,112 @@ func CreateWebpage(userId int) (int, error) {
 }
 
 func SaveArticle(webId int, article models.ArticleModel) (*models.ArticleModel, error) { // single article
-	var id int
+	var result models.ArticleModel
 	article.Date = time.Now()
-	err := db.Context.QueryRow("INSERT INTO articles (WebId,Title,Date,Content) values ($1,$2,$3,$4) RETURNING Id", webId, article.Title, article.Date, article.Content).Scan(&id)
+	err := db.Context.QueryRow("INSERT INTO articles (WebId,Title,Date,Content) values ($1,$2,$3,$4) RETURNING Id, Title, Date, Content",
+		webId,
+		article.Title,
+		article.Date,
+		article.Content,
+	).Scan(
+		&result.Id,
+		&result.Title,
+		&result.Date,
+		&result.Content,
+	)
 	if err != nil {
 		return nil, err
 	}
-	article.Id = id
-	return &article, nil
+	return &result, nil
 }
 
-func SaveRecruitment(webId int, recruits []models.RecruitmentModel) ([]models.RecruitmentModel, error) {
-	if len(recruits) == 0 {
-		return nil, nil
-	}
-
-	numberOfRows := len(recruits)
-	var values string
-	for i := 0; i < numberOfRows; i++ {
-		values += fmt.Sprintf("($%d,$%d,ARRAY[$%d]),", (i*3)+1, (i*3)+2, (i*3)+3)
-	}
-	values = values[:len(values)-2]
-	fmt.Println(values)
-
-	params := make([]interface{}, 0, len(recruits)*3)
-
-	for _, item := range recruits {
-		params = append(params, webId, item.Class, pq.Array(item.Subclasses))
-	}
-
-	query := "INSERT INTO recruitment (WebId, Class, Subclass) VALUES " + values + ""
-	_, err := db.Context.Exec(query, params...)
+func SaveRecruitment(webId int, recruit models.RecruitmentModel) (*models.RecruitmentModel, error) {
+	var result models.RecruitmentModel
+	var pqArray pq.StringArray
+	err := db.Context.QueryRow("INSERT INTO recruitment (WebId, Class, Subclass) VALUES ($1,$2,$3) RETURNING Id, Class, Subclass",
+		webId,
+		recruit.Class,
+		pq.Array(recruit.Subclasses),
+	).Scan(
+		&result.Id,
+		&result.Class,
+		&pqArray,
+	)
 	if err != nil {
 		return nil, err
 	}
-	recruitsObject, err := getRecruitment(webId)
-	if err != nil {
-		return nil, err
-	}
-	return recruitsObject, nil
+	result.Subclasses = []string(pqArray)
+	return &result, nil
 }
 
-func SaveChannels(webId int, channel []models.ChannelModel, site string) ([]models.ChannelModel, error) {
-	if len(channel) == 0 {
-		return nil, nil
-	}
-	numberOfData := 4
-	values := getValueString(len(channel), numberOfData)
-	params := make([]interface{}, 0, len(channel)*numberOfData)
-
-	for _, item := range channel {
-		params = append(params, webId, site, item.Name, item.Link)
-	}
-
-	query := "INSERT INTO channels (WebId, Type, Name, Link) VALUES " + values
-	_, err := db.Context.Exec(query, params...)
+func SaveChannels(webId int, channel models.ChannelModel) (*models.ChannelModel, error) {
+	var result models.ChannelModel
+	err := db.Context.QueryRow("INSERT INTO channels (WebId, Site, Name, Link) VALUES ($1,$2,$3,$4) RETURNING Id, Site, Name, Link",
+		webId,
+		channel.Site,
+		channel.Name,
+		channel.Link,
+	).Scan(
+		&result.Id,
+		&result.Site,
+		&result.Name,
+		&result.Link,
+	)
 	if err != nil {
 		return nil, err
 	}
-	youtubeObject, twitchObject, err := getChannels(webId)
-	if err != nil {
-		return nil, err
-	}
-	if site == ChannelType.YOUTUBE {
-		return youtubeObject, nil
-	} else {
-		return twitchObject, nil
-	}
+	return &result, nil
+
 }
 
-func SaveProgress(webId int, progess []models.ProgressModel) ([]models.ProgressModel, error) {
-	if len(progess) == 0 {
-		return nil, nil
-	}
-
-	//transaciot because we insert to multiple tables
-	tx, commitOrRollback, err := db.BeginTransaction()
+func SaveProgress(webId int, progess models.ProgressModel) (*models.ProgressModel, error) {
+	var result models.ProgressModel
+	var resultJson []byte
+	raidsJSON, err := json.Marshal(progess.Raids)
 	if err != nil {
 		return nil, err
 	}
-	defer commitOrRollback(&err)
-
-	for _, item := range progess {
-
-		//params = append(params, webId, item.Name, item.Path, item.Order)
-		var progressId int
-		err = tx.QueryRow("INSERT INTO progress (WebId,Name,Background_AccessUrl) values ($1,$2) RETURNING  Id", webId, item.Name, item.BackgroundImg).Scan(&progressId)
-		if err != nil {
-			return nil, err
-		}
-		values := getValueString(len(item.Raids), 3)
-
-		params := make([]interface{}, 0, len(item.Raids)*3)
-		for _, item := range item.Raids {
-			params = append(params, progressId, item.Difficulty, item.Max, item.Current)
-		}
-
-		query := "INSERT INTO raids (ProgressId,Difficulty,Maz,Current) VALUES " + values
-		//err := tx.QueryRow("INSERT INTO raids (ProgressId,Difficulty,Maz,Current) values ($1,$2) RETURNING  Id", webId, item.Name).Scan(&progressId)
-		_, err = tx.Exec(query, params...)
-		if err != nil {
-			return nil, err
-		}
-	}
-	progressObject, err := getProgress(webId)
+	err = db.Context.QueryRow("INSERT INTO progress (WebId, Name, Background_AccessUrl, Raids) VALUES ($1,$2,$3,$4) RETURNING Id, Name, Background_AccessUrl, Raids",
+		webId,
+		progess.Name,
+		progess.BackgroundImg,
+		raidsJSON,
+	).Scan(
+		&result.Id,
+		&result.Name,
+		&result.BackgroundImg,
+		&resultJson,
+	)
 	if err != nil {
 		return nil, err
 	}
-	return progressObject, nil
+	err = json.Unmarshal(resultJson, &result.Raids)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
 }
 
-func SaveCalendar(webId int, calendar []models.CalendarModel) ([]models.CalendarModel, error) {
-	if len(calendar) == 0 {
-		return nil, nil
-	}
-	numberOfData := 4
-	values := getValueString(len(calendar), numberOfData)
-	params := make([]interface{}, 0, len(calendar)*numberOfData)
-
-	for _, item := range calendar {
-		params = append(params, webId, item.Name, item.Date, item.Type)
-	}
-
-	query := "INSERT INTO calendar (WebId, Name, Date, Type) VALUES " + values
-	_, err := db.Context.Exec(query, params...)
+func SaveCalendar(webId int, calendar models.CalendarModel) (*models.CalendarModel, error) {
+	var result models.CalendarModel
+	err := db.Context.QueryRow("INSERT INTO calendar (WebId, Name, Date, Type) VALUES ($1,$2,$3,$4) RETURNING Id, Name, Date, Type",
+		webId,
+		calendar.Name,
+		calendar.Date,
+		calendar.Type,
+	).Scan(
+		&result.Id,
+		&result.Name,
+		&result.Date,
+		&result.Type,
+	)
 	if err != nil {
 		return nil, err
 	}
-	calendarObject, err := getCalendar(webId)
-	if err != nil {
-		return nil, err
-	}
-	return calendarObject, nil
+	return &result, nil
 }
 
-func SaveRules(webId int, rules string) (string, error) {
+func SaveRules(webId int, rules string) (*string, error) {
 	//check if it already exists
 
 	var DbwebId int
@@ -184,9 +153,9 @@ func SaveRules(webId int, rules string) (string, error) {
 
 	err := row.Scan(&DbwebId)
 	if err == nil {
-		return "", errors.AssetAlreadyExists
+		return nil, errors.AssetAlreadyExists
 	} else if err != sql.ErrNoRows {
-		return "", err
+		return nil, err
 	}
 
 	var result string
@@ -194,23 +163,7 @@ func SaveRules(webId int, rules string) (string, error) {
 	err = db.Context.QueryRow(query, webId, rules).Scan(&result)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return result, nil
-}
-
-func getValueString(numberOfRows int, numberOfData int) string {
-	//($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10)
-	var result string
-	for i := 0; i < numberOfRows; i++ {
-		result += "("
-		for j := 0; j < numberOfData; j++ {
-			result += fmt.Sprint("$" + strconv.Itoa((i*numberOfData)+j+1) + ", ")
-		}
-		result = result[:len(result)-2]
-		result += "), "
-	}
-	result = result[:len(result)-2]
-	fmt.Println(result)
-	return result
+	return &result, nil
 }
