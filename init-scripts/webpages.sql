@@ -84,7 +84,8 @@ create table channels (
     WebId int NOT NULL,
     Site varchar(255) NOT NULL,
     Name varchar(255) NOT NULL,
-    Link varchar(255) NOT NULL
+    Link varchar(255) NOT NULL,
+    Ranking int NOT NULL DEFAULT 0
 );
 CREATE INDEX idx_channels_webId ON channels (webId);
 

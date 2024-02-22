@@ -148,7 +148,7 @@ func getNavbar(webId int) ([]models.NavItem, error) {
 }
 func getChannels(webId int) ([]models.ChannelModel, error) { //return: youtube, twitch, error
 	var channels []models.ChannelModel = make([]models.ChannelModel, 0)
-	rows, err := db.Context.Query("SELECT Id, Site, Name, Link FROM channels WHERE WebId=$1 ORDER BY Site", webId)
+	rows, err := db.Context.Query("SELECT Id, Site, Name, Link FROM channels WHERE WebId=$1 ORDER BY Site, Ranking", webId)
 	if err != nil {
 		return nil, err
 	}

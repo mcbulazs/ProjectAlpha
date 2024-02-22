@@ -44,7 +44,7 @@ func ControllerInit(r *mux.Router) {
 
 	pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Modify).Methods("PATCH", "OPTIONS")
 
-	pageRouter.HandleFunc("/channels", Controller_Page_Channel_Save).Methods("POST", "OPTIONS")
+	pageRouter.HandleFunc("/channels", Controller_Page_Channel_Save).Methods("POST", "PATCH", "OPTIONS")
 	pageRouter.HandleFunc("/channels/{Id:[0-9]+}", Controller_Page_Channel_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
 	pageRouter.HandleFunc("/progress", Controller_Page_Progress_Save).Methods("POST", "OPTIONS")

@@ -192,6 +192,25 @@ func Controller_Page_Navbar_Modify(w http.ResponseWriter, r *http.Request) {
 }
 
 func Controller_Page_Channel_Save(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPatch {
+		var list []int
+		err := json.NewDecoder(r.Body).Decode(&list)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		web_id, err := functions.GetWebId(r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		err = page.UpdateChannelOrdering(list, web_id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		return
+	}
 	saveModel[models.ChannelModel](w, r, page.SaveChannels)
 }
 

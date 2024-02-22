@@ -110,9 +110,8 @@ func UpdateNavbar(model []models.NavItem, webId int) ([]models.NavItem, error) {
 	var updatedNavbar []models.NavItem
 	for i, item := range model {
 		var updatedNavitem models.NavItem
-		err := tx.QueryRow("UPDATE navbar SET Name=$1, Path=$2, Ranking=$3, Enabled=$4 WHERE Id=$5 AND WebID=$6 RETURNING Id, Name, Path, Enabled",
+		err := tx.QueryRow("UPDATE navbar SET Name=$1, Ranking=$3, Enabled=$4 WHERE Id=$5 AND WebID=$6 RETURNING Id, Name, Path, Enabled",
 			item.Name,
-			item.Path,
 			i,
 			item.IsEnabled,
 			item.Id,
@@ -128,7 +127,6 @@ func UpdateNavbar(model []models.NavItem, webId int) ([]models.NavItem, error) {
 		}
 		updatedNavbar = append(updatedNavbar, updatedNavitem)
 	}
-	fmt.Println("no error in UpdateNavbar")
 	return updatedNavbar, nil
 }
 
@@ -150,7 +148,27 @@ func UpdateChannel(model models.ChannelModel, Id int) (*models.ChannelModel, err
 	}
 	return &updateChannel, nil
 }
+func UpdateChannelOrdering(list []int, webId int) error {
+	//Begin sql transaction
+	tx, commitOrRollback, err := db.BeginTransaction()
+	if err != nil {
+		return err
+	}
+	defer commitOrRollback(&err)
 
+	//updating the rows as needed
+	for i, item := range list {
+		_, err := tx.Exec("UPDATE channels SET Ranking=$1 WHERE Id=$2 AND WebID=$3",
+			i,
+			item,
+			webId,
+		)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 func UpdateProgress(model models.ProgressModel, Id int) (*models.ProgressModel, error) {
 	var updatedProgress models.ProgressModel
 
