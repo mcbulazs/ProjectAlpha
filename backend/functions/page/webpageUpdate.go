@@ -9,32 +9,6 @@ import (
 	"github.com/lib/pq"
 )
 
-func UpdateWebpage(model models.WebpageBasicsModel) (*models.WebpageBasicsModel, error) {
-	var updatedWebpage models.WebpageBasicsModel
-	err := db.Context.QueryRow(
-		"UPDATE webpages SET Name=$1, Template_Id=$2, Preset_Id=$3 , Logo_AccessUrl=$4, Banner_AccessUrl=$5, Custom_Css=$7 WHERE Id=$6 RETURNING Id, Name, Template_Id, Preset_Id, Logo_AccessUrl, Banner_AccessUrl, Custom_Css",
-		model.Title,
-		model.TemplateId,
-		model.PresetId,
-		model.Logo,
-		model.Banner,
-		model.Id,
-		model.CustomCss,
-	).Scan(
-		&updatedWebpage.Id,
-		&updatedWebpage.Title,
-		&updatedWebpage.TemplateId,
-		&updatedWebpage.PresetId,
-		&updatedWebpage.Logo,
-		&updatedWebpage.Banner,
-		&updatedWebpage.CustomCss,
-	)
-	if err != nil {
-		return nil, err
-	}
-	return &updatedWebpage, nil
-}
-
 func UpdateWebpageProp(columnName string, value string, webId int) (*string, error) {
 	var result string
 	query := fmt.Sprintf("UPDATE webpages SET %s=$1 WHERE Id=$2 RETURNING %s", columnName, columnName)
@@ -43,6 +17,42 @@ func UpdateWebpageProp(columnName string, value string, webId int) (*string, err
 		webId,
 	).Scan(
 		&result,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+func UpdateWebpageGeneral(webId int, model models.WebpageGeneralModel) (*models.WebpageGeneralModel, error) {
+	var result models.WebpageGeneralModel
+	//query := fmt.Sprintf(, columnName, columnName)
+	err := db.Context.QueryRow("UPDATE webpages SET Name=$1, Logo_AccessUrl=$2, Banner_AccessUrl=$3 WHERE Id=$4 RETURNING Name, Logo_AccessUrl, Banner_AccessUrl",
+		model.Title,
+		model.Logo,
+		model.Banner,
+		webId,
+	).Scan(
+		&result.Title,
+		&result.Logo,
+		&result.Banner,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+func UpdateWebpageTemplate(webId int, model models.TemplateModel) (*models.TemplateModel, error) {
+	var result models.TemplateModel
+	//query := fmt.Sprintf(, columnName, columnName)
+	err := db.Context.QueryRow("UPDATE webpages SET Template_Id=$1, Preset_Id=$2 WHERE Id=$3 RETURNING Template_Id, Preset_Id",
+		model.TemplateId,
+		model.PresetId,
+		webId,
+	).Scan(
+		&result.TemplateId,
+		&result.PresetId,
 	)
 	if err != nil {
 		return nil, err

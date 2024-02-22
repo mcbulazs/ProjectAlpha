@@ -24,15 +24,17 @@ func ControllerInit(r *mux.Router) {
 	pageRouter := r.PathPrefix("/page/{webId:[0-9]+}").Subrouter()
 	pageRouter.Use(middleware.CheckWebpageMiddleware)
 	pageRouter.Use(middleware.SessionMiddleware)
-	pageRouter.HandleFunc("", Controller_Page).Methods("GET", "PATCH", "OPTIONS")
+	pageRouter.HandleFunc("", Controller_Page).Methods("GET", "OPTIONS")
 
 	pageRouter.HandleFunc("/files", Controller_File_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/files/articles", Controller_Article_File_Save).Methods("POST", "OPTIONS")
 	pageRouter.PathPrefix("/files").HandlerFunc(Controller_File_Serve).Methods("GET", "OPTIONS", "DELETE")
 
 	//baseprops
-	pageRouter.HandleFunc("/customcss", Controller_Page_CustomCss).Methods("Patch", "OPTIONS")
+	pageRouter.HandleFunc("/template", Controller_Page_Template).Methods("Patch", "OPTIONS")
+	pageRouter.HandleFunc("/general", Controller_Page_General).Methods("Patch", "OPTIONS")
 	pageRouter.HandleFunc("/rules", Controller_Page_Rules).Methods("Patch", "OPTIONS")
+	pageRouter.HandleFunc("/customcss", Controller_Page_CustomCss).Methods("Patch", "OPTIONS")
 
 	pageRouter.HandleFunc("/articles", Controller_Page_Articles_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/articles/{Id:[0-9]+}", Controller_Page_Articles_Modify).Methods("PATCH", "DELETE", "OPTIONS")

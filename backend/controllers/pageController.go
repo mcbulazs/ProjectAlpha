@@ -36,34 +36,19 @@ func Controller_Outer_Page_Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func Controller_Page(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		webId, err := functions.GetWebId(r)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		fmt.Println(webId)
-		result, err := page.GetWebContent(webId)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		JSON.SendJSON(w, result)
-	case http.MethodPatch:
-		var webpageBasics models.WebpageBasicsModel
-		err := json.NewDecoder(r.Body).Decode(&webpageBasics)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		updatedWebpage, err := page.UpdateWebpage(webpageBasics)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		JSON.SendJSON(w, updatedWebpage)
+	webId, err := functions.GetWebId(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	fmt.Println(webId)
+	result, err := page.GetWebContent(webId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON.SendJSON(w, result)
+
 }
 
 func saveModel[T any](w http.ResponseWriter, r *http.Request, saveFunc func(int, T) (*T, error)) {
@@ -150,6 +135,14 @@ func Controller_Page_CustomCss(w http.ResponseWriter, r *http.Request) {
 
 func Controller_Page_Rules(w http.ResponseWriter, r *http.Request) {
 	modifyBaseModel(w, r, "Rules")
+}
+
+func Controller_Page_General(w http.ResponseWriter, r *http.Request) {
+	saveModel[models.WebpageGeneralModel](w, r, page.UpdateWebpageGeneral)
+}
+
+func Controller_Page_Template(w http.ResponseWriter, r *http.Request) {
+	saveModel[models.TemplateModel](w, r, page.UpdateWebpageTemplate)
 }
 
 func Controller_Page_Articles_Save(w http.ResponseWriter, r *http.Request) {
