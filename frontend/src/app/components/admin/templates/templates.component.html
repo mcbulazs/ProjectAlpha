@@ -6,7 +6,7 @@
     <button mat-button class="template {{i === selectedPreset ? 'selected' : ''}}"
         *ngFor="let preset of presets; index as i" (click)="selectPreset(i)">
         <div class="template-inner">
-            <img [src]="preset.image" class="template-image">
+            <img [src]="preset.image" class="template-image" draggable="false">
         </div>
     </button>
 </div>
@@ -15,7 +15,7 @@
     <button mat-button class="template {{i === data.templateid ? 'selected' : ''}}"
         *ngFor="let template of templates; index as i" (click)="selectTemplate(i)">
         <div class="template-inner">
-            <img [src]="template.image" style="background-color: black;" class="template-image">
+            <img [src]="template.image" style="background-color: black;" class="template-image" draggable="false">
             <span>{{template.name}}</span>
         </div>
     </button>

@@ -2,6 +2,7 @@ import { MatSnackBarConfig } from '@angular/material/snack-bar';
 import { PageData } from './interfaces/page.data.interface';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core';
 import { environment } from '../environments/environment.development';
+import { ChannelType } from './interfaces/channel.interface';
 
 export const ARTICLE_CONTENT_MAX_LENGTH = 500;
 export const ARTICLE_TITLE_MAX_LENGTH = 150;
@@ -27,13 +28,49 @@ export const CKEDITOR_CONFIG: EditorConfig = {
   },
   toolbar: {
     shouldNotGroupWhenFull: true,
+    items: [
+      'heading',
+      '|',
+      'bold',
+      'italic',
+      'underline',
+      '|',
+      'link',
+      'bulletedList',
+      'numberedList',
+      'alignment',
+      'horizontalLine',
+      'fontColor',
+      'fontFamily',
+      'imageUpload',
+      'mediaEmbed',
+      'undo',
+      'redo'
+    ],
   },
 };
 
 export const STATIC_IMAGES_PATH = '/assets/images';
 
+export const CHANNEL_TYPES: ChannelType[] = [
+  {
+    id: "0",
+    name: 'Twitch',
+    logo: `https://static-00.iconduck.com/assets.00/twitch-icon-489x512-jqw4vk2h.png`,
+    color: 'plum',
+  },
+  {
+    id: "1",
+    name: 'YouTube',
+    logo: `${STATIC_IMAGES_PATH}/youtube.png`,
+    color: '#ff3a3a',
+  },
+];
+
 export const PLACEHOLDER_DATA: PageData = {
-  backgroundColor: '#333333',
+  customcss: '',
+  rules: '',
+  presetid: 0,
   title: 'Site name',
 
   logo: 'https://via.placeholder.com/100x100',
@@ -122,28 +159,30 @@ export const PLACEHOLDER_DATA: PageData = {
       subclasses: ['unholy', 'blood'],
     },
   ],
-  twitch: [
+  channels: [
     {
       id: -1,
       name: 'Example1',
       link: '',
+      site: '0',
     },
     {
       id: -1,
       name: 'Example2',
       link: '',
+      site: '0',
     },
-  ],
-  youtube: [
     {
       id: -1,
       name: 'Example1',
       link: '',
+      site: '1',
     },
     {
       id: -1,
       name: 'Example2',
       link: '',
+      site: '1',
     },
   ],
 };

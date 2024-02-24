@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ChannelType, PageDataService } from '../../../services/page.data.service';
+import { PageDataService } from '../../../services/page.data.service';
 import { PageData } from '../../../interfaces/page.data.interface';
 import { CommonModule } from '@angular/common';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -12,11 +12,12 @@ import { CreateChannelDialogComponent } from './create-channel-dialog/create-cha
 import { DeleteModalComponent } from '../../delete-modal/delete-modal.component';
 import { MAT_SNACKBAR_CONFIG } from '../../../constants';
 import { EditChannelDialogComponent } from './edit-channel-dialog/edit-channel-dialog.component';
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-media',
   standalone: true,
-  imports: [CommonModule, MatButton, MatList, MatListItem, MatIcon, MatListItemTitle, MatListItemIcon, MatListItemLine, MatListItemMeta, MatIconButton],
+  imports: [CommonModule, MatButton, MatList, MatListItem, MatIcon, MatListItemTitle, MatListItemIcon, MatListItemLine, MatListItemMeta, MatIconButton, CdkDropList, CdkDrag],
   templateUrl: './media.component.html',
   styleUrl: './media.component.scss'
 })
@@ -25,32 +26,32 @@ export class MediaComponent implements OnInit {
   constructor(private dialog: MatDialog, private pds: PageDataService, private snackBar: MatSnackBar) { }
 
   data!: PageData;
-  channelType = ChannelType;
+
+  channels: Channel[] = [];
+  changed: boolean = false;
 
   ngOnInit(): void {
     this.data = this.pds.data;
+    for (const channel of this.data.channels) {
+      this.channels.push({ ...channel });
+    }
   }
 
-  createChannel(type: ChannelType) {
-    this.dialog.open(CreateChannelDialogComponent, {
-      data: type,
-    });
+  createChannel() {
+    this.dialog.open(CreateChannelDialogComponent);
   }
 
-  updateChannel(channel: Channel, type: ChannelType, editBtn: MatIconButton) {
+  updateChannel(channel: Channel, editBtn: MatIconButton) {
     editBtn.disabled = true;
     const dialogRef = this.dialog.open(EditChannelDialogComponent, {
-      data: {
-        channel: channel,
-        type: type,
-      },
+      data: channel,
     });
     dialogRef.afterClosed().subscribe(() => {
       editBtn.disabled = false;
     });
   }
 
-  deleteChannel(id: number, type: ChannelType, deleteBtn: MatIconButton) {
+  deleteChannel(id: number, deleteBtn: MatIconButton) {
     deleteBtn.disabled = true;
     const dialogRef = this.dialog.open(DeleteModalComponent, {
       width: '200px',
@@ -58,10 +59,25 @@ export class MediaComponent implements OnInit {
     dialogRef.afterClosed().subscribe(deleted => {
       deleteBtn.disabled = false;
       if (deleted) {
-        this.pds.deleteChannel(id, type).subscribe(success => {
+        this.pds.deleteChannel(id).subscribe(success => {
           this.snackBar.open(`Channel ${success ? 'deleted' : 'deletion failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
         })
       }
     });
+  }
+
+  drop(event: CdkDragDrop<Channel[]>) {
+    moveItemInArray(this.data.channels, event.previousIndex, event.currentIndex);
+    this.checkOrder();
+  }
+
+  checkOrder() {
+    this.changed = false;
+  }
+
+  saveOrder() {
+    this.pds.patchChannelOrder().subscribe(success => {
+      this.snackBar.open(`Channels ${success ? 'reordered' : 'reorder failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+    })
   }
 }

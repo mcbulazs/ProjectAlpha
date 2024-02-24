@@ -1,4 +1,4 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GalleryDialogComponent } from '../admin/uploads/gallery-dialog/gallery-dialog.component';
 import { PageDataService } from '../../services/page.data.service';
@@ -20,10 +20,8 @@ export class FileDragAndDropComponent {
 
   constructor(private pds: PageDataService, private dialog: MatDialog, private snackBar: MatSnackBar) { }
 
-  @Input() initState: any;
-  @Input() data: any;
-  @Input() key: any;
-  @Input() changeFn: any;
+  @Input() displayedImage: string = '';
+  @Output() filePath = new EventEmitter<string>();
 
   openGallery() {
     const dialogRef = this.dialog.open(GalleryDialogComponent, {
@@ -32,28 +30,29 @@ export class FileDragAndDropComponent {
     });
     dialogRef.afterClosed().subscribe(selected => {
       if (selected === undefined) return;
-      this.data[this.key] = selected;
-      this.pds.patchBasics().subscribe(success => {
-        if (success) {
-          this.initState[this.key] = this.data[this.key];
-        } else this.data[this.key] = this.initState[this.key];
-        this.snackBar.open(`${this.key.charAt(0).toUpperCase() + this.key.slice(1)} change${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
-      })
+      this.displayedImage = selected;
+      this.emitChange();
     });
   }
 
-  setFile(file: File, input: HTMLInputElement) {
-    this.changeFn(file);
-    console.log("file");
-    
+  uploadFile(files: FileList | null) {
+    if (!files) return;
+    this.pds.uploadFile(files[0]).subscribe(res => {
+      if (res) {
+        this.displayedImage = res;
+        this.emitChange();
+      }
+      console.log(res);
+      this.snackBar.open(`File upload${res ? 'ed' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+    });
   }
 
   deleteImage() {
-    const preserveImage = this.data[this.key];
-    this.data[this.key] = '';
-    this.pds.patchBasics().subscribe(success => {
-      if (!success) this.data[this.key] = preserveImage
-      this.snackBar.open(`${this.key.charAt(0).toUpperCase() + this.key.slice(1)} ${success ? 'deleted' : 'deletion failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
-    });
+    this.displayedImage = '';
+    this.emitChange();
+  }
+
+  emitChange() {
+    this.filePath.emit(this.displayedImage);
   }
 }

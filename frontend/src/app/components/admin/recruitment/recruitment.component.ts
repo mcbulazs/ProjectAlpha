@@ -22,7 +22,7 @@ export class RecruitmentComponent implements OnInit {
 
   constructor(private dialog: MatDialog, private pds: PageDataService, private snackBar: MatSnackBar) { }
 
-  preset: Preset = PRESETS[this.pds.preset];
+  preset: Preset = PRESETS[this.pds.data.presetid];
 
   data!: PageData;
   recruitment: Recruitment[] = [];

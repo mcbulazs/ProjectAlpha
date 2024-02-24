@@ -15,13 +15,15 @@ import { DangerZoneComponent } from './components/admin/danger-zone/danger-zone.
 import { GuildRulesComponent } from './components/admin/guild-rules/guild-rules.component';
 import { UploadsComponent } from './components/admin/uploads/uploads.component';
 import { saveBeforeLeaveGuard } from './guards/save-before-leave.guard';
+import { NavigationComponent } from './components/admin/navigation/navigation.component';
 
 export const PROJECT_TITLE = 'Project';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent, title: `${PROJECT_TITLE} | Home`, canActivate: [homeGuard], pathMatch: 'full' },
     { path: 'admin', component: AdminComponent, canActivate: [authGuard], title: `${PROJECT_TITLE} | Admin`, children: [
-        { path: 'general', component: GeneralComponent, canDeactivate: [saveBeforeLeaveGuard] },
+        { path: 'general', component: GeneralComponent, canDeactivate: [saveBeforeLeaveGuard]},
+        { path: 'pages', component: NavigationComponent, canDeactivate: [saveBeforeLeaveGuard] },
         { path: 'uploads', component: UploadsComponent },
         { path: 'templates', component: TemplatesComponent, },
         { path: 'articles', component: ArticlesComponent },

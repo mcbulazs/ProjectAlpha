@@ -1,9 +1,10 @@
-<div class="dropzone" #dropzone dragAndDrop (file)="setFile($event, input)">
-    <input type="file" accept="image/*" #input (change)="changeFn(input.files); input.value = ''">
+<div class="dropzone" #dropzone dragAndDrop (file)="uploadFile($event)">
+    <input type="file" accept="image/*" #input (change)="uploadFile(input.files); input.value = ''">
     <span>Drop file or click to browse</span>
-    <span>or choose from your <button type="button" mat-raised-button color="accent" (click)="openGallery()" class="btn-gallery">Gallery</button></span>
-    <div class="file-preview" (click)="deleteImage()" *ngIf="data[key] !== ''">
+    <span>or choose from your <button type="button" mat-raised-button color="accent" (click)="openGallery()"
+            class="btn-gallery">Gallery</button></span>
+    <div class="file-preview" (click)="deleteImage()" *ngIf="displayedImage !== ''">
         <mat-icon class="icon">delete</mat-icon>
-        <img [src]="data[key]">
+        <img [src]="displayedImage">
     </div>
 </div>

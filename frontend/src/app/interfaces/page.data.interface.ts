@@ -8,14 +8,15 @@ import { Recruitment } from "./recruitment.interface"
 export interface PageData {
     title: string
     templateid: number
+    presetid: number
     logo: string
     banner: string
+    customcss: string
     articles: Article[]
     recruitment: Recruitment[]
     navbar: NavItem[]
-    twitch: Channel[]
-    youtube: Channel[]
+    channels: Channel[]
     progress: Progress[]
     calendar: Calendar[]
-    backgroundColor: string
+    rules: string
 }

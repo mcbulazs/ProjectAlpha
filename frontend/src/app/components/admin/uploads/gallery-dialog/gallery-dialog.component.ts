@@ -29,7 +29,7 @@ export class GalleryDialogComponent implements OnInit {
   ngOnInit(): void {
     this.images = this.pds.images;
     this.empty = this.images.length === 0;
-    this.preset = PRESETS[this.pds.preset];
+    this.preset = PRESETS[this.pds.data.presetid];
   }
 
   select(image: string) {

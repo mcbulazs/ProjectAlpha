@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { PageData } from '../../../../interfaces/page.data.interface';
 import { HotlineMessageType, PageDataService } from '../../../../services/page.data.service';
 import { PREVIEW_MODE } from '../../../../../main';
-import { PLACEHOLDER_DATA } from '../../../../constants';
+import { CHANNEL_TYPES, PLACEHOLDER_DATA } from '../../../../constants';
 import { PRESETS, Preset } from '../../components';
 
 @Component({
@@ -25,17 +25,18 @@ export abstract class TemplateComponent implements OnInit, OnDestroy {
   PREVIEWMODE = PREVIEW_MODE;
   usePlaceholders!: boolean;
   recruitmentEmpty: boolean = false;
+  public channelTypes: any = CHANNEL_TYPES;
 
   private subs = new Subscription();
 
   ngOnInit(): void {
     this.data = this.pds.data;
-    this.preset = PRESETS[this.pds.preset];
+    this.preset = PRESETS[this.pds.data.presetid];
     this.usePlaceholders = this.pds.usePlaceholders;
     this.subs.add(this.pds.getPlaceholderHotline().subscribe(message => {
       if (message.type === HotlineMessageType.TOGGLE) this.usePlaceholders = message.message;
       if (message.type === HotlineMessageType.RECRUITMENT_CHECK) {
-        this.preset = PRESETS[this.pds.preset];
+        this.preset = PRESETS[this.pds.data.presetid];
         this.recruitmentEmptyCheck();
       }
     }));
@@ -51,7 +52,6 @@ export abstract class TemplateComponent implements OnInit, OnDestroy {
   }
 
   recruitmentEmptyCheck(): boolean {
-    console.log("check");
     this.recruitmentEmpty = this.data.recruitment.every(x => x.subclasses.length === 0);
     return this.recruitmentEmpty;
   }

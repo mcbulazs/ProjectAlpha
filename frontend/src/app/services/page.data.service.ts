@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
+import { Observable, Subject, catchError, map, of } from 'rxjs';
 import { PageData } from '../interfaces/page.data.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
@@ -7,16 +7,11 @@ import { Article } from '../interfaces/article.interface';
 import { PageBasics } from '../interfaces/page.basics.interface';
 import { NavItem } from '../interfaces/navitem.interface';
 import { Channel } from '../interfaces/channel.interface';
-import { PLACEHOLDER_DATA } from '../constants';
 import { PRESETS } from '../components/preview/components';
 
 export interface TemplateChanger {
   templateID: number,
   path: string
-}
-
-export enum ChannelType {
-  TWITCH, YOUTUBE
 }
 
 export interface HotlineMessage {
@@ -37,7 +32,6 @@ export class PageDataService {
 
   webID!: number;
   data!: PageData;
-  preset: number = 0;
   images!: string[];
 
   placeholderHotline = new Subject<HotlineMessage>;
@@ -61,14 +55,11 @@ export class PageDataService {
       }).pipe(map(res => {
         if (res.status === 200 && res.body) {
           let homeNav = res.body.navbar.find(x => x.path === '')!;
-          res.body.progress = PLACEHOLDER_DATA.progress; //! DEFER REMOVE 
-          res.body.youtube = PLACEHOLDER_DATA.youtube; //! DEFER REMOVE
           homeNav.enabled = true;
           this.data = res.body;
           if (this.data.recruitment.length === 0) {
             this.setRecruitment();
           }
-          this.data.backgroundColor = '#333333';
           console.log("Page data is ready!");
           return true;
         }
@@ -77,7 +68,7 @@ export class PageDataService {
   }
 
   setRecruitment() {
-    PRESETS[this.preset].classes.map(c => {
+    PRESETS[this.data.presetid].classes.map(c => {
       this.data.recruitment.push({
         id: -1,
         class: c.class,
@@ -194,15 +185,28 @@ export class PageDataService {
         }));
   }
 
+  patchTemplate(): Observable<boolean> {
+    return this.httpClient.patch<any>(`${environment.backendURL}/page/${this.webID}/template`, {
+      templateid: this.data.templateid,
+      presetid: this.data.presetid,
+    },
+      {
+        withCredentials: true,
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => {
+          if (res === null) return false;
+          return true;
+        }));
+  }
+
   patchBasics(): Observable<boolean> {
     const pageBasics: PageBasics = {
-      id: this.webID,
       title: this.data.title,
-      templateid: this.data.templateid,
       logo: this.data.logo,
       banner: this.data.banner,
     }
-    return this.httpClient.patch<PageBasics>(`${environment.backendURL}/page/${this.webID}`, pageBasics,
+    return this.httpClient.patch<PageBasics>(`${environment.backendURL}/page/${this.webID}/general`, pageBasics,
       {
         withCredentials: true,
       }).pipe(
@@ -247,72 +251,68 @@ export class PageDataService {
       );
   }
 
-  // TODO: Decide how to create and whether the list could be reordered or not
-  //! TEMPORARY solution: wrap new channel in a list
-  postChannel(channel: Channel, type: ChannelType): Observable<boolean> {
-    return this.httpClient.post<Channel[]>(`${environment.backendURL}/page/${this.webID}/${ChannelType[type].toLowerCase()}`, [channel],
+  postChannel(channel: Channel): Observable<boolean> {
+    return this.httpClient.post<Channel>(`${environment.backendURL}/page/${this.webID}/channels`, channel,
       {
         withCredentials: true,
       }).pipe(
         catchError(() => of(null)),
         map(res => {
           if (res === null) return false;
-          if (type === ChannelType.TWITCH) {
-            let createdChannel = res.find(x => !this.data.twitch.find(y => y.id === x.id));
-            if (!createdChannel) return false;
-            this.data.twitch.push(createdChannel);
-          }
-          if (type === ChannelType.YOUTUBE) {
-            let createdChannel = res.find(x => !this.data.youtube.find(y => y.id === x.id));
-            if (!createdChannel) return false;
-            this.data.youtube.push(createdChannel);
-          }
+          this.data.channels.push(res);
           return true;
         })
       );
   }
 
-  patchChannel(channel: Channel, type: ChannelType): Observable<boolean> {
-    return this.httpClient.patch<Channel>(`${environment.backendURL}/page/${this.webID}/${ChannelType[type].toLowerCase()}/${channel.id}`, channel,
+  patchChannel(channel: Channel): Observable<boolean> {
+    return this.httpClient.patch<Channel>(`${environment.backendURL}/page/${this.webID}/channels/${channel.id}`, channel,
       {
         withCredentials: true,
       }).pipe(
         catchError(() => of(null)),
         map(res => {
           if (res === null) return false;
-          if (type === ChannelType.TWITCH) {
-            let index = this.data.twitch.findIndex(x => x.id === res.id);
-            this.data.twitch[index] = res;
-          }
-          if (type === ChannelType.YOUTUBE) {
-            let index = this.data.youtube.findIndex(x => x.id === res.id);
-            this.data.youtube[index] = res;
-          }
+          let index = this.data.channels.findIndex(x => x.id === res.id);
+          this.data.channels[index] = res;
           return true;
         })
       );
   }
 
-  deleteChannel(id: number, type: ChannelType): Observable<boolean> {
-    return this.httpClient.delete<any>(`${environment.backendURL}/page/${this.webID}/${ChannelType[type].toLowerCase()}/${id}`,
+  deleteChannel(id: number): Observable<boolean> {
+    return this.httpClient.delete<any>(`${environment.backendURL}/page/${this.webID}/channels/${id}`,
       {
         withCredentials: true, observe: 'response'
       }).pipe(
         catchError(() => of(null)),
         map(res => {
           if (res) {
-            if (type === ChannelType.TWITCH) {
-              let deletedIndex = this.data.twitch.findIndex(x => x.id === id)
-              this.data.twitch.splice(deletedIndex, 1);
-            }
-            if (type === ChannelType.YOUTUBE) {
-              let deletedIndex = this.data.youtube.findIndex(x => x.id === id)
-              this.data.youtube.splice(deletedIndex, 1);
-            }
-            return true;
+            let deletedIndex = this.data.channels.findIndex(x => x.id === id)
+            this.data.channels.splice(deletedIndex, 1);
           }
-          return false;
+          return res !== null;
         })
+      );
+  }
+
+  patchChannelOrder(): Observable<boolean> {
+    const order = this.data.channels.map(channel => channel.id);
+    return this.httpClient.patch<number[]>(`${environment.backendURL}/page/${this.webID}/channels`, order,
+      {
+        withCredentials: true, observe: 'response'
+      }).pipe(
+        map(res => res.status === 200),
+      );
+  }
+
+  patchRules(): Observable<boolean> {
+    return this.httpClient.patch<string>(`${environment.backendURL}/page/${this.webID}/rules`, JSON.stringify(this.data.rules),
+      {
+        withCredentials: true,
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => res !== null),
       );
   }
 }

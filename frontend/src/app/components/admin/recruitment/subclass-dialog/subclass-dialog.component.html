@@ -1,17 +1,19 @@
 <div class="dialog">
     <h2>Select subclasses</h2>
-<button mat-raised-button color="primary" class="btn-select-all" (click)="selectAll()">{{selectAllToggle ? 'Des' : 'S'}}elect all</button>
-<div class="subclasses">
-    <mat-grid-list cols="4" class="subclasses">
-        <mat-grid-tile *ngFor="let subclass of data.preset.subclasses">
-            <button mat-button class="btn-image {{selectedSubclasses.includes(subclass) ? 'selected' : ''}}" (click)="select(subclass)">
-                <img [src]="subclass">
-            </button>
-        </mat-grid-tile>
-    </mat-grid-list>
-</div>
-<div class="buttons">
-    <button mat-raised-button mat-dialog-close color="primary" (click)="save()" class="btn-save">Save</button>
-    <button mat-raised-button mat-dialog-close>Cancel</button>
-</div>
+    <button mat-raised-button color="primary" class="btn-select-all" (click)="selectAll()">{{selectAllToggle ? 'Des' :
+        'S'}}elect all</button>
+    <div class="subclasses">
+        <mat-grid-list cols="4" class="subclasses">
+            <mat-grid-tile *ngFor="let subclass of data.preset.subclasses">
+                <button mat-button class="btn-image {{selectedSubclasses.includes(subclass) ? 'selected' : ''}}"
+                    (click)="select(subclass)">
+                    <img [src]="subclass" draggable="false">
+                </button>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
+    <div class="buttons">
+        <button mat-raised-button mat-dialog-close color="primary" (click)="save()" class="btn-save">Save</button>
+        <button mat-raised-button mat-dialog-close>Cancel</button>
+    </div>
 </div>

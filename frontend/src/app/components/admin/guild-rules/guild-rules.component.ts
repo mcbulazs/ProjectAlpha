@@ -23,14 +23,20 @@ export class GuildRulesComponent implements OnInit {
   editorConfig = CKEDITOR_CONFIG;
 
   data!: PageData;
-
-  rules: string = '' //! TEMPORARY
+  initState: string = '';
+  changed: boolean = false;
 
   ngOnInit(): void {
-    
+    this.data = this.pds.data;
+    this.initState = this.data.rules;
   }
 
   save() {
-    this.snackBar.open(`Rules ${true ? 'saved' : 'save failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+    this.pds.patchRules().subscribe(success => {
+      if (success) this.initState = this.data.rules;
+      else this.data.rules = this.initState;
+      this.changed = false;
+      this.snackBar.open(`Rules ${success ? 'saved' : 'save failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+    });
   }
 }

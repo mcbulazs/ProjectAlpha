@@ -1,4 +1,4 @@
-<form [formGroup]="general" (submit)="saveBasics()">
+<form (submit)="save()">
     <div class="sticky-container">
         <button type="submit" mat-raised-button color="primary" class="btn-save" *ngIf="changed">Save changes</button>
     </div>
@@ -6,29 +6,12 @@
     <div class="title-settings">
         <mat-form-field subscriptSizing="dynamic">
             <mat-label>Title</mat-label>
-            <input matInput [(ngModel)]="data.title" [ngModelOptions]="{standalone: true}" maxlength="20" (input)="changed = (initState.title !== data.title)">
+            <input matInput [(ngModel)]="data.title" maxlength="20" (input)="changed = (initState.title !== data.title)"
+                name="title">
         </mat-form-field>
     </div>
     <h3>Logo</h3>
-    <file-drag-and-drop [data]="data" [key]="'logo'" [changeFn]="changeLogo" [initState]="initState"></file-drag-and-drop>
+    <file-drag-and-drop [displayedImage]="data.logo" (filePath)="changeLogo($event)"></file-drag-and-drop>
     <h3>Banner</h3>
-    <file-drag-and-drop [data]="data" [key]="'banner'" [changeFn]="changeBanner" [initState]="initState"></file-drag-and-drop>
-    <mat-form-field>
-        <mat-label>Background color</mat-label>
-        <input type="color" matInput [(ngModel)]="data.backgroundColor" [ngModelOptions]="{standalone: true}">
-    </mat-form-field>
+    <file-drag-and-drop [displayedImage]="data.banner" (filePath)="changeBanner($event)"></file-drag-and-drop>
 </form>
-<h2>Pages & Navigation</h2>
-<p>Toggle pages, change page titles, reorder navigation bar</p>
-<div cdkDropList class="navitem-list" (cdkDropListDropped)="drop($event)">
-    <button mat-raised-button color="primary" class="btn-save-navbar" *ngIf="navOrderChanged" (click)="save()">Save</button>
-    <div cdkDrag class="navitem" *ngFor="let navitem of data.navbar">
-        <div class="nav-content {{navitem.enabled ? '' : 'disabled'}}">
-            <mat-icon>drag_indicator</mat-icon>
-            <span class="nav-name">{{navitem.name}}</span>
-        </div>
-        <button mat-icon-button (click)="editNavigation(navitem.id)">
-            <mat-icon>edit</mat-icon>
-        </button>
-    </div>
-</div>

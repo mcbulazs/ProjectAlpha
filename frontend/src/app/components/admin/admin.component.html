@@ -10,6 +10,10 @@
                     <mat-icon matListItemIcon>settings</mat-icon>
                     <a matListItemTitle>General</a>
                 </mat-list-item>
+                <mat-list-item routerLink="pages" routerLinkActive="" mat-list-item>
+                    <mat-icon matListItemIcon>web</mat-icon>
+                    <a matListItemTitle>Pages & Navigation</a>
+                </mat-list-item>
                 <mat-list-item routerLink="uploads" routerLinkActive="" mat-list-item>
                     <mat-icon matListItemIcon>image</mat-icon>
                     <a matListItemTitle>Uploads</a>
@@ -49,8 +53,8 @@
                 <div class="navigation-header">
                     <button mat-icon-button title="Menu" (click)="drawer.toggle()">
                         <mat-icon>menu</mat-icon>
-                      </button>
-                      <span>Admin</span>
+                    </button>
+                    <span>Admin</span>
                 </div>
                 <button mat-raised-button color="accent" (click)="togglePlaceholders()">Toggle placeholders</button>
                 <span class="navigation-spacer"></span>
@@ -66,7 +70,7 @@
                 <router-outlet></router-outlet>
             </div>
         </mat-drawer-content>
-      </mat-drawer-container>
+    </mat-drawer-container>
 </div>
 <app-preview class="{{preview ? 'preview-full' : ''}}"></app-preview>
 <button mat-fab color="primary" (click)="togglePreview()" class="btn-preview">

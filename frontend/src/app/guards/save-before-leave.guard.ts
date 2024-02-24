@@ -4,26 +4,25 @@ import { Component, inject } from '@angular/core';
 import { MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { map } from 'rxjs';
+import { NavigationComponent } from '../components/admin/navigation/navigation.component';
 
-export const saveBeforeLeaveGuard: CanDeactivateFn<GeneralComponent> = (component, currentRoute, currentState, nextState) => {
+export const saveBeforeLeaveGuard: CanDeactivateFn<NavigationComponent | GeneralComponent> = (component, currentRoute, currentState, nextState) => {
 
   let dialog = inject(MatDialog);
-  if (component.navOrderChanged || component.changed) {
+  if (component.changed) {
     const dialogRef = dialog.open(SaveBeforeLeaveComponent);
     return dialogRef.afterClosed().pipe(
       map(save => {
         if (!save) {
-          component.discardChanges();
+          component.reset();
           return true;
         }
-        if (component.navOrderChanged) component.save();
-        if (component.changed) component.saveBasics();
+        if (component.changed) component.save();
         return true;
       })
     );
   }
   return true;
-  //return !(component.navOrderChanged || component.changed);
 };
 
 

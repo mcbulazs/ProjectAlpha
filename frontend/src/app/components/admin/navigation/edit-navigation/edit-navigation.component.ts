@@ -3,7 +3,7 @@ import { PageDataService } from '../../../../services/page.data.service';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { NavItem } from '../../../../interfaces/navitem.interface';
-import { GeneralComponent } from '../general.component';
+import { GeneralComponent } from '../../general/general.component';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatCheckbox } from '@angular/material/checkbox';

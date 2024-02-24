@@ -6,8 +6,6 @@ import { MatButton } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_SNACKBAR_CONFIG } from '../../../constants';
 import { TemplateOneComponent } from '../../preview/templates/template-one/template-one/template-one.component';
-import { PageBasics } from '../../../interfaces/page.basics.interface';
-import { map } from 'rxjs';
 import { PageData } from '../../../interfaces/page.data.interface';
 
 @Component({
@@ -15,29 +13,34 @@ import { PageData } from '../../../interfaces/page.data.interface';
   standalone: true,
   imports: [CommonModule, MatButton, TemplateOneComponent],
   templateUrl: './templates.component.html',
-  styleUrl: './templates.component.scss'
+  styleUrl: './templates.component.scss',
 })
 export class TemplatesComponent implements OnInit, OnDestroy {
-
-  constructor(private pds: PageDataService, private snackBar: MatSnackBar) { }
-
+  constructor(private pds: PageDataService, private snackBar: MatSnackBar) {}
 
   data!: PageData;
+  templates = TEMPLATES;
   presets = PRESETS;
 
-  templates = TEMPLATES;
-  initState = {
-    template: this.pds.data.templateid,
-    preset: this.pds.preset,
-  }
-  selectedPreset = this.pds.preset;
-
+  initState: any;
+  
+  selectedPreset: any;
+  
   ngOnInit(): void {
+    //* Backup data
+    this.initState = {
+      template: this.pds.data.templateid,
+      preset: this.pds.data.presetid,
+    };
+    this.selectedPreset = this.pds.data.presetid;
     this.data = this.pds.data;
   }
 
+  ngOnDestroy(): void {
+    this.reset();
+  }
+
   selectPreset(id: number) {
-    if (id === this.selectedPreset) return;
     this.selectedPreset = id;
   }
 
@@ -47,41 +50,30 @@ export class TemplatesComponent implements OnInit, OnDestroy {
     this.pds.changeTemplate(id, this.pds.currentPreviewPath);
   }
 
-  ngOnDestroy(): void {
-    this.reset();
-    /* if (this.currentTemplate !== this.selectedTemplate) {
-      this.pds.changeTemplate(this.currentTemplate, this.pds.currentPreviewPath);
-    } */
-  }
-
   switch() {
-    if (this.data.templateid !== this.initState.template) this.switchTemplate();
-    if (this.selectedPreset !== this.initState.preset) this.switchPreset();
-  }
-
-  switchPreset() {
-    this.pds.preset = this.selectedPreset;
-    this.initState.preset = this.selectedPreset; //* when hard-saved
-    this.data.recruitment.splice(0, this.pds.data.recruitment.length);
-    this.pds.setRecruitment();
-    this.pds.sendRecruitmentCheck();
-    this.snackBar.open(`Preset change${true ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
-  }
-
-  switchTemplate() {
-    this.pds.patchBasics().subscribe(
-      success => {
-        if (success) this.initState.template = this.data.templateid;
-        this.snackBar.open(`Template change${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
-      }
-    )
+    this.pds.data.presetid = this.selectedPreset;
+    this.pds.patchTemplate().subscribe((success) => {
+      this.initState.preset = this.selectedPreset;
+      this.initState.template = this.data.templateid;
+      this.data.recruitment.splice(0, this.pds.data.recruitment.length);
+      this.pds.setRecruitment();
+      this.pds.sendRecruitmentCheck();
+      this.snackBar.open(
+        `${success ? 'Changes saved' : 'Saving was unsuccessfull'}!`,
+        undefined,
+        MAT_SNACKBAR_CONFIG
+      );
+    });
   }
 
   reset() {
-    this.pds.preset = this.initState.preset;
+    this.pds.data.presetid = this.initState.preset;
     if (this.data.templateid !== this.initState.template) {
       this.data.templateid = this.initState.template;
-      this.pds.changeTemplate(this.initState.template, this.pds.currentPreviewPath);
+      this.pds.changeTemplate(
+        this.initState.template,
+        this.pds.currentPreviewPath
+      );
     }
   }
 }

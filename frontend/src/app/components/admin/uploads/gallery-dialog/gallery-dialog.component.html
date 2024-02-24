@@ -7,7 +7,7 @@
 <mat-grid-list cols="4">
     <mat-grid-tile *ngFor="let image of preset.logoImages; index as i">
         <button mat-button (dblclick)="select(image)" class="btn-image {{image === selected ? 'selected' : ''}}">
-            <img [src]="image" [title]="image">
+            <img [src]="image" [title]="image" draggable="false">
         </button>
     </mat-grid-tile>
 </mat-grid-list>
@@ -15,7 +15,7 @@
 <mat-grid-list cols="4">
     <mat-grid-tile *ngFor="let image of preset.backgroundImages; index as i">
         <button mat-button (dblclick)="select(image)" class="btn-image {{image === selected ? 'selected' : ''}}">
-            <img [src]="image" [title]="image">
+            <img [src]="image" [title]="image" draggable="false">
         </button>
     </mat-grid-tile>
 </mat-grid-list>
@@ -23,7 +23,7 @@
 <mat-grid-list cols="4">
     <mat-grid-tile *ngFor="let image of images; index as i">
         <button mat-button (dblclick)="select(image)" class="btn-image {{image === selected ? 'selected' : ''}}">
-            <img [src]="image" [title]="image">
+            <img [src]="image" [title]="image" draggable="false">
         </button>
     </mat-grid-tile>
 </mat-grid-list>
