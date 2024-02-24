@@ -195,15 +195,15 @@ export const PRESETS: Preset[] = [
     {
         name: 'Guild Wars 2',
         image: `${STATIC_IMAGES_PATH}/gw2.png`,
-        backgroundImages: ['https://i.imgur.com/YZMLxmj.png','https://i.imgur.com/YZMLxmj.png'],
-        logoImages: ['https://i.imgur.com/YZMLxmj.png','https://i.imgur.com/YZMLxmj.png'],
+        backgroundImages: ['https://i.imgur.com/YZMLxmj.png', 'https://i.imgur.com/YZMLxmj.png'],
+        logoImages: ['https://i.imgur.com/YZMLxmj.png', 'https://i.imgur.com/YZMLxmj.png'],
         classes: [],
     },
     {
         name: 'New World',
         image: `${STATIC_IMAGES_PATH}/new_world.png`,
-        backgroundImages: ['https://wow.zamimg.com/uploads/blog/images/27174.png','https://wow.zamimg.com/uploads/blog/images/27174.png'],
-        logoImages: ['https://wow.zamimg.com/uploads/blog/images/27174.png','https://wow.zamimg.com/uploads/blog/images/27174.png'],
+        backgroundImages: ['https://wow.zamimg.com/uploads/blog/images/27174.png', 'https://wow.zamimg.com/uploads/blog/images/27174.png'],
+        logoImages: ['https://wow.zamimg.com/uploads/blog/images/27174.png', 'https://wow.zamimg.com/uploads/blog/images/27174.png'],
         classes: [],
     },
     {
@@ -238,5 +238,12 @@ export const PRESETS: Preset[] = [
                 subclasses: ['https://diablotavern.com/wp-content/uploads/2023/02/Diablo-4-Sorcerer-Icon-150x150.webp'],
             },
         ],
-    }
+    },
+    {
+        name: 'Lost Ark',
+        image: `${STATIC_IMAGES_PATH}/lostark.png`,
+        backgroundImages: [`${STATIC_IMAGES_PATH}/lostark.png`, `${STATIC_IMAGES_PATH}/lostark.png`],
+        logoImages: [`${STATIC_IMAGES_PATH}/lostark.png`, `${STATIC_IMAGES_PATH}/lostark.png`],
+        classes: [],
+    },
 ]

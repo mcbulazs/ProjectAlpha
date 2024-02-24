@@ -32,6 +32,7 @@ header {
     gap: 30px;
     padding: 20px;
 }
+
 .title {
     font-size: 60px;
 }
@@ -171,7 +172,8 @@ footer {
     bottom: 0;
 }
 
-.progresses, .channels {
+.progresses,
+.channels {
     box-shadow: 7px 7px 20px -7px #eee;
     border: 2px solid black;
     padding: 10px;
@@ -180,7 +182,8 @@ footer {
     gap: 10px;
 }
 
-.progress-title, .channels-title {
+.progress-title,
+.channels-title {
     text-align: center;
     padding-bottom: 10px;
     margin-bottom: 10px;

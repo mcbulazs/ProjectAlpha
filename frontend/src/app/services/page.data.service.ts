@@ -73,7 +73,7 @@ export class PageDataService {
           return true;
         }
         return false;
-      }))
+      }));
   }
 
   setRecruitment() {
@@ -282,11 +282,11 @@ export class PageDataService {
           if (res === null) return false;
           if (type === ChannelType.TWITCH) {
             let index = this.data.twitch.findIndex(x => x.id === res.id);
-            this.data.twitch[index] = res; 
+            this.data.twitch[index] = res;
           }
           if (type === ChannelType.YOUTUBE) {
             let index = this.data.youtube.findIndex(x => x.id === res.id);
-            this.data.youtube[index] = res; 
+            this.data.youtube[index] = res;
           }
           return true;
         })

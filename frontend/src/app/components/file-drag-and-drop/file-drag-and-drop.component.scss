@@ -48,6 +48,7 @@
 
 .file-preview:hover .icon {
     display: flex;
+    z-index: 999;
 }
 
 .icon {

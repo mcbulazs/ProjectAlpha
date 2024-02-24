@@ -37,7 +37,7 @@ export class SubclassDialogComponent implements OnInit, OnDestroy {
     this.initState = {
       id: this.userData.id,
       class: this.userData.class,
-      subclasses: [ ...this.userData.subclasses ],
+      subclasses: [...this.userData.subclasses],
     }
   }
 
@@ -75,6 +75,6 @@ export class SubclassDialogComponent implements OnInit, OnDestroy {
   reset() {
     this.userData.id = this.initState.id;
     this.userData.class = this.initState.class;
-    this.userData.subclasses = [ ...this.initState.subclasses ];
+    this.userData.subclasses = [...this.initState.subclasses];
   }
 }

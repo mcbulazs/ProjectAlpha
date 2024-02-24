@@ -12,21 +12,13 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import {
-	Image,
-	ImageCaption,
-	ImageResize,
-	ImageStyle,
-	ImageToolbar,
-	ImageUpload
-} from '@ckeditor/ckeditor5-image';
+import { Image, ImageResize, ImageUpload } from '@ckeditor/ckeditor5-image';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { Undo } from '@ckeditor/ckeditor5-undo';
-import { WordCount } from '@ckeditor/ckeditor5-word-count';
+import { SimpleUploadAdapter } from '@ckeditor/ckeditor5-upload';
 
 // You can read more about extending the build with additional plugins in the "Installing plugins" guide.
 // See https://ckeditor.com/docs/ckeditor5/latest/installation/plugins/installing-plugins.html for details.
@@ -42,20 +34,16 @@ class Editor extends ClassicEditor {
 		Heading,
 		HorizontalLine,
 		Image,
-		ImageCaption,
 		ImageResize,
-		ImageStyle,
-		ImageToolbar,
 		ImageUpload,
 		Italic,
 		Link,
 		List,
 		MediaEmbed,
 		Paragraph,
-		TextTransformation,
+		SimpleUploadAdapter,
 		Underline,
-		Undo,
-		WordCount
+		Undo
 	];
 
 	public static override defaultConfig: EditorConfig = {
@@ -72,27 +60,16 @@ class Editor extends ClassicEditor {
 				'numberedList',
 				'alignment',
 				'horizontalLine',
-				'|',
 				'fontColor',
 				'fontFamily',
 				'fontSize',
-				'|',
 				'imageUpload',
 				'mediaEmbed',
 				'undo',
 				'redo'
 			]
 		},
-		language: 'en',
-		image: {
-			toolbar: [
-				'imageTextAlternative',
-				'toggleImageCaption',
-				'imageStyle:inline',
-				'imageStyle:block',
-				'imageStyle:side'
-			]
-		}
+		language: 'en'
 	};
 }
 
