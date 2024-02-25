@@ -5,6 +5,7 @@ import { HotlineMessageType, PageDataService } from '../../../../services/page.d
 import { PREVIEW_MODE } from '../../../../../main';
 import { CHANNEL_TYPES, PLACEHOLDER_DATA } from '../../../../constants';
 import { PRESETS, Preset } from '../../components';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-template',
@@ -16,7 +17,7 @@ import { PRESETS, Preset } from '../../components';
 })
 export abstract class TemplateComponent implements OnInit, OnDestroy {
 
-  constructor(public pds: PageDataService) { }
+  constructor(public pds: PageDataService, public router: Router) { }
 
   data!: PageData;
   preset!: Preset;

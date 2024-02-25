@@ -1,6 +1,7 @@
 import { STATIC_IMAGES_PATH } from "../../constants";
 import { Recruitment } from "../../interfaces/recruitment.interface";
 import { TemplateOneAboutComponent } from "./templates/template-one/template-one-about/template-one-about.component";
+import { TemplateOneRulesComponent } from "./templates/template-one/template-one-rules/template-one-rules.component";
 import { TemplateOneComponent } from "./templates/template-one/template-one/template-one.component";
 import { TemplateTwoComponent } from "./templates/template-two/template-two/template-two.component";
 export interface Template {
@@ -20,7 +21,7 @@ export const TEMPLATES: Template[] = [
         image: 'https://via.placeholder.com/640x360',
         '': TemplateOneComponent,
         'about': TemplateOneAboutComponent,
-        'rules': TemplateOneAboutComponent,
+        'rules': TemplateOneRulesComponent,
         'videos': TemplateOneAboutComponent,
         'tactics': TemplateOneAboutComponent,
     },
@@ -43,20 +44,6 @@ export const TEMPLATES: Template[] = [
         'tactics': TemplateOneAboutComponent,
     },
 ]
-
-/* classImages: [
-            "https://wow.zamimg.com/images/wow/icons/large/classicon_warrior.jpg",
-            "https://wow.zamimg.com/images/wow/icons/large/classicon_druid.jpg",
-            "https://wow.zamimg.com/images/wow/icons/large/classicon_monk.jpg",
-            "https://wow.zamimg.com/images/wow/icons/large/classicon_hunter.jpg",
-            "https://wow.zamimg.com/images/wow/icons/large/classicon_mage.jpg",
-            "https://wow.zamimg.com/images/wow/icons/large/classicon_demonhunter.jpg",
-            "https://wow.zamimg.com/images/wow/icons/large/classicon_deathknight.jpg",
-            "https://wow.zamimg.com/images/wow/icons/large/classicon_shaman.jpg",
-            "https://wow.zamimg.com/images/wow/icons/large/classicon_warlock.jpg",
-            "https://wow.zamimg.com/images/wow/icons/large/classicon_rogue.jpg",
-            "https://wow.zamimg.com/images/wow/icons/large/classicon_evoker.jpg"
-        ], */
 
 export interface Preset {
     name: string

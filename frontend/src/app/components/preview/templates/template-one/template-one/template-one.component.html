@@ -15,6 +15,7 @@
           : data.banner) +
         ')'
       ">
+      <div class="custom-hover" *ngIf="router.url === '/admin/settings'">header</div>
       <div class="titles">
         <img [src]="
             usePlaceholders && data.logo === '' ? PLACEHOLDERS.logo : data.logo
@@ -40,7 +41,8 @@
               : (data.navbar | filterEnabled);
             index as i
           ">
-          <a [routerLink]="PREVIEWMODE ? null : item.path" (click)="PREVIEWMODE ? changeTemplate(item.path) : ''">{{
+          <a [routerLink]="PREVIEWMODE ? null : item.path" (click)="PREVIEWMODE ? changeTemplate(item.path) : ''"
+            [class.active]="item.path === ''">{{
             item.name | uppercase }}</a>
           <div class="spacer" *ngIf="
               i <
@@ -60,6 +62,7 @@
               ? PLACEHOLDERS.articles
               : data.articles
           ">
+          <div class="custom-hover" *ngIf="router.url === '/admin/settings'">.article</div>
           <div class="article-header">
             <h2>{{ article.title }}</h2>
             <span class="article-date">Posted on {{ article.date | date : "yyyy.MM.dd, H:mm" }}</span>
@@ -71,6 +74,7 @@
       </article>
       <div class="sidebar">
         <div class="tgf" *ngIf="usePlaceholders || !recruitmentEmpty">
+          <div class="custom-hover" *ngIf="router.url === '/admin/settings'">.tgf</div>
           <h2 class="tgf-title">Recruiting</h2>
           <div class="tgf-icons">
             <div class="class" *ngFor="
@@ -90,6 +94,7 @@
           </div>
         </div>
         <div class="progresses" *ngIf="usePlaceholders || data.progress.length !== 0">
+          <div class="custom-hover" *ngIf="router.url === '/admin/settings'">.progresses</div>
           <h2 class="progress-title">Progress</h2>
           <div *ngFor="
               let item of usePlaceholders && data.progress.length === 0
@@ -105,6 +110,7 @@
           </div>
         </div>
         <div class="channels" *ngIf="usePlaceholders || data.channels.length !== 0">
+          <div class="custom-hover" *ngIf="router.url === '/admin/settings'">.channels</div>
           <h2 class="channels-title">Channels</h2>
           <a [href]="item.link" draggable="false" target="_blank" *ngFor="
               let item of usePlaceholders && data.channels.length === 0
@@ -121,6 +127,7 @@
     </div>
   </div>
   <footer>
+    <div class="custom-hover" *ngIf="router.url === '/admin/settings'">footer</div>
     <span>&copy; All rights reserved 2024</span>
   </footer>
 </div>
