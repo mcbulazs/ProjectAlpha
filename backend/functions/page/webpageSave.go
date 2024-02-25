@@ -80,11 +80,20 @@ func SaveRecruitment(webId int, recruit models.RecruitmentModel) (*models.Recrui
 
 func SaveChannels(webId int, channel models.ChannelModel) (*models.ChannelModel, error) {
 	var result models.ChannelModel
-	err := db.Context.QueryRow("INSERT INTO channels (WebId, Site, Name, Link) VALUES ($1,$2,$3,$4) RETURNING Id, Site, Name, Link",
+	var highestRanking int
+	err := db.Context.QueryRow("", webId).Scan(&highestRanking)
+	if err != nil {
+		return nil, err
+	}
+	err = db.Context.QueryRow(
+		`INSERT INTO channels (WebId, Site, Name, Link, Ranking) 
+		VALUES ($1, $2, $3, $4, (SELECT COALESCE(MAX(Ranking), 0) + 1 FROM channels WHERE WebId=$5)) 
+		RETURNING Id, Site, Name, Link`,
 		webId,
 		channel.Site,
 		channel.Name,
 		channel.Link,
+		webId,
 	).Scan(
 		&result.Id,
 		&result.Site,
