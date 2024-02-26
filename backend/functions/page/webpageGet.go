@@ -58,14 +58,6 @@ func GetWebContent(webId int) (*models.WebPageModel, error) {
 	}
 	result.Navbar = navbar
 
-	//twitch / youtube
-	/*youtube, twitch, err := getChannels(webId)
-	if err != nil {
-		fmt.Println("Channels get: " + err.Error())
-	}
-	result.Youtube = youtube
-	result.Twitch = twitch*/
-
 	//channels
 	channels, err := getChannels(webId)
 	if err != nil {

@@ -12,6 +12,4 @@ require (
 
 require (
 	github.com/gorilla/securecookie v1.1.2 // indirect
-	github.com/sendgrid/rest v2.6.9+incompatible // indirect
-	github.com/stretchr/testify v1.8.4 // indirect
 )
