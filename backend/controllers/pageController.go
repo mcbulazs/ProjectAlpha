@@ -1,11 +1,6 @@
 package controllers
 
 import (
-	db "ProjectAlpha/DB"
-	"ProjectAlpha/JSON"
-	"ProjectAlpha/functions"
-	"ProjectAlpha/functions/page"
-	"ProjectAlpha/models"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -13,6 +8,12 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+
+	db "ProjectAlpha/DB"
+	"ProjectAlpha/JSON"
+	"ProjectAlpha/functions"
+	"ProjectAlpha/functions/page"
+	"ProjectAlpha/models"
 )
 
 func Controller_Outer_Page_Get(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +49,6 @@ func Controller_Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	JSON.SendJSON(w, result)
-
 }
 
 func saveModel[T any](w http.ResponseWriter, r *http.Request, saveFunc func(int, T) (*T, error)) {
@@ -83,7 +83,7 @@ func modifyModel[T any](w http.ResponseWriter, r *http.Request, updateFunc func(
 		return
 	}
 	if !ok {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		http.Error(w, "User not authorized", http.StatusUnauthorized)
 		return
 	}
 	switch r.Method {
@@ -138,45 +138,46 @@ func Controller_Page_Rules(w http.ResponseWriter, r *http.Request) {
 }
 
 func Controller_Page_General(w http.ResponseWriter, r *http.Request) {
-	saveModel[models.WebpageGeneralModel](w, r, page.UpdateWebpageGeneral)
+	saveModel(w, r, page.UpdateWebpageGeneral)
 }
 
 func Controller_Page_Template(w http.ResponseWriter, r *http.Request) {
-	saveModel[models.TemplateModel](w, r, page.UpdateWebpageTemplate)
+	saveModel(w, r, page.UpdateWebpageTemplate)
 }
 
 func Controller_Page_Articles_Save(w http.ResponseWriter, r *http.Request) {
-	saveModel[models.ArticleModel](w, r, page.SaveArticle)
+	saveModel(w, r, page.SaveArticle)
 }
 
 func Controller_Page_Articles_Modify(w http.ResponseWriter, r *http.Request) {
-	modifyModel[models.ArticleModel](w, r, page.UpdateArticle, "articles")
+	modifyModel(w, r, page.UpdateArticle, "articles")
 }
 
 func Controller_Page_Recruitment_Save(w http.ResponseWriter, r *http.Request) {
-	saveModel[models.RecruitmentModel](w, r, page.SaveRecruitment)
+	saveModel(w, r, page.SaveRecruitment)
 }
 
 func Controller_Page_Recruitment_Modify(w http.ResponseWriter, r *http.Request) {
-	modifyModel[models.RecruitmentModel](w, r, page.UpdateRecruitment, "recruitment")
+	modifyModel(w, r, page.UpdateRecruitment, "recruitment")
 }
 
 func Controller_Page_Progress_Save(w http.ResponseWriter, r *http.Request) {
-	saveModel[models.ProgressModel](w, r, page.SaveProgress)
+	saveModel(w, r, page.SaveProgress)
 }
 
 func Controller_Page_Progress_Modify(w http.ResponseWriter, r *http.Request) {
-	modifyModel[models.ProgressModel](w, r, page.UpdateProgress, "progress")
+	modifyModel(w, r, page.UpdateProgress, "progress")
 }
 
-func Controller_Page_Navbar_Modify(w http.ResponseWriter, r *http.Request) {
-	//check if the webid and records webid are the same
-	var navbar []models.NavItem
+func Controller_Page_Navitem_Modify(w http.ResponseWriter, r *http.Request) {
+	// check if the webid and records webid are the same
+	var navbar models.NavItem
 	err := json.NewDecoder(r.Body).Decode(&navbar)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	navbar.Path = mux.Vars(r)["path"]
 	webId, err := functions.GetWebId(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -188,7 +189,25 @@ func Controller_Page_Navbar_Modify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	JSON.SendJSON(w, updatedNavbar)
+}
 
+func Controller_Page_Navbar_Order(w http.ResponseWriter, r *http.Request) {
+	var paths []string
+	err := json.NewDecoder(r.Body).Decode(&paths)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	webId, err := functions.GetWebId(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = page.UpdateNavbarOrdering(paths, webId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func Controller_Page_Channel_Save(w http.ResponseWriter, r *http.Request) {
@@ -211,23 +230,22 @@ func Controller_Page_Channel_Save(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	saveModel[models.ChannelModel](w, r, page.SaveChannels)
+	saveModel(w, r, page.SaveChannels)
 }
 
 func Controller_Page_Channel_Modify(w http.ResponseWriter, r *http.Request) {
-	modifyModel[models.ChannelModel](w, r, page.UpdateChannel, "channels")
+	modifyModel(w, r, page.UpdateChannel, "channels")
 }
 
 func Controller_Page_Calendar_Save(w http.ResponseWriter, r *http.Request) {
-	saveModel[models.CalendarModel](w, r, page.SaveCalendar)
+	saveModel(w, r, page.SaveCalendar)
 }
 
 func Controller_Page_Calendar_Modify(w http.ResponseWriter, r *http.Request) {
-	modifyModel[models.CalendarModel](w, r, page.UpdateCalendar, "calendar")
+	modifyModel(w, r, page.UpdateCalendar, "calendar")
 }
 
 func validateId(r *http.Request, Id int, tableName string) (bool, error) {
-
 	webId, err := functions.GetWebId(r)
 	if err != nil {
 		return false, err

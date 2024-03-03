@@ -1,26 +1,26 @@
 package controllers
 
 import (
-	"ProjectAlpha/middleware"
-
 	"github.com/gorilla/mux"
+
+	"ProjectAlpha/middleware"
 )
 
 func ControllerInit(r *mux.Router) {
 	r.Use(middleware.LoggingMiddleware)
 	r.Use(middleware.OptionsMiddleware)
-	//user controllers
+	// user controllers
 	r.HandleFunc("/login", Controller_Login).Methods("POST", "OPTIONS")
 	r.HandleFunc("/register", Controller_Register).Methods("POST", "OPTIONS")
 	r.HandleFunc("/logout", Controller_Logout).Methods("GET", "OPTIONS")
 	r.HandleFunc("/testing", Controller_Test).Methods("GET", "OPTIONS")
 	r.HandleFunc("/auth", Controller_Auth).Methods("GET", "OPTIONS")
 
-	//outer webpage get
+	// outer webpage get
 	r.HandleFunc("/", Controller_Outer_Page_Get).Methods("GET")
 	r.PathPrefix("/files").HandlerFunc(Controller_Outer_File_Serve).Methods("GET")
 
-	//webpage controllers
+	// webpage controllers
 	pageRouter := r.PathPrefix("/page/{webId:[0-9]+}").Subrouter()
 	pageRouter.Use(middleware.CheckWebpageMiddleware)
 	pageRouter.Use(middleware.SessionMiddleware)
@@ -30,7 +30,7 @@ func ControllerInit(r *mux.Router) {
 	pageRouter.HandleFunc("/files/articles", Controller_Article_File_Save).Methods("POST", "OPTIONS")
 	pageRouter.PathPrefix("/files").HandlerFunc(Controller_File_Serve).Methods("GET", "OPTIONS", "DELETE")
 
-	//baseprops
+	// baseprops
 	pageRouter.HandleFunc("/template", Controller_Page_Template).Methods("Patch", "OPTIONS")
 	pageRouter.HandleFunc("/general", Controller_Page_General).Methods("Patch", "OPTIONS")
 	pageRouter.HandleFunc("/rules", Controller_Page_Rules).Methods("Patch", "OPTIONS")
@@ -42,7 +42,8 @@ func ControllerInit(r *mux.Router) {
 	pageRouter.HandleFunc("/recruitment", Controller_Page_Recruitment_Save).Methods("POST", "OPTIONS")
 	pageRouter.HandleFunc("/recruitment/{Id:[0-9]+}", Controller_Page_Recruitment_Modify).Methods("PATCH", "DELETE", "OPTIONS")
 
-	pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Modify).Methods("PATCH", "OPTIONS")
+    pageRouter.HandleFunc("/navbar/{path:.*}", Controller_Page_Navitem_Modify).Methods("PATCH", "OPTIONS")
+    pageRouter.HandleFunc("/navbar", Controller_Page_Navbar_Order).Methods("PATCH", "OPTIONS")
 
 	pageRouter.HandleFunc("/channels", Controller_Page_Channel_Save).Methods("POST", "PATCH", "OPTIONS")
 	pageRouter.HandleFunc("/channels/{Id:[0-9]+}", Controller_Page_Channel_Modify).Methods("PATCH", "DELETE", "OPTIONS")

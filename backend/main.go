@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	db "ProjectAlpha/DB"
-	"ProjectAlpha/controllers"
-
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
+
+	db "ProjectAlpha/DB"
+	"ProjectAlpha/controllers"
 )
 
 func main() {
@@ -20,5 +20,8 @@ func main() {
 	http.Handle("/", r)
 	fmt.Println("Listening on port 3000 ...")
 
-	http.ListenAndServe(":3000", nil)
+	err := http.ListenAndServe(":3000", nil)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }

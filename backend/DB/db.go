@@ -13,9 +13,9 @@ var Context *sql.DB
 
 func Init_db() {
 	// Retrieve database credentials from environment variables
-	dbUser := os.Getenv("DB_USER")         //admin
-	dbPassword := os.Getenv("DB_PASSWORD") //Admin123
-	dbName := os.Getenv("DB_NAME")         //PSQL
+	dbUser := os.Getenv("DB_USER")         // admin
+	dbPassword := os.Getenv("DB_PASSWORD") // Admin123
+	dbName := os.Getenv("DB_NAME")         // PSQL
 	connStr := fmt.Sprintf("user=%s dbname=%s password=%s host=postgres sslmode=disable", dbUser, dbName, dbPassword)
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -42,7 +42,10 @@ func BeginTransaction() (*sql.Tx, func(*error), error) {
 		if *errPtr != nil {
 			// An error occurred, rollback the transaction
 			fmt.Println("Rolling back transaction due to error:", *errPtr)
-			tx.Rollback()
+			err = tx.Rollback()
+			if err != nil {
+				fmt.Println("Error rolling back transaction:", err)
+			}
 		} else {
 			// No errors, commit the transaction
 			err := tx.Commit()

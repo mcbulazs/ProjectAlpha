@@ -1,17 +1,20 @@
 package functions
 
 import (
-	db "ProjectAlpha/DB"
-	"ProjectAlpha/functions/page"
 	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/sessions"
+
+	db "ProjectAlpha/DB"
+	"ProjectAlpha/functions/page"
 )
 
-var Store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-var AllowedOrigins []string
+var (
+	Store          = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	AllowedOrigins []string
+)
 
 func Init_allowed_origins() error {
 	rows, err := db.Context.Query("select Origin from allowed_origins")
@@ -42,15 +45,18 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userId int) error {
 		HttpOnly: true,
 	}
 	fmt.Println(session.Options)
-	session.Save(r, w)
+	err = session.Save(r, w)
+	if err != nil {
+		return err
+	}
 	return nil
 }
+
 func GetWebId(r *http.Request) (int, error) {
 	session, err := Store.Get(r, "session")
 	if err != nil {
 		return 0, err
 	}
-	web_id := -1
 	web_id, ok := session.Values["web_id"].(int)
 	if !ok {
 		return 0, fmt.Errorf("web_id not int in session")

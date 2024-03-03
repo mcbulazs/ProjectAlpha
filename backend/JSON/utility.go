@@ -6,7 +6,6 @@ import (
 )
 
 func SendJSON(w http.ResponseWriter, obj any, wrapper ...string) {
-
 	data, err := json.Marshal(obj)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -17,5 +16,9 @@ func SendJSON(w http.ResponseWriter, obj any, wrapper ...string) {
 		data = append([]byte("{\""+wrapper[0]+"\":"), data...)
 		data = append(data, []byte("}")...)
 	}
-	w.Write(data)
+	_, err = w.Write(data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

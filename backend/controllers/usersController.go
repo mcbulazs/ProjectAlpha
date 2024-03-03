@@ -8,15 +8,14 @@ import (
 	"net/mail"
 	"strings"
 
+	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
+
 	db "ProjectAlpha/DB"
 	"ProjectAlpha/JSON"
 	"ProjectAlpha/enums/errors"
 	sess "ProjectAlpha/functions"
 	"ProjectAlpha/models"
-
-	"golang.org/x/crypto/bcrypt"
-
-	"github.com/gorilla/sessions"
 )
 
 func Controller_Login(w http.ResponseWriter, r *http.Request) {
@@ -42,8 +41,12 @@ func Controller_Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//creating session
-	sess.CreateSession(w, r, userId)
+	// creating session
+	err = sess.CreateSession(w, r, userId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	JSON.SendJSON(w, "Login successful", "message")
 }
 
@@ -88,7 +91,7 @@ func Controller_Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//creating session
+	// creating session
 	err = sess.CreateSession(w, r, userId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -113,6 +116,7 @@ func LoginUser(login *models.LoginModel) (int, error) {
 	}
 	return user_id, nil
 }
+
 func checkRegisterValidity(register *models.LoginModel) error {
 	_, err := mail.ParseAddress(register.Email)
 	if err != nil {
@@ -125,7 +129,7 @@ func checkRegisterValidity(register *models.LoginModel) error {
 }
 
 func RegisterUser(register *models.LoginModel) (int, error) {
-	//TODO: email verification
+	// TODO: email verification
 	register.Email = strings.ToLower(register.Email)
 	err := checkRegisterValidity(register)
 	if err != nil {
@@ -149,19 +153,17 @@ func RegisterUser(register *models.LoginModel) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	if err != nil {
-		return 0, err
-	}
 
 	return user_id, nil
-	//creating session
+	// creating session
 }
+
 func Controller_Auth(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("auth")
 	session, _ := sess.Store.Get(r, "session")
 	_, ok := session.Values["user_id"].(int)
 	w.Header().Set("Access-Control-Expose-Headers", "authenticated")
-	if !ok { //just to decide whether the user have a session or not
+	if !ok { // just to decide whether the user have a session or not
 		w.Header().Set("authenticated", "false")
 	} else if ok {
 		w.Header().Set("authenticated", "true")
