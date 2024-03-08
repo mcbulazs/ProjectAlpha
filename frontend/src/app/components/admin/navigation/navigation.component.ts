@@ -18,7 +18,7 @@ import { MatIcon } from '@angular/material/icon';
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.scss'
 })
-export class NavigationComponent implements OnInit{
+export class NavigationComponent implements OnInit {
 
   constructor(private pds: PageDataService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 

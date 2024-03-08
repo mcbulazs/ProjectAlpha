@@ -8,6 +8,9 @@ import { PageBasics } from '../interfaces/page.basics.interface';
 import { NavItem } from '../interfaces/navitem.interface';
 import { Channel } from '../interfaces/channel.interface';
 import { PRESETS } from '../components/preview/components';
+import { PLACEHOLDER_DATA } from '../constants';
+import { Progress } from '../interfaces/progress.interface';
+import { Raid } from '../interfaces/raid.interface';
 
 export interface TemplateChanger {
   templateID: number,
@@ -300,7 +303,7 @@ export class PageDataService {
     const order = this.data.channels.map(channel => channel.id);
     return this.httpClient.patch<number[]>(`${environment.backendURL}/page/${this.webID}/channels`, order,
       {
-        withCredentials: true, observe: 'response'
+        withCredentials: true, observe: 'response',
       }).pipe(
         map(res => res.status === 200),
       );
@@ -313,6 +316,51 @@ export class PageDataService {
       }).pipe(
         catchError(() => of(null)),
         map(res => res !== null),
+      );
+  }
+
+  postProgress(progress: Progress): Observable<boolean> {
+    return this.httpClient.post<Progress>(`${environment.backendURL}/page/${this.webID}/progress`, progress,
+      {
+        withCredentials: true,
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => {
+          if (res === null) return false;
+          this.data.progress.push(res);
+          return true;
+        })
+      );
+  }
+
+  patchProgress(progress: Progress): Observable<boolean> {
+    return this.httpClient.patch<Progress>(`${environment.backendURL}/page/${this.webID}/progress/${progress.id}`, progress,
+      {
+        withCredentials: true,
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => {
+          if (res === null) return false;
+          let index = this.data.progress.findIndex(x => x.id === res.id);
+          Object.assign(this.data.progress[index], res);
+          return true;
+        })
+      );
+  }
+
+  deleteProgress(id: number): Observable<boolean> {
+    return this.httpClient.delete<any>(`${environment.backendURL}/page/${this.webID}/progress/${id}`,
+      {
+        withCredentials: true, observe: 'response'
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => {
+          if (res) {
+            let deletedIndex = this.data.progress.findIndex(x => x.id === id)
+            this.data.progress.splice(deletedIndex, 1);
+          }
+          return res !== null;
+        })
       );
   }
 }

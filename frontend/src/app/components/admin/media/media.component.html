@@ -1,7 +1,7 @@
 <h2>Channels management</h2>
 <div class="buttons">
     <button mat-raised-button color="primary" (click)="createChannel()" class="btn-add">Add</button>
-    <button mat-raised-button color="primary" *ngIf="true" class="btn-save-order" (click)="saveOrder()">Save</button>
+    <button mat-raised-button color="primary" *ngIf="changed" class="btn-save-order" (click)="saveOrder()">Save</button>
 </div>
 <div cdkDropList class="channel-list" (cdkDropListDropped)="drop($event)" *ngIf="data.channels.length > 0">
     <div cdkDrag class="channel" *ngFor="let channel of data.channels">

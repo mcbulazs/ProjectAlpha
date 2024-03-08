@@ -1,3 +1,11 @@
+.mdc-list-item--with-trailing-meta .mdc-list-item__end:last-of-type {
+    margin-left: 0;
+}
+
+.mdc-list-item--with-trailing-meta .mdc-list-item__end:first-of-type {
+    margin-right: 0;
+}
+
 .channel-line {
     display: flex;
     justify-content: space-between;
@@ -9,14 +17,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-}
-
-.mdc-list-item--with-trailing-meta .mdc-list-item__end:last-of-type {
-    margin-left: 0;
-}
-
-.mdc-list-item--with-trailing-meta .mdc-list-item__end:first-of-type {
-    margin-right: 0;
 }
 
 .channel-list {

@@ -226,6 +226,14 @@ footer {
     padding: 10px;
     border-radius: 5px;
     gap: 5px;
+    min-height: 40px;
+    position: relative;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: end;
+    }
 }
 
 .class {
@@ -261,7 +269,7 @@ header:hover,
 .article:hover,
 .tgf:hover,
 .progresses:hover,
-.channels:hover,
+.channel:hover,
 footer:hover {
     .custom-hover {
         top: 0;

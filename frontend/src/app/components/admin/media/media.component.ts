@@ -71,6 +71,7 @@ export class MediaComponent implements OnInit {
     this.checkOrder();
   }
 
+  //TODO: Implement this method
   checkOrder() {
     this.changed = false;
   }

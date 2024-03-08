@@ -36,9 +36,7 @@ export class CreateChannelDialogComponent {
   channelTypes = CHANNEL_TYPES;
 
   add() {
-    console.log(this.channel);
-    
-    if (this.channel.link === '' || this.channel.link === '') return;
+    if (this.channel.site === '' || this.channel.name === '' || this.channel.link === '') return;
     this.pds.postChannel(this.channel).subscribe(success => {
       this.snackBar.open(`Channel ${success ? 'added' : 'creation failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       this.dialogRef.close();

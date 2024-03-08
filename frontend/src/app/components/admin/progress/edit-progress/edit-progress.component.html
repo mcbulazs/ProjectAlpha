@@ -1,0 +1,13 @@
+<form class="dialog">
+    <h1 mat-dialog-title>{{data ? 'Edit' : 'Add'}} progress</h1>
+    <mat-form-field class="w-100">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" name="name" [(ngModel)]="progress.name" [maxlength]="30" required>
+        <mat-hint align="end">{{progress.name.length}} / {{30}}</mat-hint>
+    </mat-form-field>
+    <file-drag-and-drop (filePath)="setBackground($event)"></file-drag-and-drop>
+    <div mat-dialog-actions class="buttons">
+        <button type="submit" mat-raised-button (click)="submit()" color="primary">{{data ? 'Edit' : 'Add'}}</button>
+        <button type="button" mat-dialog-close mat-raised-button>Close</button>
+    </div>
+</form>

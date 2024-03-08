@@ -1,20 +1,20 @@
 <h2>Article management</h2>
 <button mat-raised-button color="primary" (click)="createArticle()">New article</button>
-<div class="articles-list">
-    <mat-list>
-        <mat-list-item *ngFor="let article of displayedArticles">
-            <mat-icon matListItemIcon>article</mat-icon>
-            <div matListItemTitle class="article-line">
-                <span class="article-title">{{article.title}}</span>
-                <span>{{article.date | date:'yyyy.MM.dd H:mm'}}</span>
-            </div>
-            <button mat-icon-button matListItemMeta #editBtn (click)="editArticle(article, editBtn)">
-                <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button matListItemMeta #deleteBtn (click)="deleteArticle(article.id, deleteBtn)">
-                <mat-icon>delete</mat-icon>
-            </button>
-        </mat-list-item>
-    </mat-list>
-    <mat-paginator #paginator *ngIf="displayedArticles.length !== 0" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [length]="length" (page)="pageEventHandler($event)" showFirstLastButtons="true"></mat-paginator>
-</div>
+<mat-list class="list">
+    <mat-list-item *ngFor="let article of displayedArticles">
+        <mat-icon matListItemIcon>article</mat-icon>
+        <div matListItemTitle class="line">
+            <span class="title">{{article.title}}</span>
+            <span>{{article.date | date:'yyyy.MM.dd H:mm'}}</span>
+        </div>
+        <button mat-icon-button matListItemMeta #editBtn (click)="editArticle(article, editBtn)">
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button matListItemMeta #deleteBtn (click)="deleteArticle(article.id, deleteBtn)">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </mat-list-item>
+</mat-list>
+<mat-paginator #paginator *ngIf="displayedArticles.length !== 0" [pageIndex]="pageIndex" [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions" [length]="length" (page)="pageEventHandler($event)"
+    showFirstLastButtons="true"></mat-paginator>
