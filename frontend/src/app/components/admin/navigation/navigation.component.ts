@@ -28,11 +28,15 @@ export class NavigationComponent implements OnInit {
 
   ngOnInit(): void {
     this.data = this.pds.data;
+    this.setInitState();
+  }
+
+  setInitState() {
+    this.initState = [];
     for (const navItem of this.data.navbar) {
       this.initState.push({ ...navItem });
     }
   }
-
 
   drop(event: CdkDragDrop<NavItem[]>) {
     moveItemInArray(this.data.navbar, event.previousIndex, event.currentIndex);
@@ -51,8 +55,11 @@ export class NavigationComponent implements OnInit {
   }
 
   save() {
-    this.pds.patchNavbar().subscribe(success => {
-      if (success) this.changed = false;
+    this.pds.patchNavbarOrder().subscribe(success => {
+      if (success) {
+        this.changed = false;
+        this.setInitState();
+      }
       this.snackBar.open(`Navigation ${success ? 'reordered' : 'reorder failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
     })
   }

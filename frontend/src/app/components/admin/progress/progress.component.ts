@@ -29,43 +29,66 @@ export class ProgressComponent implements OnInit {
 
   data!: PageData;
   changed: boolean = false;
-  initState: Raid[][] = [];
+  initProgressOrder: number[] = [];
+  initDifficultyOrder: Raid[] = [];
 
   ngOnInit(): void {
     this.data = this.pds.data;
-    for (const progress of this.data.progress) {
-      this.initState.push([...progress.raids]);
-    }
-    console.log(this.initState[0][0] === this.data.progress[0].raids[0]);
+    this.data.progress.forEach(progress => {
+      this.initProgressOrder.push(progress.id);
+      progress.raids.forEach(raid => {
+        this.initDifficultyOrder.push(raid);
+      });
+    });
+    console.log(this.initProgressOrder);
 
   }
 
-  drop(event: CdkDragDrop<Raid[]>, progress: Progress) {
+  dropDifficulty(event: CdkDragDrop<Raid[]>, progress: Progress) {
+    if (event.previousIndex === event.currentIndex) return;
     moveItemInArray(progress.raids, event.previousIndex, event.currentIndex);
     this.checkOrder();
   }
 
-  checkOrder() {
-    this.changed = false;
-    this.initState.forEach((difficulties, i) => {
-      difficulties.forEach((difficulty, j) => {
-        console.log(difficulty, this.data.progress[i].raids[j]);
-
-        if (this.data.progress[i].raids[j] !== difficulty) {
-          this.changed = true;
-          return;
-        }
-      })
-    })
+  dropProgress(event: CdkDragDrop<Progress[]>) {
+    if (event.previousIndex === event.currentIndex) return;
+    moveItemInArray(this.data.progress, event.previousIndex, event.currentIndex);
+    this.checkProgressOrder();
   }
 
-  saveOrder() { }
+  checkProgressOrder() {
+    this.changed = false;
+    this.data.progress.forEach((progress, index) => {
+      if (progress.id !== this.initProgressOrder[index]) {
+        this.changed = true;
+      }
+    });
+    console.log(this.changed);
+
+  }
+
+  checkOrder() {
+    this.changed = false;
+  }
+
+  reset() {
+    this.data.progress.sort((a, b) => this.initProgressOrder.indexOf(a.id) - this.initProgressOrder.indexOf(b.id));
+    this.changed = false;
+  }
+
+  saveOrder() {
+    this.reset();
+  }
 
   createProgress() {
     if (this.dialog.openDialogs.length > 0) return;
-    this.dialog.open(EditProgressComponent).afterClosed().subscribe(() => {
-      this.initState.push([]);
+    this.dialog.open(EditProgressComponent).afterClosed().subscribe(success => {
+      if (success) {
+        this.initProgressOrder.push(this.data.progress[this.data.progress.length - 1].id);
+      }
+      console.log(this.initProgressOrder);
     });
+
   }
 
   editProgress(progress: Progress) {

@@ -1,18 +1,16 @@
 <h2>Progress management</h2>
-<link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 <div class="buttons">
     <button mat-raised-button color="primary" (click)="createProgress()" class="btn-add">Add</button>
     <button mat-raised-button color="primary" *ngIf="changed" class="btn-save-order" (click)="saveOrder()">Save</button>
 </div>
-<mat-accordion class="progresses" multi>
-    <mat-expansion-panel *ngFor="let progress of data.progress" [expanded]="true">
+<mat-accordion cdkDropList (cdkDropListDropped)="dropProgress($event)" class="progresses">
+    <mat-expansion-panel *ngFor="let progress of data.progress" cdkDrag>
         <mat-expansion-panel-header>
             <mat-panel-title class="progress-name">
                 {{progress.name}}
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <div cdkDropList class="list" (cdkDropListDropped)="drop($event, progress)">
+        <div cdkDropList class="list" (cdkDropListDropped)="dropDifficulty($event, progress)">
             <div>
                 <button mat-icon-button (click)="createDifficulty(progress)">
                     <mat-icon>add_circle_outline</mat-icon>
@@ -25,7 +23,7 @@
                 </button>
             </div>
             <div cdkDrag *ngFor="let difficulty of progress.raids; index as i" class="difficulty">
-                <mat-icon matListItemIcon class="material-symbols-outlined">swords</mat-icon>
+                <mat-icon class="material-symbols-outlined icon">swords</mat-icon>
                 <div matListItemTitle class="difficulty-line">
                     <span class="title">{{difficulty.difficulty}}</span>
                     <span>{{difficulty.current}} / {{difficulty.max}}</span>

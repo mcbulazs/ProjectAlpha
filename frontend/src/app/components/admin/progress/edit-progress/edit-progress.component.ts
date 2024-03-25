@@ -52,7 +52,7 @@ export class EditProgressComponent implements OnInit {
   create() {
     this.pds.postProgress(this.progress).subscribe(success => {
       this.snackBar.open(`Progress ${success ? 'added' : 'creation failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
-      this.dialogRef.close();
+      this.dialogRef.close(success);
     });
   }
 

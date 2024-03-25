@@ -31,7 +31,7 @@ export class EditNavigationComponent implements OnInit {
   save() {
     if (this.navitem.name === '') return; // TODO: Display error when saving empty
     if (this.navitem.path === '') this.navitem.enabled = true; // Ensuring that home page remains enabled
-    this.pds.patchNavbar().subscribe(success => {
+    this.pds.patchNavbarItem(this.navitem).subscribe(success => {
       this.snackBar.open(`Navigation update${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       this.dialogRef.close(true);
     });

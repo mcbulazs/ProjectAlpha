@@ -240,16 +240,28 @@ export class PageDataService {
       );
   }
 
-  patchNavbar(): Observable<boolean> {
-    return this.httpClient.patch<NavItem[]>(`${environment.backendURL}/page/${this.webID}/navbar`, this.data.navbar,
+  patchNavbarOrder(): Observable<boolean> {
+    return this.httpClient.patch<boolean>(`${environment.backendURL}/page/${this.webID}/navbar`, this.data.navbar.map(x => x.path),
       {
         withCredentials: true,
+        observe: 'response',
       }).pipe(
         catchError(() => of(null)),
         map(res => {
-          if (res === null) return false;
-          this.data.navbar = res;
-          return true;
+          return res?.status === 200;
+        }),
+      );
+  }
+
+  patchNavbarItem(navItem: NavItem): Observable<boolean> {
+    return this.httpClient.patch<NavItem>(`${environment.backendURL}/page/${this.webID}/navbar/${navItem.path}`, navItem,
+      {
+        withCredentials: true,
+        observe: 'response',
+      }).pipe(
+        catchError(() => of(null)),
+        map(res => {
+          return res?.status === 200;
         }),
       );
   }
