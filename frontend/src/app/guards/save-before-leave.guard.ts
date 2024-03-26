@@ -5,8 +5,9 @@ import { MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialo
 import { MatButton } from '@angular/material/button';
 import { map } from 'rxjs';
 import { NavigationComponent } from '../components/admin/navigation/navigation.component';
+import { ProgressComponent } from '../components/admin/progress/progress.component';
 
-export const saveBeforeLeaveGuard: CanDeactivateFn<NavigationComponent | GeneralComponent> = (component, currentRoute, currentState, nextState) => {
+export const saveBeforeLeaveGuard: CanDeactivateFn<NavigationComponent | GeneralComponent | ProgressComponent> = (component) => {
 
   let dialog = inject(MatDialog);
   if (component.changed) {

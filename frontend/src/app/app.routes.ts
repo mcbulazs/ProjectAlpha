@@ -21,20 +21,22 @@ export const PROJECT_TITLE = 'Project';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent, title: `${PROJECT_TITLE} | Home`, canActivate: [homeGuard], pathMatch: 'full' },
-    { path: 'admin', component: AdminComponent, canActivate: [authGuard], title: `${PROJECT_TITLE} | Admin`, children: [
-        { path: 'general', component: GeneralComponent, canDeactivate: [saveBeforeLeaveGuard]},
-        { path: 'pages', component: NavigationComponent, canDeactivate: [saveBeforeLeaveGuard] },
-        { path: 'uploads', component: UploadsComponent },
-        { path: 'templates', component: TemplatesComponent, },
-        { path: 'articles', component: ArticlesComponent },
-        { path: 'rules', component: GuildRulesComponent },
-        { path: 'recruitment', component: RecruitmentComponent },
-        { path: 'progress', component: ProgressComponent },
-        { path: 'media', component: MediaComponent },
-        { path: 'calendar', component: CalendarComponent },
-        { path: 'settings', component: DangerZoneComponent },
-        { path: '**', redirectTo: 'general' },
-    ]},
-    { path: 'rules', component: RulesComponent, title: `${PROJECT_TITLE} | Rules`},
+    {
+        path: 'admin', component: AdminComponent, canActivate: [authGuard], title: `${PROJECT_TITLE} | Admin`, children: [
+            { path: 'general', component: GeneralComponent, canDeactivate: [saveBeforeLeaveGuard] },
+            { path: 'pages', component: NavigationComponent, canDeactivate: [saveBeforeLeaveGuard] },
+            { path: 'uploads', component: UploadsComponent },
+            { path: 'templates', component: TemplatesComponent, },
+            { path: 'articles', component: ArticlesComponent },
+            { path: 'rules', component: GuildRulesComponent },
+            { path: 'recruitment', component: RecruitmentComponent },
+            { path: 'progress', component: ProgressComponent, canDeactivate: [saveBeforeLeaveGuard] },
+            { path: 'media', component: MediaComponent },
+            { path: 'calendar', component: CalendarComponent },
+            { path: 'settings', component: DangerZoneComponent },
+            { path: '**', redirectTo: 'general' },
+        ]
+    },
+    { path: 'rules', component: RulesComponent, title: `${PROJECT_TITLE} | Rules` },
     { path: '**', redirectTo: '/' },
 ];

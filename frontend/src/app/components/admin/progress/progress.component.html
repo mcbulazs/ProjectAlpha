@@ -1,7 +1,10 @@
 <h2>Progress management</h2>
 <div class="buttons">
     <button mat-raised-button color="primary" (click)="createProgress()" class="btn-add">Add</button>
-    <button mat-raised-button color="primary" *ngIf="changed" class="btn-save-order" (click)="saveOrder()">Save</button>
+    <div style="display: flex; gap: 10px"> <!--! TEMP DIV -->
+        <button mat-raised-button color="primary" *ngIf="changed" class="btn-save-order" (click)="save()">Save</button>
+        <button mat-raised-button color="warn" class="btn-save-order" (click)="reset()">Reset</button>
+    </div>
 </div>
 <mat-accordion cdkDropList (cdkDropListDropped)="dropProgress($event)" class="progresses">
     <mat-expansion-panel *ngFor="let progress of data.progress" cdkDrag>

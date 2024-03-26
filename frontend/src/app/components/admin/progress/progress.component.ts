@@ -30,24 +30,20 @@ export class ProgressComponent implements OnInit {
   data!: PageData;
   changed: boolean = false;
   initProgressOrder: number[] = [];
-  initDifficultyOrder: Raid[] = [];
+  initDifficultyOrder: Raid[][] = [];
 
   ngOnInit(): void {
     this.data = this.pds.data;
     this.data.progress.forEach(progress => {
       this.initProgressOrder.push(progress.id);
-      progress.raids.forEach(raid => {
-        this.initDifficultyOrder.push(raid);
-      });
+      this.initDifficultyOrder.push([...progress.raids]);
     });
-    console.log(this.initProgressOrder);
-
   }
 
   dropDifficulty(event: CdkDragDrop<Raid[]>, progress: Progress) {
     if (event.previousIndex === event.currentIndex) return;
     moveItemInArray(progress.raids, event.previousIndex, event.currentIndex);
-    this.checkOrder();
+    this.checkDifficultyOrder();
   }
 
   dropProgress(event: CdkDragDrop<Progress[]>) {
@@ -63,21 +59,71 @@ export class ProgressComponent implements OnInit {
         this.changed = true;
       }
     });
-    console.log(this.changed);
-
   }
 
-  checkOrder() {
+  checkDifficultyOrder() {
     this.changed = false;
+    this.data.progress.forEach(progress => {
+      let difficultyOrder = this.initDifficultyOrder[this.initProgressOrder.indexOf(progress.id)];
+      progress.raids.forEach((difficulty, i) => {
+        if (difficulty !== difficultyOrder[i]) {
+          this.changed = true;
+        }
+      });
+    });
   }
 
   reset() {
     this.data.progress.sort((a, b) => this.initProgressOrder.indexOf(a.id) - this.initProgressOrder.indexOf(b.id));
-    this.changed = false;
+    this.data.progress.forEach(progress => {
+      Object.assign(progress.raids, this.initDifficultyOrder[this.initProgressOrder.indexOf(progress.id)]);
+    });
+    this.checkDifficultyOrder();
   }
 
-  saveOrder() {
-    this.reset();
+  saveDifficultyOrder() {
+    this.data.progress.forEach(progress => {
+      let difficultyOrder = this.initDifficultyOrder[this.initProgressOrder.indexOf(progress.id)];
+      let progressChanged = false;
+      let i = 0;
+      while (i < progress.raids.length && !progressChanged) {
+        if (progress.raids[i] !== difficultyOrder[i]) {
+          console.log(progress.raids[i], difficultyOrder[i]);
+
+          progressChanged = true;
+          this.pds.patchProgress(progress).subscribe(success => {
+            this.snackBar.open(`Difficulty order ${success ? 'updated' : 'update failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+            if (success) {
+              this.initDifficultyOrder[this.initProgressOrder.indexOf(progress.id)] = [...progress.raids];
+              this.checkDifficultyOrder();
+            }
+          });
+        }
+        i++;
+      }
+    });
+  }
+
+  saveProgressOrder() {
+
+    // TODO: finish when backend is ready
+
+    // send order to backend
+
+    // if request was successful
+    let newOrder = this.data.progress.map(progress => progress.id);
+    let newDifficultyOrder: Raid[][] = [];
+    newOrder.forEach(id => {
+      newDifficultyOrder.push(this.initDifficultyOrder[this.initProgressOrder.indexOf(id)]);
+    });
+    this.initDifficultyOrder = newDifficultyOrder;
+    this.initProgressOrder = newOrder;
+    this.checkProgressOrder();
+  }
+
+  save() {
+    this.saveDifficultyOrder();
+    this.saveProgressOrder();
   }
 
   createProgress() {
@@ -85,10 +131,9 @@ export class ProgressComponent implements OnInit {
     this.dialog.open(EditProgressComponent).afterClosed().subscribe(success => {
       if (success) {
         this.initProgressOrder.push(this.data.progress[this.data.progress.length - 1].id);
+        this.initDifficultyOrder.push([]);
       }
-      console.log(this.initProgressOrder);
     });
-
   }
 
   editProgress(progress: Progress) {
@@ -107,6 +152,11 @@ export class ProgressComponent implements OnInit {
       if (deleted) {
         this.pds.deleteProgress(id).subscribe(success => {
           this.snackBar.open(`Progress ${success ? 'deleted' : 'deletion failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+          if (success) {
+            let index = this.initProgressOrder.indexOf(id);
+            this.initDifficultyOrder.splice(index, 1);
+            this.initProgressOrder.splice(index, 1);
+          }
         });
       }
     });
@@ -119,6 +169,12 @@ export class ProgressComponent implements OnInit {
         progress: progress,
         difficultyIndex: -1,
       },
+    }).afterClosed().subscribe(difficulty => {
+      if (difficulty) {
+        this.initDifficultyOrder[this.initProgressOrder.indexOf(progress.id)].push(difficulty);
+        console.log(difficulty === progress.raids[progress.raids.length - 1]);
+
+      }
     });
   }
 
@@ -129,6 +185,9 @@ export class ProgressComponent implements OnInit {
         progress: progress,
         difficultyIndex: index,
       },
+    }).afterClosed().subscribe(x => {
+      this.checkDifficultyOrder();
+      //TODO: currently all difficulties are new when edited or new created, find out a way to not owerwrite the old ones
     });
   }
 

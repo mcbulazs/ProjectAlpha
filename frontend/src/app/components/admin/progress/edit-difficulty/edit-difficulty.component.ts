@@ -50,14 +50,22 @@ export class EditDifficultyComponent implements OnInit {
     this.data.progress.raids.push(this.difficulty);
     this.pds.patchProgress(this.data.progress).subscribe(success => {
       this.snackBar.open(`Difficulty ${success ? 'added' : 'creation failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
-      this.dialogRef.close();
+      if (success) {
+        this.data.progress.raids[this.data.progress.raids.length - 1] = this.difficulty;
+      }
+      this.dialogRef.close(this.difficulty);
+
     });
   }
 
   update() {
-    this.data.progress.raids[this.data.difficultyIndex] = this.difficulty;
+    let backupDifficulty = { ...this.data.progress.raids[this.data.difficultyIndex] };
+    Object.assign(this.data.progress.raids[this.data.difficultyIndex], this.difficulty);
     this.pds.patchProgress(this.data.progress).subscribe(success => {
       this.snackBar.open(`Difficulty ${success ? 'updated' : 'update failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
+      if (!success) {
+        Object.assign(this.data.progress.raids[this.data.difficultyIndex], backupDifficulty);
+      }
       this.dialogRef.close();
     });
   }
