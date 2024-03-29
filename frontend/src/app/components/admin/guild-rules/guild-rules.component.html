@@ -1,5 +1,5 @@
 <h2>Rules management</h2>
 <ckeditor [(ngModel)]="data.rules" name="rules" [editor]="Editor" [config]="editorConfig" class="rules-editor"
-    (change)="changed = (data.rules !== initState)">
+    (change)="changed = (data.rules !== initState)" (ready)="onReady($event)">
 </ckeditor>
 <button mat-raised-button color="primary" class="btn" (click)="save()" *ngIf="changed">Save</button>

@@ -4,7 +4,7 @@ import { MatButton } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import Editor from 'ckeditor5-custom-build';
-import { CKEDITOR_CONFIG, MAT_SNACKBAR_CONFIG } from '../../../constants';
+import { CKEDITOR_CONFIG, MAT_SNACKBAR_CONFIG, UploadAdapterPlugin } from '../../../constants';
 import { PageDataService } from '../../../services/page.data.service';
 import { PageData } from '../../../interfaces/page.data.interface';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +21,9 @@ export class GuildRulesComponent implements OnInit {
 
   public Editor = Editor;
   editorConfig = CKEDITOR_CONFIG;
+  onReady(editor: Editor) {
+    UploadAdapterPlugin(editor, this.pds);
+  }
 
   data!: PageData;
   initState: string = '';

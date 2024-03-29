@@ -1,8 +1,10 @@
 import { MatSnackBarConfig } from '@angular/material/snack-bar';
 import { PageData } from './interfaces/page.data.interface';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core';
-import { environment } from '../environments/environment.development';
 import { ChannelType } from './interfaces/channel.interface';
+import Editor from 'ckeditor5-custom-build';
+import { UploadAdapter } from '../upload-adapter';
+import { PageDataService } from './services/page.data.service';
 
 export const ARTICLE_CONTENT_MAX_LENGTH = 500;
 export const ARTICLE_TITLE_MAX_LENGTH = 150;
@@ -18,14 +20,6 @@ export const MAT_SNACKBAR_CONFIG: MatSnackBarConfig = {
 
 export const CKEDITOR_CONFIG: EditorConfig = {
   extraPlugins: [],
-  simpleUpload: {
-    // TODO: image upload
-    uploadUrl: `${environment.backendURL}/page/1/files`,
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'image/png',
-    },
-  },
   toolbar: {
     shouldNotGroupWhenFull: true,
     items: [
@@ -49,6 +43,12 @@ export const CKEDITOR_CONFIG: EditorConfig = {
     ],
   },
 };
+
+export function UploadAdapterPlugin(editor: Editor, pds: PageDataService): void {
+  editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+    return new UploadAdapter(loader, pds);
+  };
+}
 
 export const STATIC_IMAGES_PATH = '/assets/images';
 

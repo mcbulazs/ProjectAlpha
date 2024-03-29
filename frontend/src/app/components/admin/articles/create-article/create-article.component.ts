@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { ARTICLE_CONTENT_MAX_LENGTH, ARTICLE_TITLE_MAX_LENGTH, CKEDITOR_CONFIG, MAT_SNACKBAR_CONFIG } from '../../../../constants';
+import { ARTICLE_CONTENT_MAX_LENGTH, ARTICLE_TITLE_MAX_LENGTH, CKEDITOR_CONFIG, MAT_SNACKBAR_CONFIG, UploadAdapterPlugin } from '../../../../constants';
 import { Article } from '../../../../interfaces/article.interface';
 import { PageDataService } from '../../../../services/page.data.service';
 import { AdminComponent } from '../../admin.component';
@@ -29,6 +29,9 @@ export class CreateArticleComponent {
 
   public Editor = Editor;
   editorConfig = CKEDITOR_CONFIG;
+  onReady(editor: Editor) {
+    UploadAdapterPlugin(editor, this.pds);
+  }
 
   article: Article = {
     id: -1,

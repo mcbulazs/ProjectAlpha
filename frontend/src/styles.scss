@@ -99,3 +99,12 @@ body {
         margin-right: 0;
     }
 }
+
+figure.image {
+    margin: 0 auto;
+
+    img {
+        width: 100%;
+        height: auto;
+    }
+}
