@@ -23,7 +23,7 @@ export interface HotlineMessage {
 }
 
 export enum HotlineMessageType {
-  TOGGLE, RECRUITMENT_CHECK,
+  TOGGLE, RECRUITMENT_CHECK, CSS_UPDATE
 }
 
 @Injectable({
@@ -143,6 +143,13 @@ export class PageDataService {
   sendRecruitmentCheck() {
     this.placeholderHotline.next({
       type: HotlineMessageType.RECRUITMENT_CHECK,
+      message: null,
+    });
+  }
+
+  sendCssUpdate() {
+    this.placeholderHotline.next({
+      type: HotlineMessageType.CSS_UPDATE,
       message: null,
     });
   }

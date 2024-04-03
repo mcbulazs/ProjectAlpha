@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { PageData } from '../../../../interfaces/page.data.interface';
 import { HotlineMessageType, PageDataService } from '../../../../services/page.data.service';
@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 })
 export abstract class TemplateComponent implements OnInit, OnDestroy {
 
-  constructor(public pds: PageDataService, public router: Router) { }
+  constructor(public pds: PageDataService, public router: Router, private el: ElementRef) { }
 
   data!: PageData;
   preset!: Preset;
@@ -33,12 +33,20 @@ export abstract class TemplateComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.data = this.pds.data;
     this.preset = PRESETS[this.pds.data.presetid];
+
+    let style = document.createElement('style');
+    style.innerHTML = "app-preview{" + this.data.customcss + "}";
+    this.el.nativeElement.appendChild(style);
+
     this.usePlaceholders = this.pds.usePlaceholders;
     this.subs.add(this.pds.getPlaceholderHotline().subscribe(message => {
       if (message.type === HotlineMessageType.TOGGLE) this.usePlaceholders = message.message;
       if (message.type === HotlineMessageType.RECRUITMENT_CHECK) {
         this.preset = PRESETS[this.pds.data.presetid];
         this.recruitmentEmptyCheck();
+      }
+      if (message.type === HotlineMessageType.CSS_UPDATE) {
+        style.innerHTML = "app-preview{" + this.data.customcss + "}";
       }
     }));
     this.subs.add(this.pds.getNavbarUpdateHotline().subscribe(() => {
