@@ -6,10 +6,14 @@ import { MatButton } from '@angular/material/button';
 import { map } from 'rxjs';
 import { NavigationComponent } from '../components/admin/navigation/navigation.component';
 import { ProgressComponent } from '../components/admin/progress/progress.component';
+import { AuthService } from '../services/auth.service';
 
 export const saveBeforeLeaveGuard: CanDeactivateFn<NavigationComponent | GeneralComponent | ProgressComponent> = (component) => {
 
   let dialog = inject(MatDialog);
+  let authService = inject(AuthService);
+
+  if (!authService.isLoggedIn) return true;
   if (component.changed) {
     const dialogRef = dialog.open(SaveBeforeLeaveComponent);
     return dialogRef.afterClosed().pipe(

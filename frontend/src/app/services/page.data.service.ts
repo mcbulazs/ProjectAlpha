@@ -8,9 +8,9 @@ import { PageBasics } from '../interfaces/page.basics.interface';
 import { NavItem } from '../interfaces/navitem.interface';
 import { Channel } from '../interfaces/channel.interface';
 import { PRESETS } from '../components/preview/components';
-import { PLACEHOLDER_DATA } from '../constants';
 import { Progress } from '../interfaces/progress.interface';
-import { Raid } from '../interfaces/raid.interface';
+import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 export interface TemplateChanger {
   templateID: number,
@@ -31,7 +31,7 @@ export enum HotlineMessageType {
 })
 export class PageDataService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private router: Router, private authService: AuthService) { }
 
   webID!: number;
   data!: PageData;
@@ -44,6 +44,14 @@ export class PageDataService {
   usePlaceholders: boolean = true;
 
   currentPreviewPath: string = '';
+
+  errorHandler(error: Response): Observable<null> {
+    if (error.status === 0) {
+      this.authService.isLoggedIn = false;
+      this.router.navigateByUrl('');
+    }
+    return of(null);
+  }
 
   imageInUse(image: string): boolean {
     let subject = JSON.stringify(this.data);
@@ -98,7 +106,7 @@ export class PageDataService {
       {
         withCredentials: true,
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res === null) return false;
           let deletedIndex = this.images.indexOf(image);
@@ -148,7 +156,7 @@ export class PageDataService {
       {
         withCredentials: true, observe: 'response',
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res === null || res.body === null) return false;
           this.data.articles.unshift(res.body);
@@ -161,7 +169,7 @@ export class PageDataService {
       {
         withCredentials: true, observe: 'response'
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res) {
             let deletedIndex = this.data.articles.findIndex(x => x.id === id)
@@ -178,7 +186,7 @@ export class PageDataService {
       {
         withCredentials: true, observe: 'response'
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res === null || res.body === null) return false;
           let oldArticle = this.data.articles.find(x => x.id === res.body?.id);
@@ -196,7 +204,7 @@ export class PageDataService {
       {
         withCredentials: true,
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res === null) return false;
           return true;
@@ -213,7 +221,7 @@ export class PageDataService {
       {
         withCredentials: true,
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res === null) return false;
           return true;
@@ -230,7 +238,7 @@ export class PageDataService {
       {
         withCredentials: true,
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res === null) return '';
           const imageURL = this.getImage(res.accessurl);
@@ -246,7 +254,7 @@ export class PageDataService {
         withCredentials: true,
         observe: 'response',
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           return res?.status === 200;
         }),
@@ -259,7 +267,7 @@ export class PageDataService {
         withCredentials: true,
         observe: 'response',
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           return res?.status === 200;
         }),
@@ -271,7 +279,7 @@ export class PageDataService {
       {
         withCredentials: true,
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res === null) return false;
           this.data.channels.push(res);
@@ -285,7 +293,7 @@ export class PageDataService {
       {
         withCredentials: true,
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res === null) return false;
           let index = this.data.channels.findIndex(x => x.id === res.id);
@@ -300,7 +308,7 @@ export class PageDataService {
       {
         withCredentials: true, observe: 'response'
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res) {
             let deletedIndex = this.data.channels.findIndex(x => x.id === id)
@@ -326,7 +334,7 @@ export class PageDataService {
       {
         withCredentials: true,
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => res !== null),
       );
   }
@@ -336,7 +344,7 @@ export class PageDataService {
       {
         withCredentials: true,
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res === null) return false;
           this.data.progress.push(res);
@@ -350,7 +358,7 @@ export class PageDataService {
       {
         withCredentials: true,
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res === null) return false;
           let index = this.data.progress.findIndex(x => x.id === res.id);
@@ -365,7 +373,7 @@ export class PageDataService {
       {
         withCredentials: true, observe: 'response'
       }).pipe(
-        catchError(() => of(null)),
+        catchError(err => this.errorHandler(err)),
         map(res => {
           if (res) {
             let deletedIndex = this.data.progress.findIndex(x => x.id === id)

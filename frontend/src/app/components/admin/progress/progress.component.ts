@@ -6,7 +6,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageDataService } from '../../../services/page.data.service';
 import { PageData } from '../../../interfaces/page.data.interface';
-import { MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatList, MatListItem, MatListItemIcon, MatListItemLine, MatListItemMeta, MatListItemTitle } from '@angular/material/list';
 import { EditProgressComponent } from './edit-progress/edit-progress.component';
 import { DeleteModalComponent } from '../../delete-modal/delete-modal.component';

@@ -20,7 +20,7 @@ import { NavigationComponent } from './components/admin/navigation/navigation.co
 export const PROJECT_TITLE = 'Project';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent, title: `${PROJECT_TITLE} | Home`, canActivate: [homeGuard], pathMatch: 'full' },
+    { path: '', component: HomeComponent, title: `${PROJECT_TITLE} | Home`, canActivate: [homeGuard] },
     {
         path: 'admin', component: AdminComponent, canActivate: [authGuard], title: `${PROJECT_TITLE} | Admin`, children: [
             { path: 'general', component: GeneralComponent, canDeactivate: [saveBeforeLeaveGuard] },
