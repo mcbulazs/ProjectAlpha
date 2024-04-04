@@ -1,14 +1,12 @@
 import { CanDeactivateFn } from '@angular/router';
-import { GeneralComponent } from '../components/admin/general/general.component';
 import { Component, inject } from '@angular/core';
 import { MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { map } from 'rxjs';
-import { NavigationComponent } from '../components/admin/navigation/navigation.component';
-import { ProgressComponent } from '../components/admin/progress/progress.component';
 import { AuthService } from '../services/auth.service';
+import { Saveable } from '../interfaces/saveable.interface';
 
-export const saveBeforeLeaveGuard: CanDeactivateFn<NavigationComponent | GeneralComponent | ProgressComponent> = (component) => {
+export const saveBeforeLeaveGuard: CanDeactivateFn<Saveable> = (component) => {
 
   let dialog = inject(MatDialog);
   let authService = inject(AuthService);

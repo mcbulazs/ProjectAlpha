@@ -15,6 +15,7 @@ import { Progress } from '../../../interfaces/progress.interface';
 import { EditDifficultyComponent } from './edit-difficulty/edit-difficulty.component';
 import { CdkDropList, CdkDrag, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Raid } from '../../../interfaces/raid.interface';
+import { Saveable } from '../../../interfaces/saveable.interface';
 
 @Component({
   selector: 'app-progress',
@@ -23,7 +24,7 @@ import { Raid } from '../../../interfaces/raid.interface';
   templateUrl: './progress.component.html',
   styleUrl: './progress.component.scss'
 })
-export class ProgressComponent implements OnInit {
+export class ProgressComponent implements OnInit, Saveable {
 
   constructor(private dialog: MatDialog, private pds: PageDataService, private snackBar: MatSnackBar) { }
 

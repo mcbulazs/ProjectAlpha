@@ -10,6 +10,7 @@ import { PageData } from '../../../interfaces/page.data.interface';
 import { CommonModule } from '@angular/common';
 import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { Saveable } from '../../../interfaces/saveable.interface';
 
 @Component({
   selector: 'app-navigation',
@@ -18,7 +19,7 @@ import { MatIcon } from '@angular/material/icon';
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.scss'
 })
-export class NavigationComponent implements OnInit {
+export class NavigationComponent implements OnInit, Saveable {
 
   constructor(private pds: PageDataService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 

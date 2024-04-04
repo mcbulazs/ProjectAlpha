@@ -11,6 +11,7 @@ import { MAT_SNACKBAR_CONFIG } from '../../../constants';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FileDragAndDropComponent } from '../../file-drag-and-drop/file-drag-and-drop.component';
 import { PageBasics } from '../../../interfaces/page.basics.interface';
+import { Saveable } from '../../../interfaces/saveable.interface';
 
 @Component({
   selector: 'app-general',
@@ -19,7 +20,7 @@ import { PageBasics } from '../../../interfaces/page.basics.interface';
   templateUrl: './general.component.html',
   styleUrl: './general.component.scss'
 })
-export class GeneralComponent implements OnInit {
+export class GeneralComponent implements OnInit, Saveable {
 
   constructor(private pds: PageDataService, private snackBar: MatSnackBar) { }
 
