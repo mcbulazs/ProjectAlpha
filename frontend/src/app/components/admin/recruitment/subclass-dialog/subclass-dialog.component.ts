@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { PRESETS, Preset } from '../../../preview/components';
+import { PRESETS, Preset } from '../../../preview/templates';
 import { RecruitmentComponent } from '../recruitment.component';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';

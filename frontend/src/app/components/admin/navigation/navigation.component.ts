@@ -66,21 +66,22 @@ export class NavigationComponent implements OnInit, Saveable {
   }
 
   editNavigation(id: number) {
+    if (this.dialog.openDialogs.length > 0) return;
     let navitem = this.data.navbar.find(x => x.id === id);
     if (!navitem) return;
     const preserveTitle: string = navitem.name;
     const preserveEnabled: boolean = navitem.enabled;
-    const dialogRef = this.dialog.open(EditNavigationComponent, {
+
+    this.dialog.open(EditNavigationComponent, {
       data: navitem,
-    });
-    dialogRef.afterClosed().subscribe(changed => {
+    }).afterClosed().subscribe(changed => {
       if (!changed) {
         if (!navitem) return;
         navitem.name = preserveTitle;
         navitem.enabled = preserveEnabled;
         this.pds.sendNavbarUpdate();
       }
-    })
+    });
   }
 
   reset() {

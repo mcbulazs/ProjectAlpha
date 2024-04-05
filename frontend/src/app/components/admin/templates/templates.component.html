@@ -1,7 +1,5 @@
 <h2>Choose game preset</h2>
-<button mat-raised-button color="primary"
-    *ngIf="initState.preset !== selectedPreset || data.templateid !== initState.template" (click)="switch()"
-    class="btn-switch">Switch</button>
+<button mat-raised-button color="primary" *ngIf="changed" (click)="save()" class="btn-switch">Switch</button>
 <div class="templates">
     <button mat-button class="template {{i === selectedPreset ? 'selected' : ''}}"
         *ngFor="let preset of presets; index as i" (click)="selectPreset(i)">

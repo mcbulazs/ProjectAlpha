@@ -7,7 +7,7 @@ import { NavItem } from '../interfaces/navitem.interface';
 })
 export class FilterEnabledPipe implements PipeTransform {
 
-  transform(navbar: NavItem[], ...args: unknown[]): NavItem[] {    
+  transform(navbar: NavItem[], ...args: unknown[]): NavItem[] {
     return navbar.filter(x => x.enabled);
   }
 

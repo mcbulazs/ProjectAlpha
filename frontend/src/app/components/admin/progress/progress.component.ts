@@ -146,10 +146,9 @@ export class ProgressComponent implements OnInit, Saveable {
 
   deleteProgress(id: number) {
     if (this.dialog.openDialogs.length > 0) return;
-    const dialogRef = this.dialog.open(DeleteModalComponent, {
+    this.dialog.open(DeleteModalComponent, {
       width: '200px',
-    });
-    dialogRef.afterClosed().subscribe(deleted => {
+    }).afterClosed().subscribe(deleted => {
       if (deleted) {
         this.pds.deleteProgress(id).subscribe(success => {
           this.snackBar.open(`Progress ${success ? 'deleted' : 'deletion failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
@@ -194,10 +193,9 @@ export class ProgressComponent implements OnInit, Saveable {
 
   deleteDifficulty(progress: Progress, index: number) {
     if (this.dialog.openDialogs.length > 0) return;
-    const dialogRef = this.dialog.open(DeleteModalComponent, {
+    this.dialog.open(DeleteModalComponent, {
       width: '200px',
-    });
-    dialogRef.afterClosed().subscribe(deleted => {
+    }).afterClosed().subscribe(deleted => {
       if (deleted) {
         let removed = progress.raids.splice(index, 1);
         this.pds.patchProgress(progress).subscribe(success => {

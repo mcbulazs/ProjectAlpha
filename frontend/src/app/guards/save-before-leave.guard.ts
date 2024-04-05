@@ -16,11 +16,8 @@ export const saveBeforeLeaveGuard: CanDeactivateFn<Saveable> = (component) => {
     const dialogRef = dialog.open(SaveBeforeLeaveComponent);
     return dialogRef.afterClosed().pipe(
       map(save => {
-        if (!save) {
-          component.reset();
-          return true;
-        }
-        if (component.changed) component.save();
+        if (!save) component.reset();
+        else component.save();
         return true;
       })
     );

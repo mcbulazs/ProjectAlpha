@@ -3,9 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageDataService } from '../../../services/page.data.service';
-import { PRESETS, Preset } from '../../preview/components';
+import { PRESETS, Preset } from '../../preview/templates';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { PageData } from '../../../interfaces/page.data.interface';
 import { SubclassDialogComponent } from './subclass-dialog/subclass-dialog.component';
@@ -20,7 +19,7 @@ import { Recruitment } from '../../../interfaces/recruitment.interface';
 })
 export class RecruitmentComponent implements OnInit {
 
-  constructor(private dialog: MatDialog, private pds: PageDataService, private snackBar: MatSnackBar) { }
+  constructor(private dialog: MatDialog, private pds: PageDataService) { }
 
   preset: Preset = PRESETS[this.pds.data.presetid];
 
@@ -32,16 +31,14 @@ export class RecruitmentComponent implements OnInit {
     this.recruitment = this.data.recruitment;
   }
 
-
   select(index: number) {
-    const dialogRef = this.dialog.open(SubclassDialogComponent, {
+    if (this.dialog.openDialogs.length > 0) return;
+    this.dialog.open(SubclassDialogComponent, {
       width: '250px',
       data: {
         preset: this.preset.classes[index],
         userData: this.recruitment[index],
       },
-    });
-    dialogRef.afterClosed().subscribe(() => {
     });
   }
 }

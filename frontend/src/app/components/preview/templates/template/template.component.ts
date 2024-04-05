@@ -4,7 +4,7 @@ import { PageData } from '../../../../interfaces/page.data.interface';
 import { HotlineMessageType, PageDataService } from '../../../../services/page.data.service';
 import { PREVIEW_MODE } from '../../../../../main';
 import { CHANNEL_TYPES, PLACEHOLDER_DATA } from '../../../../constants';
-import { PRESETS, Preset } from '../../components';
+import { PRESETS, Preset } from '../../templates';
 import { Router } from '@angular/router';
 
 @Component({

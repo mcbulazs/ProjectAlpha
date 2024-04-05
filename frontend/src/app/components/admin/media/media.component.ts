@@ -38,26 +38,22 @@ export class MediaComponent implements OnInit {
   }
 
   createChannel() {
+    if (this.dialog.openDialogs.length > 0) return;
     this.dialog.open(CreateChannelDialogComponent);
   }
 
-  updateChannel(channel: Channel, editBtn: MatIconButton) {
-    editBtn.disabled = true;
-    const dialogRef = this.dialog.open(EditChannelDialogComponent, {
+  updateChannel(channel: Channel) {
+    if (this.dialog.openDialogs.length > 0) return;
+    this.dialog.open(EditChannelDialogComponent, {
       data: channel,
-    });
-    dialogRef.afterClosed().subscribe(() => {
-      editBtn.disabled = false;
     });
   }
 
-  deleteChannel(id: number, deleteBtn: MatIconButton) {
-    deleteBtn.disabled = true;
-    const dialogRef = this.dialog.open(DeleteModalComponent, {
+  deleteChannel(id: number) {
+    if (this.dialog.openDialogs.length > 0) return;
+    this.dialog.open(DeleteModalComponent, {
       width: '200px',
-    });
-    dialogRef.afterClosed().subscribe(deleted => {
-      deleteBtn.disabled = false;
+    }).afterClosed().subscribe(deleted => {
       if (deleted) {
         this.pds.deleteChannel(id).subscribe(success => {
           this.snackBar.open(`Channel ${success ? 'deleted' : 'deletion failed'}!`, undefined, MAT_SNACKBAR_CONFIG);

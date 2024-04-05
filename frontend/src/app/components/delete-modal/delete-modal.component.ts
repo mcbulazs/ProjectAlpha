@@ -7,7 +7,6 @@ import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDi
   standalone: true,
   imports: [MatDialogTitle, MatDialogActions, MatButton, MatDialogTitle, MatDialogContent, MatDialogClose],
   templateUrl: './delete-modal.component.html',
-  styleUrl: './delete-modal.component.scss'
 })
 export class DeleteModalComponent {
 

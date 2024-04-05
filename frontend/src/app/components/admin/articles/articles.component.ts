@@ -47,33 +47,29 @@ export class ArticlesComponent implements OnInit {
   }
 
   createArticle() {
-    const dialogRef = this.dialog.open(CreateArticleComponent, {
+    if (this.dialog.openDialogs.length > 0) return;
+    this.dialog.open(CreateArticleComponent, {
       width: '500px',
-    });
-    dialogRef.afterClosed().subscribe(() => {
+    }).afterClosed().subscribe(() => {
       this.setDisplayedArticles();
     });
   }
 
-  editArticle(article: Article, editBtn: MatIconButton) {
-    editBtn.disabled = true;
-    const dialogRef = this.dialog.open(EditArticleComponent, {
+  editArticle(article: Article) {
+    if (this.dialog.openDialogs.length > 0) return;
+    this.dialog.open(EditArticleComponent, {
       width: '500px',
       data: article,
-    });
-    dialogRef.afterClosed().subscribe(() => {
-      editBtn.disabled = false;
+    }).afterClosed().subscribe(() => {
       this.setDisplayedArticles();
     });
   }
 
-  deleteArticle(id: number, deleteBtn: MatIconButton) {
-    deleteBtn.disabled = true;
-    const dialogRef = this.dialog.open(DeleteModalComponent, {
+  deleteArticle(id: number) {
+    if (this.dialog.openDialogs.length > 0) return;
+    this.dialog.open(DeleteModalComponent, {
       width: '200px',
-    });
-    dialogRef.afterClosed().subscribe(deleted => {
-      deleteBtn.disabled = false;
+    }).afterClosed().subscribe(deleted => {
       if (deleted) {
         this.pds.deleteArticle(id).subscribe(success => {
           this.setDisplayedArticles();

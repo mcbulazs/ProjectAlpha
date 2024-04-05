@@ -11,10 +11,10 @@
             <a [href]="channel.link">{{channel.link}}</a>
         </div>
         <div>
-            <button mat-icon-button #editTwitchBtn (click)="updateChannel(channel, editTwitchBtn)">
+            <button mat-icon-button (click)="updateChannel(channel)">
                 <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button #twitchDeleteBtn (click)="deleteChannel(channel.id, twitchDeleteBtn)">
+            <button mat-icon-button (click)="deleteChannel(channel.id)">
                 <mat-icon>delete</mat-icon>
             </button>
         </div>

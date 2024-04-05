@@ -1,5 +1,5 @@
 import { Component, ComponentRef, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { TEMPLATES, Template } from '../components';
+import { TEMPLATES, Template } from '../templates';
 import { PageData } from '../../../interfaces/page.data.interface';
 import { PageDataService } from '../../../services/page.data.service';
 import { Subscription } from 'rxjs';

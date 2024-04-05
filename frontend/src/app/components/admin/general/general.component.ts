@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PageData } from '../../../interfaces/page.data.interface';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { PageDataService } from '../../../services/page.data.service';
@@ -50,8 +50,13 @@ export class GeneralComponent implements OnInit, Saveable {
 
   save() {
     this.pds.patchBasics().subscribe(success => {
-      if (success) this.changed = false;
-      else this.data.title = this.initState.title;
+      if (success) {
+        this.initState.title = this.data.title;
+        this.initState.logo = this.data.logo;
+        this.initState.banner = this.data.banner;
+        this.changed = false;
+      }
+      else this.reset();
       this.snackBar.open(`General settings update${success ? 'd' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
     });
   }

@@ -5,7 +5,6 @@ import { HubComponent } from './hub/hub.component';
   selector: 'app-preview',
   standalone: true,
   imports: [HubComponent],
-  templateUrl: './preview.component.html',
-  styleUrl: './preview.component.scss'
+  template: '<app-hub></app-hub>',
 })
 export class PreviewComponent { }

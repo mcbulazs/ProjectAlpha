@@ -7,7 +7,7 @@ import { Article } from '../interfaces/article.interface';
 import { PageBasics } from '../interfaces/page.basics.interface';
 import { NavItem } from '../interfaces/navitem.interface';
 import { Channel } from '../interfaces/channel.interface';
-import { PRESETS } from '../components/preview/components';
+import { PRESETS } from '../components/preview/templates';
 import { Progress } from '../interfaces/progress.interface';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
@@ -63,19 +63,20 @@ export class PageDataService {
     return this.httpClient.get<PageData>(`${environment.backendURL}/page/${this.webID}`,
       {
         withCredentials: true, observe: 'response',
-      }).pipe(map(res => {
-        if (res.status === 200 && res.body) {
-          let homeNav = res.body.navbar.find(x => x.path === '')!;
-          homeNav.enabled = true;
-          this.data = res.body;
-          if (this.data.recruitment.length === 0) {
-            this.setRecruitment();
+      }).pipe(
+        map(res => {
+          if (res.status === 200 && res.body) {
+            let homeNav = res.body.navbar.find(x => x.path === '')!;
+            homeNav.enabled = true;
+            this.data = res.body;
+            if (this.data.recruitment.length === 0) {
+              this.setRecruitment();
+            }
+            console.log("Page data is ready!");
+            return true;
           }
-          console.log("Page data is ready!");
-          return true;
-        }
-        return false;
-      }));
+          return false;
+        }));
   }
 
   setRecruitment() {

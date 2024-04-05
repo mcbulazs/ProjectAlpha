@@ -26,7 +26,7 @@ export const routes: Routes = [
             { path: 'general', component: GeneralComponent, canDeactivate: [saveBeforeLeaveGuard] },
             { path: 'pages', component: NavigationComponent, canDeactivate: [saveBeforeLeaveGuard] },
             { path: 'uploads', component: UploadsComponent },
-            { path: 'templates', component: TemplatesComponent, },
+            { path: 'templates', component: TemplatesComponent, canDeactivate: [saveBeforeLeaveGuard] },
             { path: 'articles', component: ArticlesComponent },
             { path: 'rules', component: GuildRulesComponent },
             { path: 'recruitment', component: RecruitmentComponent },

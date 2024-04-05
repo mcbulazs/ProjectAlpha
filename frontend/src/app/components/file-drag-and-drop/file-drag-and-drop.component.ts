@@ -21,14 +21,15 @@ export class FileDragAndDropComponent {
   constructor(private pds: PageDataService, private dialog: MatDialog, private snackBar: MatSnackBar) { }
 
   @Input() displayedImage: string = '';
-  @Output() filePath = new EventEmitter<string>();
+  @Output() fileDrop = new EventEmitter<string>();
 
-  openGallery() {
-    const dialogRef = this.dialog.open(GalleryDialogComponent, {
+  openGallery(btn: MatButton) {
+    btn.disabled = true;
+    this.dialog.open(GalleryDialogComponent, {
       width: '800px',
       height: '800px'
-    });
-    dialogRef.afterClosed().subscribe(selected => {
+    }).afterClosed().subscribe(selected => {
+      btn.disabled = false;
       if (selected === undefined) return;
       this.displayedImage = selected;
       this.emitChange();
@@ -42,7 +43,6 @@ export class FileDragAndDropComponent {
         this.displayedImage = res;
         this.emitChange();
       }
-      console.log(res);
       this.snackBar.open(`File upload${res ? 'ed' : ' failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
     });
   }
@@ -53,6 +53,6 @@ export class FileDragAndDropComponent {
   }
 
   emitChange() {
-    this.filePath.emit(this.displayedImage);
+    this.fileDrop.emit(this.displayedImage);
   }
 }

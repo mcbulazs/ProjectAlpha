@@ -1,10 +1,11 @@
 <form [formGroup]="registerForm" (submit)="register()" class="auth-form">
     <mat-form-field>
         <mat-label>Email</mat-label>
-        <input matInput type="email" autocomplete="email" formControlName="email" id="email" [errorStateMatcher]="matcher">
+        <input matInput type="email" autocomplete="email" formControlName="email" id="email"
+            [errorStateMatcher]="matcher">
         <mat-error *ngIf="email?.hasError('required')">Email is <strong>required</strong></mat-error>
         <mat-error *ngIf="email?.hasError('email')">Email format is <strong>invalid</strong></mat-error>
-        <mat-error *ngIf="email?.hasError('taken')">Email is already in use</mat-error>
+        <mat-error *ngIf="email?.hasError('taken')">Email is already taken</mat-error>
     </mat-form-field>
     <mat-form-field>
         <mat-label>Password</mat-label>
@@ -14,9 +15,13 @@
     </mat-form-field>
     <mat-form-field>
         <mat-label>Confirm Password</mat-label>
-        <input matInput type="password" autocomplete="new-password" formControlName="passwordConfirm" id="password-confirm">
-        <mat-error *ngIf="passwordConfirm?.getError('match') === false">Passwords must <strong>match</strong></mat-error>
+        <input matInput type="password" autocomplete="new-password" formControlName="passwordConfirm"
+            id="password-confirm">
+        <mat-error *ngIf="passwordConfirm?.getError('match') === false">Passwords must
+            <strong>match</strong></mat-error>
     </mat-form-field>
-    <mat-checkbox formControlName="acceptRules" color="primary" id="acceptRules">I accept the <a routerLink="rules" target="_blank" class="link">rules</a></mat-checkbox>
-    <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.pristine || registerForm.invalid">Register</button>
+    <mat-checkbox formControlName="acceptRules" color="primary" id="acceptRules">I accept the <a routerLink="rules"
+            target="_blank" class="link">rules</a></mat-checkbox>
+    <button mat-raised-button color="primary" type="submit"
+        [disabled]="registerForm.pristine || registerForm.invalid">Register</button>
 </form>

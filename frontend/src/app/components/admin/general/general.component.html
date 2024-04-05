@@ -11,7 +11,7 @@
         </mat-form-field>
     </div>
     <h3>Logo</h3>
-    <file-drag-and-drop [displayedImage]="data.logo" (filePath)="changeLogo($event)"></file-drag-and-drop>
+    <file-drag-and-drop [displayedImage]="data.logo" (fileDrop)="changeLogo($event)"></file-drag-and-drop>
     <h3>Banner</h3>
-    <file-drag-and-drop [displayedImage]="data.banner" (filePath)="changeBanner($event)"></file-drag-and-drop>
+    <file-drag-and-drop [displayedImage]="data.banner" (fileDrop)="changeBanner($event)"></file-drag-and-drop>
 </form>

@@ -6,7 +6,7 @@ import { MatDialogClose, MatDialogRef } from '@angular/material/dialog';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { GeneralComponent } from '../../general/general.component';
 import { MatIcon } from '@angular/material/icon';
-import { PRESETS, Preset } from '../../../preview/components';
+import { PRESETS, Preset } from '../../../preview/templates';
 
 @Component({
   selector: 'app-gallery-dialog',

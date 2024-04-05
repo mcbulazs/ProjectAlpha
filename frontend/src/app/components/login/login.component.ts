@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { User } from '../../interfaces/user.interface';
 import { Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
@@ -31,12 +31,12 @@ export class LoginComponent {
   loginForm = new FormGroup({
     email: new FormControl('', {
       validators: [
-        Validators.required, Validators.email
+        Validators.required, Validators.email,
       ]
     }),
     password: new FormControl('', {
       validators: [
-        Validators.required, Validators.minLength(8)
+        Validators.required,
       ]
     }),
   });
@@ -48,6 +48,7 @@ export class LoginComponent {
           if (res.mismatch) {
             this.loginForm.controls.password.reset();
             this.loginForm.controls.email.markAsPristine({ onlySelf: true });
+            this.loginForm.setErrors({ mismatch: true });
           } else this.router.navigate(['admin']);
         }
       });

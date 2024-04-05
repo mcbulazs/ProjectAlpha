@@ -36,25 +36,32 @@ export class AuthService {
   }
 
   register(user: any): Observable<any> {
-    return this.httpClient.post(`${environment.backendURL}/register`, {
-      email: user.email,
-      password: user.password,
-    }, { withCredentials: true });
+    return this.httpClient.post(`${environment.backendURL}/register`,
+      {
+        email: user.email,
+        password: user.password,
+      },
+      { withCredentials: true, });
   }
 
   login(user: User): Observable<any> {
-    return this.httpClient.post(`${environment.backendURL}/login`, {
-      email: user.email,
-      password: user.password,
-    }, { withCredentials: true });
+    return this.httpClient.post(`${environment.backendURL}/login`,
+      {
+        email: user.email,
+        password: user.password,
+      },
+      { withCredentials: true, });
   }
 
   logout(): Observable<any> {
-    return this.httpClient.get(`${environment.backendURL}/logout`, { withCredentials: true }).pipe(
-      map(res => {
-        this.isLoggedIn = false;
-        this.webID = -1;
-        return res;
-      }));
+    return this.httpClient.get(`${environment.backendURL}/logout`,
+      {
+        withCredentials: true,
+      }).pipe(
+        map(res => {
+          this.isLoggedIn = false;
+          this.webID = -1;
+          return res;
+        }));
   }
 }

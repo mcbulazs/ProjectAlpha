@@ -8,7 +8,7 @@ import { AuthErrorStateMatcher } from '../login/login.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-register',
@@ -19,7 +19,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 })
 export class RegisterComponent {
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   matcher = new AuthErrorStateMatcher();
 
@@ -40,26 +40,18 @@ export class RegisterComponent {
     acceptRules: new FormControl(false, [
       Validators.requiredTrue
     ])
-  }, {validators: PasswordValidator });
-
-  registerFail = {
-    occured: false,
-    message: "Email is already registered"
-  }
+  }, { validators: PasswordValidator });
 
   register() {
-    this.authService.register(this.registerForm.value).subscribe({
-      next: x => {
-        console.log("Register success:", x);
+    this.authService.register(this.registerForm.value).subscribe(res => {
+      if (res.message) {
         this.router.navigate(['admin/templates']);
-      },
-      error: err => {
-        console.log("Register error:", err)
+      } else if (res.error) {
         this.registerForm.controls.password.reset();
         this.registerForm.controls.passwordConfirm.reset();
-        this.registerForm.controls.email.markAsPristine({onlySelf: true});
-        this.registerForm.controls.email.setErrors({'taken': true});
-      },
+        this.registerForm.controls.email.markAsPristine({ onlySelf: true });
+        this.registerForm.controls.email.setErrors({ 'taken': true });
+      }
     });
   }
 
