@@ -265,22 +265,6 @@ footer {
     display: none;
 }
 
-.custom-hover {
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    color: #111;
-    font-size: 20%;
-    font-weight: bold;
-    background-color: rgba($color: #fff, $alpha: 0.7);
-    font-size-adjust: 20px;
-}
-
 * {
     box-sizing: border-box;
     position: relative;

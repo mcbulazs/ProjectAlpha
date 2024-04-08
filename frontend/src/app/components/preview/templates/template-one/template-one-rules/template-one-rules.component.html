@@ -7,32 +7,32 @@
     flex-direction: column;
     justify-content: space-between;
   ">
-    <div class="page">
-        <header [style.background-image]="
+  <div class="page">
+    <header [style.background-image]="
         'url(' +
         (usePlaceholders && data.banner === ''
           ? PLACEHOLDERS.banner
           : data.banner) +
         ')'
       ">
-            <div class="titles">
-                <img [src]="
+      <div class="titles">
+        <img [src]="
             usePlaceholders && data.logo === '' ? PLACEHOLDERS.logo : data.logo
           " class="logo {{
             usePlaceholders && data.logo === '' ? 'placeholder' : ''
           }}" draggable="false" />
-                <h1 class="title {{
+        <h1 class="title {{
             usePlaceholders && data.title === '' ? 'placeholder' : ''
           }}">
-                    {{
-                    usePlaceholders && data.title === ""
-                    ? PLACEHOLDERS.title
-                    : data.title
-                    }}
-                </h1>
-            </div>
-            <div class="menubar">
-                <div class="menu-item {{
+          {{
+          usePlaceholders && data.title === ""
+          ? PLACEHOLDERS.title
+          : data.title
+          }}
+        </h1>
+      </div>
+      <div class="menubar">
+        <div class="menu-item {{
             usePlaceholders && data.navbar.length === 1 ? 'placeholder' : ''
           }}" *ngFor="
             let item of usePlaceholders && data.navbar.length === 1
@@ -40,27 +40,27 @@
               : (data.navbar | filterEnabled);
             index as i
           ">
-                    <a [routerLink]="PREVIEWMODE ? null : item.path"
-                        (click)="PREVIEWMODE ? changeTemplate(item.path) : ''" [class.active]="item.path === 'rules'">{{
-                        item.name | uppercase }}</a>
-                    <div class="spacer" *ngIf="
+          <a [routerLink]="PREVIEWMODE ? null : item.path" (click)="PREVIEWMODE ? changeTemplate(item.path) : ''"
+            [class.active]="item.path === 'rules'">{{
+            item.name | uppercase }}</a>
+          <div class="spacer" *ngIf="
               i <
               (usePlaceholders && data.navbar.length === 1
                 ? PLACEHOLDERS.navbar.length - 1
                 : (data.navbar | filterEnabled).length - 1)
             "></div>
-                </div>
-            </div>
-        </header>
-        <div class="content">
-            <div class="rules article">
-                <div class="rule"
-                    [innerHTML]="usePlaceholders && data.rules.length === 0 ? PLACEHOLDERS.rules : data.rules | safeHtml">
-                </div>
-            </div>
         </div>
+      </div>
+    </header>
+    <div class="content">
+      <div class="rules article">
+        <div class="rule"
+          [innerHTML]="usePlaceholders && data.rules.length === 0 ? PLACEHOLDERS.rules : data.rules | safeHtml">
+        </div>
+      </div>
     </div>
-    <footer>
-        <span>&copy; All rights reserved 2024</span>
-    </footer>
+  </div>
+  <footer>
+    <span>&copy; All rights reserved 2024</span>
+  </footer>
 </div>

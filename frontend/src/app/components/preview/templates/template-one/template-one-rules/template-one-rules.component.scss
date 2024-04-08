@@ -20,6 +20,7 @@ header {
     flex-direction: column;
     justify-content: space-between;
     user-select: none;
+    position: relative;
 }
 
 .logo {
@@ -94,6 +95,7 @@ article {
     box-shadow: 7px 7px 20px -7px #eee;
     padding: 10px;
     width: 100%;
+    position: relative;
 }
 
 .article-header {
@@ -138,6 +140,7 @@ img {
     box-shadow: 7px 7px 20px -7px #eee;
     border: 2px solid black;
     padding: 10px;
+    position: relative;
 }
 
 .tgf-title {
@@ -171,6 +174,7 @@ footer {
     align-items: center;
     justify-content: center;
     bottom: 0;
+    position: relative;
 }
 
 .progresses,
@@ -181,6 +185,7 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: relative;
 }
 
 .progress-title,
@@ -221,6 +226,14 @@ footer {
     padding: 10px;
     border-radius: 5px;
     gap: 5px;
+    min-height: 40px;
+    position: relative;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: end;
+    }
 }
 
 .class {
@@ -246,4 +259,9 @@ footer {
 
 .d-none {
     display: none;
+}
+
+* {
+    box-sizing: border-box;
+    position: relative;
 }
