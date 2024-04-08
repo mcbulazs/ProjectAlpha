@@ -15,7 +15,6 @@
           : data.banner) +
         ')'
       ">
-      <div class="custom-hover" *ngIf="router.url === '/admin/settings'">header</div>
       <div class="titles">
         <img [src]="
             usePlaceholders && data.logo === '' ? PLACEHOLDERS.logo : data.logo
@@ -62,7 +61,6 @@
               ? PLACEHOLDERS.articles
               : data.articles
           ">
-          <div class="custom-hover" *ngIf="router.url === '/admin/settings'">.article</div>
           <div class="article-header">
             <h2>{{ article.title }}</h2>
             <span class="article-date">Posted on {{ article.date | date : "yyyy.MM.dd, H:mm" }}</span>
@@ -74,7 +72,6 @@
       </article>
       <div class="sidebar">
         <div class="tgf" *ngIf="usePlaceholders || !recruitmentEmpty">
-          <div class="custom-hover" *ngIf="router.url === '/admin/settings'">.tgf</div>
           <h2 class="tgf-title">Recruiting</h2>
           <div class="tgf-icons">
             <div class="class" *ngFor="
@@ -94,7 +91,6 @@
           </div>
         </div>
         <div class="progresses" *ngIf="usePlaceholders || data.progress.length !== 0">
-          <div class="custom-hover" *ngIf="router.url === '/admin/settings'">.progresses</div>
           <h2 class="progress-title">Progress</h2>
           <div *ngFor="
               let item of usePlaceholders && data.progress.length === 0
@@ -111,7 +107,6 @@
           </div>
         </div>
         <div class="channels" *ngIf="usePlaceholders || data.channels.length !== 0">
-          <div class="custom-hover" *ngIf="router.url === '/admin/settings'">.channel</div>
           <h2 class="channels-title">Channels</h2>
           <a [href]="item.link" draggable="false" target="_blank" *ngFor="
               let item of usePlaceholders && data.channels.length === 0
@@ -120,7 +115,6 @@
             " class="channel {{
               usePlaceholders && data.channels.length === 0 ? 'placeholder' : ''
             }}" [style.background-color]="channelTypes[item.site].color">
-            <div class="custom-hover" *ngIf="router.url === '/admin/settings'">.channel</div>
             <img [src]="channelTypes[item.site].logo" style="width: 25px" draggable="false" />
             <span>{{ item.name }}</span>
           </a>
@@ -129,7 +123,6 @@
     </div>
   </div>
   <footer>
-    <div class="custom-hover" *ngIf="router.url === '/admin/settings'">footer</div>
     <span>&copy; All rights reserved 2024</span>
   </footer>
 </div>

@@ -5,14 +5,13 @@ import { HotlineMessageType, PageDataService } from '../../../../services/page.d
 import { PREVIEW_MODE } from '../../../../../main';
 import { CHANNEL_TYPES, PLACEHOLDER_DATA } from '../../../../constants';
 import { PRESETS, Preset } from '../../templates';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-template',
   standalone: true,
   imports: [],
   template: '',
-  styles: '',
   encapsulation: ViewEncapsulation.ShadowDom,
 })
 export abstract class TemplateComponent implements OnInit, OnDestroy {
@@ -27,6 +26,8 @@ export abstract class TemplateComponent implements OnInit, OnDestroy {
   usePlaceholders!: boolean;
   recruitmentEmpty: boolean = false;
   public channelTypes: any = CHANNEL_TYPES;
+
+  tagElement: any;
 
   private subs = new Subscription();
 
@@ -53,6 +54,23 @@ export abstract class TemplateComponent implements OnInit, OnDestroy {
       this.data.navbar = [...this.pds.data.navbar];
     }));
     this.recruitmentEmptyCheck();
+    this.displayTags = this.displayTags.bind(this);
+    document.addEventListener('mouseover', this.displayTags);
+  }
+
+  displayTags(e: any) {
+    if (this.tagElement && e.target === this.tagElement) return;
+    if (this.tagElement) this.tagElement.remove();
+    if (!e.target.closest("app-preview > *:nth-child(2)")) return;
+    if (this.router.url !== '/admin/settings') return;
+
+    this.tagElement = document.createElement('div');
+    this.tagElement.style.cssText = 'top: 0; left: 0; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; position: absolute; color: #111; font-size: 20px; font-weight: bold; background-color: rgba(255, 255, 255, 0.7);';
+    this.tagElement.className = 'custom-hover';
+    this.tagElement.innerHTML = `${e.target.tagName.toLowerCase()}${e.target.className.length > 0 ? `.${e.target.className.split(" ")[0]}` : ''}`;
+    this.tagElement.style.pointerEvents = 'none';
+    if (e.target.contains(this.tagElement)) return;
+    e.target.appendChild(this.tagElement);
   }
 
   changeTemplate(path: string) {
@@ -66,6 +84,7 @@ export abstract class TemplateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    document.removeEventListener('mouseover', this.displayTags);
     this.subs.unsubscribe();
   }
 }
