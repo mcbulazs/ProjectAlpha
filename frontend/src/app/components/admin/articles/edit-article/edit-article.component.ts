@@ -30,9 +30,9 @@ export class EditArticleComponent {
 
   article: Article = { ...this.data };
 
-  public Editor = Editor;
+  public Editor: any = Editor;
   editorConfig = CKEDITOR_CONFIG;
-  onReady(editor: Editor) {
+  onReady(editor: any) {
     UploadAdapterPlugin(editor, this.pds);
   }
 

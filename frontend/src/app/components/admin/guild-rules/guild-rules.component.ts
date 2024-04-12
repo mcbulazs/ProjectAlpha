@@ -19,9 +19,9 @@ import { FormsModule } from '@angular/forms';
 export class GuildRulesComponent implements OnInit {
   constructor(private pds: PageDataService, private snackBar: MatSnackBar) { }
 
-  public Editor = Editor;
+  public Editor: any = Editor;
   editorConfig = CKEDITOR_CONFIG;
-  onReady(editor: Editor) {
+  onReady(editor: any) {
     UploadAdapterPlugin(editor, this.pds);
   }
 

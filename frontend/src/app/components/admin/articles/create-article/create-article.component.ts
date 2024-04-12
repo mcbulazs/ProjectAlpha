@@ -27,9 +27,9 @@ export class CreateArticleComponent {
   contentMaxLength = ARTICLE_CONTENT_MAX_LENGTH;
   titleMaxLength = ARTICLE_TITLE_MAX_LENGTH;
 
-  public Editor = Editor;
+  public Editor: any = Editor;
   editorConfig = CKEDITOR_CONFIG;
-  onReady(editor: Editor) {
+  onReady(editor: any) {
     UploadAdapterPlugin(editor, this.pds);
   }
 
