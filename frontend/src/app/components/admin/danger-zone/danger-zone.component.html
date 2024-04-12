@@ -1,5 +1,3 @@
-<p>danger-zone works!</p>
-<mat-form-field style="width: 100%;">
-    <mat-label>Custom CSS</mat-label>
-    <textarea matInput [(ngModel)]="data.customcss" style="height: 500px;" (input)="updateCss()"></textarea>
-</mat-form-field>
+<h2>Custom CSS</h2>
+<ngx-monaco-editor [options]="monacoOptions" [(ngModel)]="data.customcss" (ngModelChange)="updateCss()"
+    class="monaco-editor"></ngx-monaco-editor>

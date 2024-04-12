@@ -3,7 +3,8 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { HttpClientModule } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), importProvidersFrom(HttpClientModule), provideAnimations(), provideAnimations()]
+  providers: [provideRouter(routes), importProvidersFrom(HttpClientModule), provideAnimations(), provideAnimations(), importProvidersFrom(MonacoEditorModule.forRoot())]
 };
