@@ -4,7 +4,7 @@ import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatDialogTitle, MatDialogActions, MatDialogClose, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormField, MatLabel, MatHint } from '@angular/material/form-field';
+import { MatFormField, MatLabel, MatHint, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { Article } from '../../../../interfaces/article.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -17,7 +17,7 @@ import Editor from '../../../../../../ckeditor5-custom-build/ckeditor';
 @Component({
   selector: 'app-edit-article',
   standalone: true,
-  imports: [CommonModule, CKEditorModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, CdkTextareaAutosize, MatDialogTitle, MatDialogActions, MatDialogClose],
+  imports: [CommonModule, CKEditorModule, FormsModule, MatInput, MatFormField, MatLabel, MatButton, MatHint, MatError, CdkTextareaAutosize, MatDialogTitle, MatDialogActions, MatDialogClose],
   templateUrl: './edit-article.component.html',
   styleUrl: './edit-article.component.scss'
 })
@@ -34,6 +34,14 @@ export class EditArticleComponent {
   editorConfig = CKEDITOR_CONFIG;
   onReady(editor: any) {
     UploadAdapterPlugin(editor, this.pds);
+  }
+
+  valid = false;
+  contentTooLong = false;
+
+  checkValidity(): void {
+    this.valid = !(this.article.content === '' || this.article.title === '' || this.article.title.length > this.titleMaxLength || this.article.content.length > this.contentMaxLength);
+    this.contentTooLong = this.article.content.length > this.contentMaxLength;
   }
 
   update() {

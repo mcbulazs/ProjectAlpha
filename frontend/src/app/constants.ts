@@ -2,7 +2,7 @@ import { MatSnackBarConfig } from '@angular/material/snack-bar';
 import { PageData } from './interfaces/page.data.interface';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core';
 import { ChannelType } from './interfaces/channel.interface';
-import Editor from '../../ckeditor5-custom-build/ckeditor';
+import Editor from 'ckeditor5-custom-build/ckeditor';
 import { UploadAdapter } from '../upload-adapter';
 import { PageDataService } from './services/page.data.service';
 

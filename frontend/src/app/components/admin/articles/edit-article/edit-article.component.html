@@ -2,13 +2,15 @@
     <h1 mat-dialog-title>Edit article</h1>
     <mat-form-field class="w-100">
         <mat-label>Title</mat-label>
-        <input matInput type="text" name="title" [(ngModel)]="article.title" [maxlength]="titleMaxLength">
+        <input matInput type="text" name="title" [(ngModel)]="article.title" [maxlength]="titleMaxLength"
+            (input)="checkValidity()">
         <mat-hint align="end">{{article.title.length}} / {{titleMaxLength}}</mat-hint>
     </mat-form-field>
     <ckeditor [(ngModel)]="article.content" name="content" [editor]="Editor" [config]="editorConfig"
-        (ready)="onReady($event)"></ckeditor>
+        (ready)="onReady($event)" (change)="checkValidity()"></ckeditor>
+    <mat-error *ngIf="contentTooLong">Article is <strong>too long</strong></mat-error>
     <div mat-dialog-actions class="buttons">
-        <button type="submit" mat-raised-button (click)="update()" color="primary">Update</button>
+        <button type="submit" mat-raised-button (click)="update()" color="primary" [disabled]="!valid">Update</button>
         <button type="button" mat-dialog-close mat-raised-button>Close</button>
     </div>
 </form>
