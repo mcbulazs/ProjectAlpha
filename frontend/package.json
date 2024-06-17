@@ -21,7 +21,6 @@
     "@angular/platform-browser-dynamic": "^17.3.4",
     "@angular/router": "^17.3.4",
     "@ckeditor/ckeditor5-angular": "^7.0.1",
-    "@ckeditor/ckeditor5-build-classic": "^41.3.0",
     "@ckeditor/ckeditor5-upload": "^41.3.0",
     "ckeditor5-custom-build": "file:ckeditor5-custom-build",
     "monaco-editor": "^0.44.0",

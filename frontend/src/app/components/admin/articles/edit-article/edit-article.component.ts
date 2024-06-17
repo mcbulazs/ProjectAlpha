@@ -8,11 +8,11 @@ import { MatFormField, MatLabel, MatHint } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { Article } from '../../../../interfaces/article.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ARTICLE_CONTENT_MAX_LENGTH, ARTICLE_TITLE_MAX_LENGTH, CKEDITOR_CONFIG, MAT_SNACKBAR_CONFIG, UploadAdapterPlugin } from '../../../../constants';
+import { CKEDITOR_CONFIG, MAT_SNACKBAR_CONFIG, UploadAdapterPlugin } from '../../../../constants';
 import { PageDataService } from '../../../../services/page.data.service';
 import { ArticlesComponent } from '../articles.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import Editor from 'ckeditor5-custom-build';
+import Editor from '../../../../../../ckeditor5-custom-build/ckeditor';
 
 @Component({
   selector: 'app-edit-article',
@@ -25,8 +25,8 @@ export class EditArticleComponent {
 
   constructor(public dialogRef: MatDialogRef<ArticlesComponent>, @Inject(MAT_DIALOG_DATA) public data: Article, private pds: PageDataService, private snackBar: MatSnackBar) { }
 
-  contentMaxLength = ARTICLE_CONTENT_MAX_LENGTH;
-  titleMaxLength = ARTICLE_TITLE_MAX_LENGTH;
+  titleMaxLength = 150;
+  contentMaxLength = 20000;
 
   article: Article = { ...this.data };
 
@@ -38,6 +38,8 @@ export class EditArticleComponent {
 
   update() {
     if (this.article.title === this.data.title && this.article.content === this.data.content) return;
+    if (this.article.content === '' || this.article.title === '') return;
+    if (this.article.title.length > this.titleMaxLength) return;
     this.pds.patchArticle(this.article).subscribe(success => {
       this.snackBar.open(`Article ${success ? 'updated' : 'update failed'}!`, undefined, MAT_SNACKBAR_CONFIG);
       this.dialogRef.close();

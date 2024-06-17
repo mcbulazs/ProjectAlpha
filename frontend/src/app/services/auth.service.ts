@@ -14,14 +14,13 @@ export class AuthService {
   webID: number = -1;
   isLoggedIn: boolean = false;
 
-  backendState = true;
+  serverDown = false;
 
   isAuthenticated(): Observable<boolean> {
     if (this.isLoggedIn) return of(true);
     return this.httpClient.get<any>(`${environment.backendURL}/auth`, { withCredentials: true }).pipe(
       catchError(() => {
-        this.backendState = false;
-        return of(true);
+        return of(this.serverDown = true);
       }),
       map(res => {
         if (res.webid) {

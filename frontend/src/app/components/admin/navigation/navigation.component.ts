@@ -32,20 +32,20 @@ export class NavigationComponent implements OnInit, Saveable {
     this.setInitState();
   }
 
-  setInitState() {
+  setInitState(): void {
     this.initState = [];
     for (const navItem of this.data.navbar) {
       this.initState.push({ ...navItem });
     }
   }
 
-  drop(event: CdkDragDrop<NavItem[]>) {
+  drop(event: CdkDragDrop<NavItem[]>): void {
     moveItemInArray(this.data.navbar, event.previousIndex, event.currentIndex);
     this.pds.sendNavbarUpdate();
     this.checkOrder();
   }
 
-  checkOrder() {
+  checkOrder(): void {
     for (let i = 0; i < this.initState.length; i++) {
       if (this.initState[i].id !== this.data.navbar[i].id) {
         this.changed = true;
@@ -55,7 +55,7 @@ export class NavigationComponent implements OnInit, Saveable {
     this.changed = false;
   }
 
-  save() {
+  save(): void {
     this.pds.patchNavbarOrder().subscribe(success => {
       if (success) {
         this.changed = false;
@@ -65,31 +65,34 @@ export class NavigationComponent implements OnInit, Saveable {
     })
   }
 
-  editNavigation(id: number) {
+  editNavigation(id: number): void {
     if (this.dialog.openDialogs.length > 0) return;
-    let navitem = this.data.navbar.find(x => x.id === id);
-    if (!navitem) return;
-    const preserveTitle: string = navitem.name;
-    const preserveEnabled: boolean = navitem.enabled;
 
-    this.dialog.open(EditNavigationComponent, {
-      data: navitem,
-    }).afterClosed().subscribe(changed => {
-      if (!changed) {
-        if (!navitem) return;
-        navitem.name = preserveTitle;
-        navitem.enabled = preserveEnabled;
-        this.pds.sendNavbarUpdate();
-      }
-    });
+    const navItem = this.data.navbar.find(x => x.id === id);
+    if (!navItem) return;
+
+    const oldName: string = navItem.name;
+    const oldEnabled: boolean = navItem.enabled;
+
+    this.dialog.open(EditNavigationComponent, { data: navItem })
+      .afterClosed().subscribe(changed => {
+        if (changed) {
+          const initNavItem = this.initState.find(x => x.id === id);
+          if (!initNavItem) return;
+          initNavItem.enabled = navItem.enabled;
+          initNavItem.name = navItem.name;
+        } else {
+          navItem.name = oldName;
+          navItem.enabled = oldEnabled;
+          this.pds.sendNavbarUpdate();
+        }
+      });
   }
 
-  reset() {
-    if (this.changed) {
-      for (let i = 0; i < this.data.navbar.length; i++) {
-        this.data.navbar[i] = this.initState[i];
-      }
-      this.pds.sendNavbarUpdate();
+  reset(): void {
+    for (let i = 0; i < this.data.navbar.length; i++) {
+      this.data.navbar[i] = this.initState[i];
     }
+    this.pds.sendNavbarUpdate();
   }
 }

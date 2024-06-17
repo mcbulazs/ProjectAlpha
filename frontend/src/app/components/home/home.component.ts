@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { RegisterComponent } from '../register/register.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Subscription, interval, timer } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   backgrounds = new Array();
   usedBackgrounds = new Array();
-  serverState = this.authService.backendState;
+  serverDown = this.authService.serverDown;
 
   private bgChanger = new Subscription();
   @HostBinding('style.background-image') bgImage: string = '';
@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.backgrounds.push(this.usedBackgrounds.shift());
         }
       }
-      const next = this.backgrounds.splice(Math.floor(Math.random()*this.backgrounds.length), 1);
+      const next = this.backgrounds.splice(Math.floor(Math.random() * this.backgrounds.length), 1);
       this.usedBackgrounds.push(next[0]);
       this.bgImage = `url('${next[0].src}')`;
     }));
@@ -65,12 +65,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.authService.login({
       email: "a@a",
       password: "password",
-    }).subscribe(x => {
-      if (x.mismatch) {
+    }).subscribe(res => {
+      if (res.mismatch) {
         this.authService.register({
           email: "a@a",
           password: "password",
-        }).subscribe(x => this.router.navigate(['admin']));
+        }).subscribe(() => this.router.navigate(['admin']));
       } else this.router.navigate(['admin'])
     });
   }

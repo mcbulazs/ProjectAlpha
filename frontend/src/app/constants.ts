@@ -2,12 +2,9 @@ import { MatSnackBarConfig } from '@angular/material/snack-bar';
 import { PageData } from './interfaces/page.data.interface';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core';
 import { ChannelType } from './interfaces/channel.interface';
-import Editor from 'ckeditor5-custom-build';
+import Editor from '../../ckeditor5-custom-build/ckeditor';
 import { UploadAdapter } from '../upload-adapter';
 import { PageDataService } from './services/page.data.service';
-
-export const ARTICLE_CONTENT_MAX_LENGTH = 500;
-export const ARTICLE_TITLE_MAX_LENGTH = 150;
 
 export const CHANNEL_NAME_MAX_LENGTH = 50;
 export const CHANNEL_LINK_MAX_LENGTH = 150;
